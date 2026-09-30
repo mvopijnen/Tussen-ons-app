@@ -49,29 +49,31 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
     onClose();
   };
 
-  if (!isOpen) return null;
-
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-        {/* Backdrop */}
+      {isOpen && (
         <motion.div
+          key="profile-modal"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={onClose}
-          className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-        />
-
-        {/* Modal Sheet */}
-        <motion.div
-          initial={{ y: '100%', opacity: 0.5 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: '100%', opacity: 0 }}
-          transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-          style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)' }}
-          className="relative w-full max-w-md border-t sm:border rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl z-10 select-none"
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
         >
+          {/* Backdrop */}
+          <div
+            onClick={onClose}
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm cursor-pointer"
+          />
+
+          {/* Modal Sheet */}
+          <motion.div
+            initial={{ y: '100%', opacity: 0.5 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: '100%', opacity: 0 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 280 }}
+            style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)' }}
+            className="relative w-full max-w-md border-t sm:border rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl z-10 select-none"
+          >
           {/* Close button */}
           <button
             onClick={onClose}
@@ -173,7 +175,8 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
             </div>
           </form>
         </motion.div>
-      </div>
-    </AnimatePresence>
+      </motion.div>
+    )}
+  </AnimatePresence>
   );
 };

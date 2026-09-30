@@ -15,29 +15,31 @@ export const PremiumPaywallModal: React.FC<PremiumPaywallModalProps> = ({
   onUnlockTrial,
   isUnlocked
 }) => {
-  if (!isOpen) return null;
-
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-        {/* Backdrop */}
+      {isOpen && (
         <motion.div
+          key="paywall-modal"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={onClose}
-          className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-        />
-
-        {/* Modal Card */}
-        <motion.div
-          initial={{ y: '100%', opacity: 0.5 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: '100%', opacity: 0 }}
-          transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-          style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)' }}
-          className="relative w-full max-w-md border-t sm:border rounded-t-3xl sm:rounded-3xl p-6 sm:p-7 shadow-2xl max-h-[90vh] overflow-y-auto z-10"
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
         >
+          {/* Backdrop */}
+          <div
+            onClick={onClose}
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm cursor-pointer"
+          />
+
+          {/* Modal Card */}
+          <motion.div
+            initial={{ y: '100%', opacity: 0.5 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: '100%', opacity: 0 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 280 }}
+            style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)' }}
+            className="relative w-full max-w-md border-t sm:border rounded-t-3xl sm:rounded-3xl p-6 sm:p-7 shadow-2xl max-h-[90vh] overflow-y-auto z-10"
+          >
           {/* Close button */}
           <button
             onClick={onClose}
@@ -186,7 +188,8 @@ export const PremiumPaywallModal: React.FC<PremiumPaywallModalProps> = ({
             <span>Veilig en anoniem · Geen verplichte registratie</span>
           </div>
         </motion.div>
-      </div>
-    </AnimatePresence>
+      </motion.div>
+    )}
+  </AnimatePresence>
   );
 };

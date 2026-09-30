@@ -11,7 +11,7 @@ import {
   Palette
 } from 'lucide-react';
 import { PromptItem, SessionConfig } from '../types';
-import { InteractionCard } from './InteractionCard';
+import { InteractionCard, InteractionDataState } from './InteractionCard';
 
 interface SessionViewProps {
   currentPrompt: PromptItem;
@@ -20,12 +20,12 @@ interface SessionViewProps {
   currentPhase: string;
   isFavorite: boolean;
   laughedCount: number;
-  interactionData: any;
+  interactionData: Record<string, unknown>;
   onNext: () => void;
   onSkip: () => void;
   onToggleFavorite: (id: string) => void;
   onRecordLaugh: () => void;
-  onRecordInteraction: (promptId: string, data: any) => void;
+  onRecordInteraction: (promptId: string, data: Record<string, unknown>) => void;
   onExitSession: () => void;
   onOpenTheme?: () => void;
   config: SessionConfig;
@@ -57,7 +57,7 @@ export const SessionView: React.FC<SessionViewProps> = ({
   };
 
   // Formatted unboxed metadata
-  const currentInteractionData = interactionData[currentPrompt.id];
+  const currentInteractionData = interactionData[currentPrompt.id] as InteractionDataState | undefined;
 
   return (
     <div className="relative flex flex-col justify-between h-[100dvh] max-w-md mx-auto px-4 py-4 sm:py-6 select-none overflow-hidden">
@@ -221,13 +221,16 @@ export const SessionView: React.FC<SessionViewProps> = ({
       {/* Exit / Pause Confirmation Modal */}
       <AnimatePresence>
         {showExitConfirm && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+          <motion.div
+            key="exit-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          >
+            <div
               onClick={() => setShowExitConfirm(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-xs"
+              className="absolute inset-0 bg-black/60 backdrop-blur-xs cursor-pointer"
             />
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
@@ -262,7 +265,7 @@ export const SessionView: React.FC<SessionViewProps> = ({
                 </button>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

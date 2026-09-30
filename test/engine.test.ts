@@ -1,10 +1,17 @@
 /**
  * Test Suite for Tussen Ons Conversation Engine (V2.5)
- * Validates curation, emotional arc, adaptive scoring, cooldown, and safety rules.
+ * Validates curation, emotional arc, adaptive scoring, cooldown, safety rules,
+ * deterministic reproducibility, and storage validation.
  */
 import { buildCuratedSession, getTargetIntensityAndType } from '../src/hooks/useSessionEngine';
 import { PROMPTS_DATABASE } from '../src/data/prompts';
 import { SessionConfig } from '../src/types';
+import { 
+  validatePlayHistory, 
+  validateUserProfile, 
+  validateFavorites, 
+  validateTheme 
+} from '../src/utils/storage';
 
 function assert(condition: boolean, message: string) {
   if (!condition) {
@@ -16,7 +23,7 @@ function assert(condition: boolean, message: string) {
 
 console.log('\n--- STARTING TUSSEN ONS ENGINE TESTS ---\n');
 
-// Test 1: No duplicate prompt IDs in a single session
+// Test 1: No duplicate prompt IDs in a standard single session
 {
   const config: SessionConfig = {
     relationship: 'date',
@@ -49,7 +56,7 @@ console.log('\n--- STARTING TUSSEN ONS ENGINE TESTS ---\n');
   assert(tooIntense.length === 0, `Easy mode contains zero prompts of intensity 4 or 5 (found ${tooIntense.length})`);
 }
 
-// Test 3: Premium prompts are NEVER available for free users
+// Test 3: Premium prompts are NEVER available for free users under any setting
 {
   const config: SessionConfig = {
     relationship: 'date',
@@ -83,22 +90,45 @@ console.log('\n--- STARTING TUSSEN ONS ENGINE TESTS ---\n');
   assert(mismatched.length === 0, `Date session only includes date-compatible prompts (mismatched: ${mismatched.length})`);
 }
 
-// Test 5: Correct session length
+// Test 5: Correct session length across all duration settings
 {
   const conf5: SessionConfig = { relationship: 'date', vibe: 'lachen', duration: '5min', intensity: 'easy' };
   const conf15: SessionConfig = { relationship: 'date', vibe: 'lachen', duration: '15min', intensity: 'personal' };
   const conf30: SessionConfig = { relationship: 'date', vibe: 'lachen', duration: '30min', intensity: 'personal' };
+  const confInf: SessionConfig = { relationship: 'date', vibe: 'lachen', duration: 'unlimited', intensity: 'personal' };
 
   const s5 = buildCuratedSession(conf5);
   const s15 = buildCuratedSession(conf15);
   const s30 = buildCuratedSession(conf30);
+  const sInf = buildCuratedSession(confInf);
 
   assert(s5.length === 5, `5min session yields exactly 5 prompts (got ${s5.length})`);
   assert(s15.length === 9, `15min session yields exactly 9 prompts (got ${s15.length})`);
   assert(s30.length === 14, `30min session yields exactly 14 prompts (got ${s30.length})`);
+  assert(sInf.length === 16, `Unlimited session yields exactly 16 prompts (got ${sInf.length})`);
 }
 
-// Test 6: Sufficient variation in interaction types across a session
+// Test 6: Deterministic curation (calling buildCuratedSession twice produces identical ordered list)
+{
+  const config: SessionConfig = {
+    relationship: 'partner',
+    relationshipStage: 'partner_datenight',
+    vibe: 'dieper',
+    duration: '15min',
+    intensity: 'personal',
+    isPremiumUnlocked: false
+  };
+
+  const runA = buildCuratedSession(config).map(p => p.id);
+  const runB = buildCuratedSession(config).map(p => p.id);
+
+  assert(
+    runA.length === runB.length && runA.every((id, idx) => id === runB[idx]),
+    `Curated session generation is 100% deterministic and reproducible`
+  );
+}
+
+// Test 7: Sufficient variation in interaction types across a session
 {
   const config: SessionConfig = {
     relationship: 'friends',
@@ -114,7 +144,7 @@ console.log('\n--- STARTING TUSSEN ONS ENGINE TESTS ---\n');
   assert(uniqueTypes.size >= 3, `Session has healthy variety of interaction types (found ${uniqueTypes.size} different types in 9 prompts)`);
 }
 
-// Test 7: 'Verrassend' gives significantly higher interactive mechanics
+// Test 8: 'Verrassend' gives significantly higher interactive mechanics
 {
   const configVerrassend: SessionConfig = {
     relationship: 'date',
@@ -131,7 +161,7 @@ console.log('\n--- STARTING TUSSEN ONS ENGINE TESTS ---\n');
   assert(interactiveCount >= 4, `'Verrassend' vibe prioritizes game mechanics and interactive types (${interactiveCount} of ${session.length})`);
 }
 
-// Test 8: Final phase ends positively (Positive Landing)
+// Test 9: Final phase ends positively (Positive Landing)
 {
   const config: SessionConfig = {
     relationship: 'partner',
@@ -156,7 +186,7 @@ console.log('\n--- STARTING TUSSEN ONS ENGINE TESTS ---\n');
   assert(isPositiveTone, `Last prompt provides a positive, connective landing`);
 }
 
-// Test 9: Deep intensity builds gradually (not starting at intensity 5)
+// Test 10: Deep intensity builds gradually (not starting at intensity 5)
 {
   const config: SessionConfig = {
     relationship: 'date',
@@ -172,7 +202,7 @@ console.log('\n--- STARTING TUSSEN ONS ENGINE TESTS ---\n');
   assert(firstPrompt.intensity <= 2, `Deep session starts gently with intensity <= 2 (first prompt intensity is ${firstPrompt.intensity})`);
 }
 
-// Test 10: Secret pick mechanics exist in the database
+// Test 11: Secret pick mechanics exist in the database with valid structure
 {
   const secretPicks = PROMPTS_DATABASE.filter(p => p.interactionType === 'secret_pick');
   assert(secretPicks.length >= 3, `Database contains secret_pick mechanics (found ${secretPicks.length} items)`);
@@ -181,4 +211,30 @@ console.log('\n--- STARTING TUSSEN ONS ENGINE TESTS ---\n');
   });
 }
 
-console.log('\n🎉 ALL 10 CONVERSATION ENGINE TESTS PASSED SUCCESSFULLY!\n');
+// Test 12: LocalStorage validation handles malformed and tampered data gracefully
+{
+  // Corrupted play history
+  const invalidHistory = validatePlayHistory({
+    corrupt1: "bad string",
+    corrupt2: { lastPlayedAt: "not a number", timesPlayed: -5 },
+    valid: { lastPlayedAt: 1727650000000, timesPlayed: 2 }
+  });
+  assert(!('corrupt1' in invalidHistory), `Storage validator strips invalid string entries from play history`);
+  assert(!('corrupt2' in invalidHistory), `Storage validator rejects non-numeric timestamps`);
+  assert(invalidHistory.valid?.timesPlayed === 2, `Storage validator retains valid history record`);
+
+  // Corrupted profile
+  const fallbackProfile = validateUserProfile({ name: "   ", avatar: "" });
+  assert(fallbackProfile.name === "Jij", `Storage validator falls back to default name on blank whitespace`);
+  assert(fallbackProfile.avatar === "✨", `Storage validator falls back to default avatar on blank string`);
+
+  // Corrupted favorites
+  const sanitizedFavs = validateFavorites(["valid-id", 12345, null, "another-valid"]);
+  assert(sanitizedFavs.length === 2 && sanitizedFavs[0] === "valid-id", `Storage validator strips non-string items from favorites`);
+
+  // Corrupted theme
+  const safeTheme = validateTheme("unknown-theme-xyz", "linnen");
+  assert(safeTheme === "linnen", `Storage validator protects against invalid theme injection`);
+}
+
+console.log('\n🎉 ALL 12 CONVERSATION ENGINE & STABILITY TESTS PASSED DETERMINISTICALLY!\n');

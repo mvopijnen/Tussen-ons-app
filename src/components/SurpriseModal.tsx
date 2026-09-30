@@ -10,9 +10,17 @@ import {
   Clock, 
   Zap, 
   RotateCcw,
-  ArrowRight
+  ArrowRight,
+  LucideIcon
 } from 'lucide-react';
-import { RelationshipType, VibeType, DurationType, IntensitySetting, SessionConfig } from '../types';
+import { 
+  RelationshipType, 
+  RelationshipStage, 
+  VibeType, 
+  DurationType, 
+  IntensitySetting, 
+  SessionConfig 
+} from '../types';
 
 interface SurpriseModalProps {
   isOpen: boolean;
@@ -22,7 +30,7 @@ interface SurpriseModalProps {
   isPremiumUnlocked: boolean;
 }
 
-const ALL_VIBES: { id: VibeType; title: string; desc: string; icon: any }[] = [
+const ALL_VIBES: { id: VibeType; title: string; desc: string; icon: LucideIcon }[] = [
   { id: 'lachen', title: 'Lachen & Luchtig', desc: 'Blunders, humor en ontwapenende verhalen', icon: Smile },
   { id: 'leren_kennen', title: 'Elkaar Leren Kennen', desc: 'Nieuwsgierig naar gewoontes en dromen', icon: Compass },
   { id: 'flirten', title: 'Flirten & Spanning', desc: 'Lichaamstaal, chemie en stiltes', icon: Flame },
@@ -96,8 +104,6 @@ export const SurpriseModal: React.FC<SurpriseModalProps> = ({
     }
   }, [isOpen]);
 
-  if (!isOpen) return null;
-
   const vibeObj = ALL_VIBES.find((v) => v.id === selectedVibe) || ALL_VIBES[0];
   const durObj = ALL_DURATIONS.find((d) => d.id === selectedDur) || ALL_DURATIONS[1];
   const relObj = ALL_RELATIONSHIPS.find((r) => r.id === selectedRel) || ALL_RELATIONSHIPS[0];
@@ -111,12 +117,12 @@ export const SurpriseModal: React.FC<SurpriseModalProps> = ({
       : 'Deep & Intiem';
 
   const handleStart = () => {
-    let stage: any = 'any';
+    let stage: RelationshipStage = 'any';
     if (selectedRel === 'date') {
-      const dateStages = ['date_first', 'date_few', 'date_flirty', 'date_awhile'];
+      const dateStages: RelationshipStage[] = ['date_first', 'date_few', 'date_flirty', 'date_awhile'];
       stage = dateStages[Math.floor(Math.random() * dateStages.length)];
     } else if (selectedRel === 'partner') {
-      const partnerStages = ['partner_datenight', 'partner_reconnect', 'partner_new'];
+      const partnerStages: RelationshipStage[] = ['partner_datenight', 'partner_reconnect', 'partner_new'];
       stage = partnerStages[Math.floor(Math.random() * partnerStages.length)];
     } else if (selectedRel === 'friends') {
       stage = 'friends_good';
@@ -137,25 +143,29 @@ export const SurpriseModal: React.FC<SurpriseModalProps> = ({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-        {/* Backdrop */}
+      {isOpen && (
         <motion.div
+          key="surprise-modal"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={onClose}
-          className="absolute inset-0 bg-black/85 backdrop-blur-sm"
-        />
-
-        {/* Modal Content */}
-        <motion.div
-          initial={{ y: '100%', opacity: 0.5 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: '100%', opacity: 0 }}
-          transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-          style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)' }}
-          className="relative w-full max-w-md border-t sm:border rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl z-10 select-none space-y-5"
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
         >
+          {/* Backdrop */}
+          <div
+            onClick={onClose}
+            className="absolute inset-0 bg-black/85 backdrop-blur-sm cursor-pointer"
+          />
+
+          {/* Modal Content */}
+          <motion.div
+            initial={{ y: '100%', opacity: 0.5 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: '100%', opacity: 0 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 280 }}
+            style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)' }}
+            className="relative w-full max-w-md border-t sm:border rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl z-10 select-none space-y-5"
+          >
           {/* Close button */}
           <button
             onClick={onClose}
@@ -277,7 +287,8 @@ export const SurpriseModal: React.FC<SurpriseModalProps> = ({
             </button>
           </div>
         </motion.div>
-      </div>
-    </AnimatePresence>
+      </motion.div>
+    )}
+  </AnimatePresence>
   );
 };

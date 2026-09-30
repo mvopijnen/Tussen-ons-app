@@ -1,4 +1,4 @@
-import { PromptItem } from '../types';
+import { PromptItem, RelationshipType } from '../types';
 
 export const PROMPTS_DATABASE: PromptItem[] = [
   // ==========================================
@@ -1060,7 +1060,7 @@ export function getFilteredPrompts(
     // Relationship match
     const relMatch =
       relationship === 'surprise' ||
-      item.relationshipType.includes(relationship as any) ||
+      item.relationshipType.includes(relationship as RelationshipType) ||
       item.relationshipType.includes('surprise');
 
     if (!relMatch) return false;

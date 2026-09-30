@@ -37,7 +37,7 @@ export const FavoritesView: React.FC<FavoritesViewProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [activePreviewPrompt, setActivePreviewPrompt] = useState<PromptItem | null>(null);
-  const [previewInteractionData, setPreviewInteractionData] = useState<any>({});
+  const [previewInteractionData, setPreviewInteractionData] = useState<Record<string, Record<string, unknown>>>({});
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   // Retrieve full prompt objects for favorited IDs
@@ -398,13 +398,16 @@ export const FavoritesView: React.FC<FavoritesViewProps> = ({
       {/* Full-screen Card Preview Modal for single questions */}
       <AnimatePresence>
         {activePreviewPrompt && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+          <motion.div
+            key="preview-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          >
+            <div
               onClick={() => setActivePreviewPrompt(null)}
-              className="absolute inset-0 bg-black/75 backdrop-blur-xs"
+              className="absolute inset-0 bg-black/75 backdrop-blur-xs cursor-pointer"
             />
 
             <motion.div
@@ -436,7 +439,7 @@ export const FavoritesView: React.FC<FavoritesViewProps> = ({
                   prompt={activePreviewPrompt}
                   interactionData={previewInteractionData[activePreviewPrompt.id]}
                   onRecordInteraction={(data) => {
-                    setPreviewInteractionData((prev: any) => ({
+                    setPreviewInteractionData((prev) => ({
                       ...prev,
                       [activePreviewPrompt.id]: data
                     }));
@@ -472,7 +475,7 @@ export const FavoritesView: React.FC<FavoritesViewProps> = ({
                 </button>
               </div>
             </motion.div>
-          </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

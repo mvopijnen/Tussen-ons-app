@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Play, 
@@ -13,10 +13,30 @@ import {
 } from 'lucide-react';
 import { PromptItem } from '../types';
 
+export interface RevealState {
+  step: 'waiting' | 'ready_to_reveal' | 'revealed';
+  p1Choice?: string;
+  p2Choice?: string;
+}
+
+export interface SecretPickState {
+  step: 'p1_turn' | 'pass_phone' | 'p2_turn' | 'countdown' | 'revealed';
+  p1Choice?: string;
+  p2Choice?: string;
+}
+
+export interface InteractionDataState {
+  selectedOption?: string;
+  rapidFirePicks?: Record<string, string>;
+  revealState?: RevealState;
+  secretPickState?: SecretPickState;
+  [key: string]: unknown;
+}
+
 interface InteractionCardProps {
   prompt: PromptItem;
-  interactionData?: any;
-  onRecordInteraction: (data: any) => void;
+  interactionData?: InteractionDataState;
+  onRecordInteraction: (data: Record<string, unknown>) => void;
 }
 
 export const InteractionCard: React.FC<InteractionCardProps> = ({
@@ -273,6 +293,12 @@ const PointView: React.FC<{ prompt: PromptItem }> = ({ prompt }) => {
   const [countdown, setCountdown] = useState<number | null>(null);
   const [hasPointed, setHasPointed] = useState(false);
 
+  // Reset cleanly when prompt changes
+  useEffect(() => {
+    setCountdown(null);
+    setHasPointed(false);
+  }, [prompt.id]);
+
   const startCountdown = () => {
     setHasPointed(false);
     setCountdown(3);
@@ -280,15 +306,21 @@ const PointView: React.FC<{ prompt: PromptItem }> = ({ prompt }) => {
 
   useEffect(() => {
     if (countdown === null) return;
+
     if (countdown > 1) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 800);
+      const timer = setTimeout(() => {
+        setCountdown((prev) => (prev !== null && prev > 1 ? prev - 1 : null));
+      }, 750);
       return () => clearTimeout(timer);
     } else if (countdown === 1) {
       const timer = setTimeout(() => {
         setCountdown(null);
         setHasPointed(true);
-      }, 800);
+      }, 750);
       return () => clearTimeout(timer);
+    } else {
+      setCountdown(null);
+      setHasPointed(true);
     }
   }, [countdown]);
 
@@ -309,9 +341,8 @@ const PointView: React.FC<{ prompt: PromptItem }> = ({ prompt }) => {
           {countdown !== null ? (
             <motion.div
               key={countdown}
-              initial={{ scale: 0.5, opacity: 0 }}
+              initial={{ scale: 0.7, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 1.4, opacity: 0 }}
               style={{ color: 'var(--color-accent)' }}
               className="text-6xl font-editorial font-bold"
             >
@@ -321,7 +352,7 @@ const PointView: React.FC<{ prompt: PromptItem }> = ({ prompt }) => {
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="space-y-2"
+              className="space-y-4"
             >
               <div className="text-3xl font-editorial text-[var(--text-primary)] font-semibold">
                 👉 Wijs nu aan! 👈
@@ -329,6 +360,14 @@ const PointView: React.FC<{ prompt: PromptItem }> = ({ prompt }) => {
               <p className="text-xs text-[var(--text-secondary)]">
                 Wijs naar jezelf of naar de ander. Waarom koos je diegene?
               </p>
+              <button
+                onClick={startCountdown}
+                style={{ backgroundColor: 'var(--bg-card-subtle)', borderColor: 'var(--border-subtle)', color: 'var(--text-primary)' }}
+                className="px-4 py-2 rounded-xl border text-xs font-medium hover:border-[var(--color-accent)] transition-all cursor-pointer inline-flex items-center gap-1.5 shadow-2xs"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Nog een keer aftellen</span>
+              </button>
             </motion.div>
           ) : (
             <button
@@ -442,24 +481,52 @@ const ChallengeView: React.FC<{ prompt: PromptItem }> = ({ prompt }) => {
   const [isRunning, setIsRunning] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
 
+  // Reset cleanly whenever prompt changes
   useEffect(() => {
-    let interval: any = null;
-    if (isRunning && timeLeft > 0) {
-      interval = setInterval(() => {
-        setTimeLeft((prev) => prev - 1);
-      }, 1000);
-    } else if (timeLeft === 0 && isRunning) {
-      setIsRunning(false);
-      setIsFinished(true);
-    }
+    setIsRunning(false);
+    setTimeLeft(prompt.challengeDurationSec || 20);
+    setIsFinished(false);
+  }, [prompt.id, prompt.challengeDurationSec]);
+
+  // Robust timer that strictly stops at 0 and NEVER goes negative or loops
+  useEffect(() => {
+    if (!isRunning) return;
+
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setIsRunning(false);
+          setIsFinished(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
     return () => clearInterval(interval);
-  }, [isRunning, timeLeft]);
+  }, [isRunning]);
+
+  const handleToggle = () => {
+    if (isFinished || timeLeft <= 0) {
+      // If already finished or at zero, restart cleanly from full duration
+      setTimeLeft(duration);
+      setIsFinished(false);
+      setIsRunning(true);
+    } else {
+      setIsRunning((prev) => !prev);
+    }
+  };
 
   const handleReset = () => {
     setIsRunning(false);
     setTimeLeft(duration);
     setIsFinished(false);
   };
+
+  const safeTime = Math.max(0, timeLeft);
+  const minutes = String(Math.floor(safeTime / 60)).padStart(2, '0');
+  const seconds = String(safeTime % 60).padStart(2, '0');
 
   return (
     <div className="flex flex-col justify-between h-full py-1 text-center">
@@ -488,23 +555,28 @@ const ChallengeView: React.FC<{ prompt: PromptItem }> = ({ prompt }) => {
           {prompt.challengeDurationSec && (
             <div className="flex flex-col items-center gap-3 pt-2">
               <div className="text-3xl font-mono tabular-nums font-semibold text-[var(--text-primary)]">
-                {String(Math.floor(timeLeft / 60)).padStart(2, '0')}:
-                {String(timeLeft % 60).padStart(2, '0')}
+                {minutes}:{seconds}
               </div>
+
+              {isFinished && (
+                <div className="text-xs font-semibold text-[var(--color-accent)] animate-pulse">
+                  🎉 Tijd is voorbij! Goed gedaan!
+                </div>
+              )}
 
               <div className="flex items-center gap-3">
                 <button
-                  onClick={() => setIsRunning(!isRunning)}
+                  onClick={handleToggle}
                   style={{
                     backgroundColor: isRunning ? '#D97706' : isFinished ? '#059669' : 'var(--color-accent)',
                     color: '#FFFFFF'
                   }}
-                  className="px-4 py-2 text-xs font-medium rounded-xl flex items-center gap-2 transition-all cursor-pointer shadow-xs"
+                  className="px-4 py-2 text-xs font-medium rounded-xl flex items-center gap-2 transition-all cursor-pointer shadow-xs active:scale-95"
                 >
                   {isRunning ? (
                     'Pauzeren'
                   ) : isFinished ? (
-                    'Voltooid! ✓'
+                    'Opnieuw starten ↻'
                   ) : (
                     <>
                       <Play className="w-3.5 h-3.5 fill-current" /> Start timer
@@ -515,7 +587,7 @@ const ChallengeView: React.FC<{ prompt: PromptItem }> = ({ prompt }) => {
                 <button
                   onClick={handleReset}
                   style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)', color: 'var(--text-secondary)' }}
-                  className="p-2 border rounded-xl hover:text-[var(--text-primary)] cursor-pointer"
+                  className="p-2 border rounded-xl hover:text-[var(--text-primary)] cursor-pointer active:scale-95 transition-all"
                   title="Herstarten"
                 >
                   <RotateCcw className="w-4 h-4" />
@@ -663,10 +735,16 @@ const RapidFireView: React.FC<{
 /* ----------------------------------------------------
    9. REVEAL VIEW (Blind Antwoorden, Samen Onthullen)
 ---------------------------------------------------- */
+interface LegacyRevealState {
+  p1Choice?: string;
+  p2Choice?: string;
+  isRevealed?: boolean;
+}
+
 const RevealView: React.FC<{
   prompt: PromptItem;
-  state?: { p1Choice?: string; p2Choice?: string; isRevealed?: boolean };
-  onUpdate: (state: any) => void;
+  state?: LegacyRevealState;
+  onUpdate: (state: LegacyRevealState) => void;
 }> = ({ prompt, state = {}, onUpdate }) => {
   const options = prompt.revealQuestion?.options || [
     'Ja, absoluut',
@@ -818,12 +896,6 @@ const RevealView: React.FC<{
 /* ----------------------------------------------------
    9. SECRET PICK VIEW (Blind kiezen -> Doorsturen -> 3,2,1 Reveal!)
 ---------------------------------------------------- */
-interface SecretPickState {
-  step: 'p1_turn' | 'pass_phone' | 'p2_turn' | 'countdown' | 'revealed';
-  p1Choice?: string;
-  p2Choice?: string;
-}
-
 const SecretPickView: React.FC<{
   prompt: PromptItem;
   state?: SecretPickState;
@@ -841,27 +913,42 @@ const SecretPickView: React.FC<{
   const p2Choice = state?.p2Choice;
   const [countdown, setCountdown] = useState<number>(3);
 
-  // Trigger countdown timer
-  useEffect(() => {
-    if (currentStep === 'countdown') {
-      setCountdown(3);
-      const timer1 = setTimeout(() => setCountdown(2), 650);
-      const timer2 = setTimeout(() => setCountdown(1), 1300);
-      const timer3 = setTimeout(() => {
-        onUpdate({
-          step: 'revealed',
-          p1Choice,
-          p2Choice
-        });
-      }, 1950);
+  // Stable references to prevent effect re-triggering during countdown
+  const onUpdateRef = useRef(onUpdate);
+  onUpdateRef.current = onUpdate;
+  const p1ChoiceRef = useRef(p1Choice);
+  p1ChoiceRef.current = p1Choice;
+  const p2ChoiceRef = useRef(p2Choice);
+  p2ChoiceRef.current = p2Choice;
 
-      return () => {
-        clearTimeout(timer1);
-        clearTimeout(timer2);
-        clearTimeout(timer3);
-      };
-    }
-  }, [currentStep, p1Choice, p2Choice, onUpdate]);
+  // Trigger countdown timer ONCE when entering 'countdown' step
+  useEffect(() => {
+    if (currentStep !== 'countdown') return;
+
+    setCountdown(3);
+
+    const timer1 = setTimeout(() => {
+      setCountdown(2);
+    }, 650);
+
+    const timer2 = setTimeout(() => {
+      setCountdown(1);
+    }, 1300);
+
+    const timer3 = setTimeout(() => {
+      onUpdateRef.current({
+        step: 'revealed',
+        p1Choice: p1ChoiceRef.current,
+        p2Choice: p2ChoiceRef.current
+      });
+    }, 1950);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+    };
+  }, [currentStep]);
 
   const handleP1Select = (opt: string) => {
     onUpdate({
@@ -1025,21 +1112,17 @@ const SecretPickView: React.FC<{
               key="countdown"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 1.2, opacity: 0 }}
+              exit={{ opacity: 0 }}
               className="py-10 text-center space-y-3"
             >
               <div className="text-xs uppercase tracking-widest font-mono text-[var(--text-muted)]">
                 Tel samen hardop af!
               </div>
-              <motion.div 
-                key={countdown}
-                initial={{ scale: 1.6, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                className="text-6xl sm:text-7xl font-editorial font-bold text-[var(--color-accent)]"
+              <div 
+                className="text-6xl sm:text-7xl font-editorial font-bold text-[var(--color-accent)] transition-all duration-200"
               >
                 {countdown}
-              </motion.div>
+              </div>
             </motion.div>
           )}
 

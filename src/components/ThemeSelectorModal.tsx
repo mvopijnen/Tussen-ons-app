@@ -59,29 +59,31 @@ export const ThemeSelectorModal: React.FC<ThemeSelectorModalProps> = ({
   currentTheme,
   onSelectTheme
 }) => {
-  if (!isOpen) return null;
-
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-        {/* Backdrop */}
+      {isOpen && (
         <motion.div
+          key="theme-modal"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={onClose}
-          className="absolute inset-0 bg-black/60 backdrop-blur-xs"
-        />
-
-        {/* Modal Sheet */}
-        <motion.div
-          initial={{ y: '100%', opacity: 0.5 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: '100%', opacity: 0 }}
-          transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-          style={{ backgroundColor: 'var(--bg-card)' }}
-          className="relative w-full max-w-md border-t sm:border border-[var(--border-subtle)] rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl z-10 select-none max-h-[90vh] overflow-y-auto"
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
         >
+          {/* Backdrop */}
+          <div
+            onClick={onClose}
+            className="absolute inset-0 bg-black/60 backdrop-blur-xs cursor-pointer"
+          />
+
+          {/* Modal Sheet */}
+          <motion.div
+            initial={{ y: '100%', opacity: 0.5 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: '100%', opacity: 0 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 280 }}
+            style={{ backgroundColor: 'var(--bg-card)' }}
+            className="relative w-full max-w-md border-t sm:border border-[var(--border-subtle)] rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl z-10 select-none max-h-[90vh] overflow-y-auto"
+          >
           {/* Close button */}
           <button
             onClick={onClose}
@@ -194,7 +196,8 @@ export const ThemeSelectorModal: React.FC<ThemeSelectorModalProps> = ({
             Klaar met kiezen ✓
           </button>
         </motion.div>
-      </div>
-    </AnimatePresence>
+      </motion.div>
+    )}
+  </AnimatePresence>
   );
 };

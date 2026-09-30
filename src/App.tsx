@@ -12,27 +12,33 @@ import { ThemeSelectorModal } from './components/ThemeSelectorModal';
 import { AmbientBackground } from './components/AmbientBackground';
 import { SessionConfig, UserProfile, ThemeId, PromptItem } from './types';
 import { useSessionEngine } from './hooks/useSessionEngine';
+import { 
+  safeGetFavorites, 
+  safeSaveFavorites, 
+  safeGetUserProfile, 
+  safeSaveUserProfile, 
+  safeGetTheme, 
+  safeSaveTheme, 
+  safeGetPremium, 
+  safeSavePremium 
+} from './utils/storage';
 import { Heart, Sparkles, RotateCcw, Dices, Palette, Bookmark } from 'lucide-react';
 
 export default function App() {
   // Navigation State
   const [view, setView] = useState<'onboarding' | 'setup' | 'session' | 'outro' | 'favorites'>('setup');
   const [isPremiumUnlocked, setIsPremiumUnlocked] = useState<boolean>(() => {
-    return localStorage.getItem('tussen_ons_premium') === 'true';
+    return safeGetPremium();
   });
   const [showPaywall, setShowPaywall] = useState<boolean>(false);
   const [showProfileModal, setShowProfileModal] = useState<boolean>(false);
   const [showSurpriseModal, setShowSurpriseModal] = useState<boolean>(false);
   const [showThemeModal, setShowThemeModal] = useState<boolean>(false);
 
-  // Persistent Favorites State (Saved across sessions in localStorage)
+  // Persistent Favorites State (Saved across sessions in localStorage with validation)
   const [globalFavorites, setGlobalFavorites] = useState<string[]>(() => {
-    try {
-      const saved = localStorage.getItem('tussen_ons_favorites');
-      if (saved) return JSON.parse(saved);
-    } catch (e) {
-      // fallback
-    }
+    const list = safeGetFavorites();
+    if (list.length > 0) return list;
     // Default seed with 2 charming questions for immediate delight
     return ['date-ask-2', 'date-guess-1'];
   });
@@ -40,35 +46,29 @@ export default function App() {
   const toggleGlobalFavorite = (promptId: string) => {
     setGlobalFavorites((prev) => {
       const next = prev.includes(promptId) ? prev.filter((id) => id !== promptId) : [...prev, promptId];
-      localStorage.setItem('tussen_ons_favorites', JSON.stringify(next));
+      safeSaveFavorites(next);
       return next;
     });
   };
 
   // Theme State (Default to 'linnen' for a warm, light, bright, approachable aesthetic)
   const [theme, setTheme] = useState<ThemeId>(() => {
-    return (localStorage.getItem('tussen_ons_theme') as ThemeId) || 'linnen';
+    return safeGetTheme('linnen');
   });
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('tussen_ons_theme', theme);
+    safeSaveTheme(theme);
   }, [theme]);
 
-  // User Profile State
+  // User Profile State with validated schema
   const [userProfile, setUserProfile] = useState<UserProfile>(() => {
-    try {
-      const saved = localStorage.getItem('tussen_ons_user_profile');
-      if (saved) return JSON.parse(saved);
-    } catch (e) {
-      // fallback
-    }
-    return { name: 'Jij', avatar: '✨' };
+    return safeGetUserProfile();
   });
 
   const handleSaveProfile = (updated: UserProfile) => {
     setUserProfile(updated);
-    localStorage.setItem('tussen_ons_user_profile', JSON.stringify(updated));
+    safeSaveUserProfile(updated);
   };
 
   // Active Session Config
@@ -142,7 +142,7 @@ export default function App() {
 
   const handleUnlockTrial = () => {
     setIsPremiumUnlocked(true);
-    localStorage.setItem('tussen_ons_premium', 'true');
+    safeSavePremium(true);
   };
 
   const handleResetToOnboarding = () => {

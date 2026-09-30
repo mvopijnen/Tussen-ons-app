@@ -4,43 +4,44 @@ import {
   SessionConfig, 
   SessionStats, 
   InteractionType, 
-  RelationshipStage,
   PlayHistoryMap 
 } from '../types';
 import { PROMPTS_DATABASE } from '../data/prompts';
+import { safeGetPlayHistory, safeSavePlayHistory } from '../utils/storage';
 
-const PLAY_HISTORY_STORAGE_KEY = 'tussen_ons_play_history';
 const COOLDOWN_DAYS = 30;
 const COOLDOWN_MS = COOLDOWN_DAYS * 24 * 60 * 60 * 1000;
 
 /**
- * Load local play history map { [promptId]: { lastPlayedAt: number, timesPlayed: number } }
+ * Load local play history map with validated schema
  */
 export function getPlayHistory(): PlayHistoryMap {
-  try {
-    const raw = localStorage.getItem(PLAY_HISTORY_STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch (e) {
-    // ignore
-  }
-  return {};
+  return safeGetPlayHistory();
 }
 
 /**
  * Record a prompt as played with timestamp
  */
 export function recordPromptPlayed(promptId: string): void {
-  try {
-    const history = getPlayHistory();
-    const existing = history[promptId] || { lastPlayedAt: 0, timesPlayed: 0 };
-    history[promptId] = {
-      lastPlayedAt: Date.now(),
-      timesPlayed: existing.timesPlayed + 1
-    };
-    localStorage.setItem(PLAY_HISTORY_STORAGE_KEY, JSON.stringify(history));
-  } catch (e) {
-    // ignore
+  const history = safeGetPlayHistory();
+  const existing = history[promptId] || { lastPlayedAt: 0, timesPlayed: 0 };
+  history[promptId] = {
+    lastPlayedAt: Date.now(),
+    timesPlayed: existing.timesPlayed + 1
+  };
+  safeSavePlayHistory(history);
+}
+
+/**
+ * Deterministic string hash to replace Math.random() for reproducible testing and stable ordering
+ */
+export function getPromptStableHash(id: string): number {
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) {
+    hash = (hash << 5) - hash + id.charCodeAt(i);
+    hash |= 0;
   }
+  return Math.abs(hash);
 }
 
 interface ArcTarget {
@@ -133,7 +134,7 @@ export function getTargetIntensityAndType(
 }
 
 /**
- * Score candidate prompt based on relationship stage, vibe, intensity, cooldown and variety
+ * Score candidate prompt deterministically based on relationship stage, vibe, intensity, cooldown and variety
  */
 function scoreCandidatePrompt(
   prompt: PromptItem,
@@ -180,7 +181,6 @@ function scoreCandidatePrompt(
     } else if (prompt.relationshipStages?.includes('any')) {
       score += 4;
     } else if (prompt.relationshipStages && prompt.relationshipStages.length > 0) {
-      // Has specific stages but not this one
       score -= 8;
     }
   }
@@ -208,32 +208,31 @@ function scoreCandidatePrompt(
       break;
 
     case 'verrassend':
-      // Distinct strong boost for interactive mechanics
       if (['challenge', 'guess', 'point', 'rapid_fire', 'reveal', 'secret_pick'].includes(prompt.interactionType)) score += 10;
       if (prompt.tags.some(t => ['verrassend', 'spel', 'onverwacht', 'keuze'].includes(t))) score += 6;
       break;
   }
 
-  // 6. Play History Cooldown (reduce score if played recently)
+  // 6. Play History Cooldown
   const playedRecord = history[prompt.id];
   if (playedRecord) {
     const elapsed = Date.now() - playedRecord.lastPlayedAt;
     if (elapsed < COOLDOWN_MS) {
-      // Cooldown penalty
       score -= 25;
     } else {
       score -= Math.min(10, playedRecord.timesPlayed * 2);
     }
   }
 
-  // Subtle randomized variance to keep sessions fresh and organic
-  score += Math.random() * 3;
+  // Deterministic fractional tie-breaker based on ID hash
+  score += (getPromptStableHash(prompt.id) % 100) * 0.01;
 
   return score;
 }
 
 /**
  * Curate session prompts based on configuration, stage, emotional arc and cooldown
+ * Guarantees zero premium leakage, strict safety in easy mode, and full targetCount.
  */
 export function buildCuratedSession(config: SessionConfig): PromptItem[] {
   // Determine target length
@@ -246,7 +245,7 @@ export function buildCuratedSession(config: SessionConfig): PromptItem[] {
   const history = getPlayHistory();
 
   // Filter candidate pool strictly
-  const candidatePool = PROMPTS_DATABASE.filter((item) => {
+  let candidatePool = PROMPTS_DATABASE.filter((item) => {
     // 1. Relationship match
     const relMatch =
       config.relationship === 'surprise' ||
@@ -255,7 +254,7 @@ export function buildCuratedSession(config: SessionConfig): PromptItem[] {
 
     if (!relMatch) return false;
 
-    // 2. Strictly enforce Premium Lock (Bug fix: intensity 'deep' CANNOT bypass)
+    // 2. Strictly enforce Premium Lock (NEVER allow free users to access premium)
     if (item.premium && !config.isPremiumUnlocked) {
       return false;
     }
@@ -268,6 +267,15 @@ export function buildCuratedSession(config: SessionConfig): PromptItem[] {
     return true;
   });
 
+  // Emergency safe fallback pool if candidatePool is empty: NEVER leak premium, NEVER exceed intensity 2
+  if (candidatePool.length === 0) {
+    candidatePool = PROMPTS_DATABASE.filter((item) => {
+      if (item.premium && !config.isPremiumUnlocked) return false;
+      if (config.intensity === 'easy' && item.intensity >= 4) return false;
+      return !item.premium && item.intensity <= 2;
+    });
+  }
+
   const selectedPrompts: PromptItem[] = [];
   const usedIds = new Set<string>();
   let lastType: InteractionType | undefined = undefined;
@@ -275,8 +283,16 @@ export function buildCuratedSession(config: SessionConfig): PromptItem[] {
   for (let i = 0; i < targetCount; i++) {
     const arc = getTargetIntensityAndType(i, targetCount, config.intensity);
 
-    const available = candidatePool.filter((p) => !usedIds.has(p.id));
-    if (available.length === 0) break;
+    let available = candidatePool.filter((p) => !usedIds.has(p.id));
+
+    // If available unique prompts exhausted but we haven't reached targetCount yet:
+    // Safely reset usedIds to recycle candidatePool without ever leaking premium prompts
+    if (available.length === 0) {
+      usedIds.clear();
+      available = candidatePool;
+    }
+
+    if (available.length === 0) break; // Theoretical absolute empty DB guard
 
     // Separate cooldown candidates from fresh candidates if possible
     const freshCandidates = available.filter((p) => {
@@ -291,17 +307,13 @@ export function buildCuratedSession(config: SessionConfig): PromptItem[] {
       score: scoreCandidatePrompt(p, arc, config, history, lastType)
     }));
 
-    scored.sort((a, b) => b.score - a.score);
+    // Deterministic sort: primary by score, secondary by prompt id
+    scored.sort((a, b) => (b.score - a.score) || a.prompt.id.localeCompare(b.prompt.id));
     const chosen = scored[0].prompt;
 
     selectedPrompts.push(chosen);
     usedIds.add(chosen.id);
     lastType = chosen.interactionType;
-  }
-
-  // Graceful fallback
-  if (selectedPrompts.length === 0) {
-    return PROMPTS_DATABASE.slice(0, targetCount);
   }
 
   return selectedPrompts;
@@ -318,7 +330,7 @@ interface SessionEngineState {
   elapsedSeconds: number;
   isPaused: boolean;
   isCompleted: boolean;
-  interactionData: Record<string, any>;
+  interactionData: Record<string, unknown>;
   // Adaptive in-session tuning
   adaptiveIntensityBias: number; // -1 to +1
   consecutiveSkips: number;
@@ -430,7 +442,7 @@ export function useSessionEngine(
         ...prev,
         currentPromptIndex: prev.currentPromptIndex + 1,
         completedPromptIds: completedIds,
-        consecutiveSkips: 0 // reset consecutive skips on successful step
+        consecutiveSkips: 0
       };
     });
   }, []);
@@ -486,10 +498,9 @@ export function useSessionEngine(
         nextSession.delete(promptId);
       } else {
         nextGlobal.add(promptId);
-        nextSession.add(promptId); // Marked as favorited during this specific session
+        nextSession.add(promptId);
       }
 
-      // Adaptive hint: if user favorites questions with high depth, allow slightly more depth
       const curPrompt = prev.prompts.find(p => p.id === promptId);
       let nextBias = prev.adaptiveIntensityBias;
       if (curPrompt && curPrompt.intensity >= 3 && nextSession.has(promptId)) {
@@ -515,7 +526,7 @@ export function useSessionEngine(
     }));
   }, []);
 
-  const recordInteraction = useCallback((promptId: string, data: any) => {
+  const recordInteraction = useCallback((promptId: string, data: Record<string, unknown>) => {
     setState((prev) => ({
       ...prev,
       interactionData: {
@@ -580,7 +591,7 @@ export function useSessionEngine(
     () => ({
       promptsCompleted: state.completedPromptIds.length,
       laughedCount: state.laughedCount,
-      favoritesCount: state.sessionFavorites.size, // count of items favorited in THIS session
+      favoritesCount: state.sessionFavorites.size,
       durationSeconds: state.elapsedSeconds,
       favoritePromptIds: Array.from(state.sessionFavorites),
       sessionFavoriteIds: Array.from(state.sessionFavorites)

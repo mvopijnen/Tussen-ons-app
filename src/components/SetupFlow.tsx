@@ -41,6 +41,8 @@ interface SetupFlowProps {
   isPremiumUnlocked: boolean;
 }
 
+type SetupStep = 1 | 2 | 3 | 4 | 5;
+
 export const SetupFlow: React.FC<SetupFlowProps> = ({
   onStartSession,
   onOpenPaywall,
@@ -52,7 +54,7 @@ export const SetupFlow: React.FC<SetupFlowProps> = ({
   userProfile,
   isPremiumUnlocked
 }) => {
-  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
+  const [step, setStep] = useState<SetupStep>(1);
 
   // Selections
   const [relationship, setRelationship] = useState<RelationshipType>('date');
@@ -74,7 +76,7 @@ export const SetupFlow: React.FC<SetupFlowProps> = ({
   // Next and Back handlers
   const handleNext = () => {
     if (step < 5) {
-      setStep((prev) => (prev + 1) as any);
+      setStep((prev) => Math.min(5, prev + 1) as SetupStep);
     } else {
       onStartSession({
         relationship,
@@ -89,7 +91,7 @@ export const SetupFlow: React.FC<SetupFlowProps> = ({
 
   const handleBack = () => {
     if (step > 1) {
-      setStep((prev) => (prev - 1) as any);
+      setStep((prev) => Math.max(1, prev - 1) as SetupStep);
     }
   };
 
