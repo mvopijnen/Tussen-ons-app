@@ -1,0 +1,6 @@
+{
+  "name": "Tussen Ons - Interactieve Gespreksstarter",
+  "description": "Een intieme, mobile-first conversatie companion voor diepere, leukere en verrassende gesprekken met je date, partner, vrienden of familie.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
