@@ -241,8 +241,10 @@ export function scoreCandidatePrompt(
 
   // 5. Emotional Tone active scoring (Requirement 6)
   if (arc.isEnding) {
-    if (prompt.emotionalTone === 'positive_landing' || prompt.tags.includes('afsluiting') || prompt.tags.includes('waardering') || prompt.tags.includes('compliment')) {
-      score += 35;
+    if (prompt.emotionalTone === 'positive_landing') {
+      score += 50; // Heavily prioritize the landing tone
+    } else if (prompt.tags.includes('afsluiting') || prompt.tags.includes('waardering') || prompt.tags.includes('compliment')) {
+      score += 25;
     }
     // Strongly penalize super heavy vulnerability at the very end
     if (prompt.intensity >= 4 || prompt.emotionalTone === 'vulnerable' || prompt.tags.includes('eenzaamheid') || prompt.tags.includes('verdriet')) {

@@ -2,8 +2,10 @@ import { PromptItem, RelationshipType } from '../types';
 
 export const PROMPTS_DATABASE: PromptItem[] = [
   // ==========================================
-  // FIRST DATE - 1. ASK (Various intensities)
+  // CATEGORIE: DATE (60 Prompts)
   // ==========================================
+  
+  // DATE - ASK
   {
     id: 'date-ask-1',
     category: 'Eerste Date',
@@ -11,7 +13,7 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     interactionType: 'ask',
     intensity: 1,
     relationshipType: ['date', 'surprise'],
-    relationshipStages: ['date_first', 'date_few', 'date_flirty'],
+    relationshipStages: ['date_first', 'date_few', 'date_awhile', 'date_serious', 'date_flirty'],
     emotionalTone: 'warmup',
     tags: ['ijsbreker', 'eerste-indruk', 'luchtig'],
     premium: false,
@@ -78,10 +80,221 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     prompt: 'Als geld en andermans verwachtingen geen enkele rol speelden, hoe zou jouw gemiddelde dinsdag er over vijf jaar uitzien?',
     subtitle: 'Beschrijf de geur, het uitzicht en wat je als eerste doet na het opstaan.'
   },
+  {
+    id: 'date-ask-6',
+    category: 'Eerste Date',
+    subcategory: 'Reizen',
+    interactionType: 'ask',
+    intensity: 1,
+    relationshipType: ['date', 'surprise'],
+    relationshipStages: ['date_first', 'date_few'],
+    emotionalTone: 'warmup',
+    tags: ['reizen', 'dromen', 'luchtig'],
+    premium: false,
+    prompt: 'Als je nu een ticket kon boeken naar een willekeurige plek op de wereld voor overmorgen, waar zou je heen gaan?',
+    subtitle: 'Niet nadenken over werk of budget, puur op gevoel.',
+    tip: 'Vraag naar de eerste activiteit die de ander daar zou doen.'
+  },
+  {
+    id: 'date-ask-7',
+    category: 'Eerste Date',
+    subcategory: 'Maatschappij',
+    interactionType: 'ask',
+    intensity: 2,
+    relationshipType: ['date', 'friends', 'surprise'],
+    relationshipStages: ['date_few', 'date_awhile', 'friends_good'],
+    emotionalTone: 'curious',
+    tags: ['mening', 'gesprek', 'diepgang'],
+    premium: false,
+    prompt: 'Wat is een ongeschreven sociale regel die jij het liefst vandaag nog zou afschaffen?',
+    subtitle: 'Bijvoorbeeld: verplichte verjaardagskringetjes of beleefdheidsvragen.',
+    tip: 'Lach om de ongemakkelijke regels die we allemaal volgen.'
+  },
+  {
+    id: 'date-ask-8',
+    category: 'Eerste Date',
+    subcategory: 'Eten & Ervaringen',
+    interactionType: 'ask',
+    intensity: 2,
+    relationshipType: ['date', 'friends', 'surprise'],
+    relationshipStages: ['date_first', 'date_few', 'friends_new'],
+    emotionalTone: 'playful',
+    tags: ['eten', 'avontuur', 'luchtig'],
+    premium: false,
+    prompt: 'Wat is het vreemdste ding dat je ooit hebt gegeten en zou je het nog een keer doen?',
+    subtitle: 'Van insecten op vakantie tot een zeer experimenteel gerecht.',
+    tip: 'Vraag naar de context: waar was je en waarom at je het?'
+  },
+  {
+    id: 'date-ask-9',
+    category: 'Eerste Date',
+    subcategory: 'Zelfreflectie',
+    interactionType: 'ask',
+    intensity: 3,
+    relationshipType: ['date', 'partner'],
+    relationshipStages: ['date_few', 'date_awhile', 'partner_new'],
+    emotionalTone: 'curious',
+    tags: ['groei', 'karakter', 'reflectie'],
+    premium: true,
+    prompt: 'Wat is een eigenschap van jezelf die je vroeger haatte, maar nu eigenlijk wel kunt waarderen?',
+    subtitle: 'Soms worden onze grootste onzekerheden onze unieke krachten.'
+  },
+  {
+    id: 'date-ask-10',
+    category: 'Eerste Date',
+    subcategory: 'Levensstijl',
+    interactionType: 'ask',
+    intensity: 1,
+    relationshipType: ['date', 'friends', 'surprise'],
+    relationshipStages: ['date_first', 'date_few', 'date_awhile', 'date_serious', 'friends_new'],
+    emotionalTone: 'warmup',
+    tags: ['planning', 'karakter', 'luchtig'],
+    premium: false,
+    prompt: 'Ben je meer een planner of laat je je liever verrassen door hoe de dag loopt?',
+    subtitle: 'Zie je wel waar de wind je brengt?'
+  },
+  {
+    id: 'date-ask-11',
+    category: 'Eerste Date',
+    subcategory: 'Relaties',
+    interactionType: 'ask',
+    intensity: 3,
+    relationshipType: ['date', 'partner'],
+    relationshipStages: ['date_few', 'date_serious', 'partner_new'],
+    emotionalTone: 'curious',
+    tags: ['waarden', 'daten', 'groei'],
+    premium: false,
+    prompt: 'Wat is voor jou de grootste "green flag" bij iemand in een prille relatie?',
+    subtitle: 'Dat ene ding waardoor je denkt: "Hé, dit zit wel goed."'
+  },
+  {
+    id: 'date-ask-12',
+    category: 'Eerste Date',
+    subcategory: 'Spontaniteit',
+    interactionType: 'ask',
+    intensity: 2,
+    relationshipType: ['date', 'friends', 'surprise'],
+    relationshipStages: ['date_few', 'date_flirty', 'friends_good'],
+    emotionalTone: 'playful',
+    tags: ['impulsief', 'verhaal', 'luchtig'],
+    premium: false,
+    prompt: 'Wat is de meest impulsieve aankoop die je ooit hebt gedaan?',
+    subtitle: 'Was het een geniale ingeving of een dure vergissing?'
+  },
+  {
+    id: 'date-ask-13',
+    category: 'Eerste Date',
+    subcategory: 'Eten',
+    interactionType: 'ask',
+    intensity: 1,
+    relationshipType: ['date', 'friends', 'surprise'],
+    relationshipStages: ['date_first', 'date_few', 'friends_new'],
+    emotionalTone: 'warmup',
+    tags: ['eten', 'comfort', 'luchtig'],
+    premium: false,
+    prompt: 'Wat is jouw ultieme "comfort food" na een lange dag?',
+    subtitle: 'Dat ene gerecht waar je altijd gelukkig van wordt.'
+  },
+  {
+    id: 'date-ask-14',
+    category: 'Eerste Date',
+    subcategory: 'Tijdverdrijf',
+    interactionType: 'ask',
+    intensity: 2,
+    relationshipType: ['date', 'friends', 'partner'],
+    relationshipStages: ['date_few', 'date_awhile', 'partner_new'],
+    emotionalTone: 'curious',
+    tags: ['tijd', 'hobby', 'dromen'],
+    premium: true,
+    prompt: 'Als je een extra uur per dag kreeg dat je aan niets nuttigs mocht besteden, wat zou je dan doen?',
+    subtitle: 'Puur plezier of rust.'
+  },
+  {
+    id: 'date-ask-15',
+    category: 'Eerste Date',
+    subcategory: 'Passies',
+    interactionType: 'ask',
+    intensity: 2,
+    relationshipType: ['date', 'friends', 'partner'],
+    relationshipStages: ['date_few', 'date_awhile', 'partner_new'],
+    emotionalTone: 'curious',
+    tags: ['hobby', 'passie', 'persoonlijk'],
+    premium: false,
+    prompt: 'Wat is een hobby of interesse waar je vroeger een beetje om werd uitgelachen, maar die je nog steeds stiekem leuk vindt?',
+    subtitle: 'Van postzegels verzamelen tot vreemde obsessies.'
+  },
+  {
+    id: 'date-ask-16',
+    category: 'Eerste Date',
+    subcategory: 'Inspiratie',
+    interactionType: 'ask',
+    intensity: 2,
+    relationshipType: ['date', 'friends', 'partner'],
+    relationshipStages: ['date_few', 'date_awhile', 'friends_good', 'partner_new'],
+    emotionalTone: 'curious',
+    tags: ['inspiratie', 'persoonlijk', 'leren'],
+    premium: false,
+    prompt: 'Wat is een boek, film of persoon die de manier waarop jij naar de wereld kijkt echt heeft veranderd?',
+    subtitle: 'Een keerpunt in je denken.'
+  },
+  {
+    id: 'date-ask-17',
+    category: 'Eerste Date',
+    subcategory: 'Sociaal',
+    interactionType: 'ask',
+    intensity: 2,
+    relationshipType: ['date', 'friends', 'surprise'],
+    relationshipStages: ['date_first', 'date_few', 'friends_new'],
+    emotionalTone: 'playful',
+    tags: ['sociaal', 'humor', 'karakter'],
+    premium: false,
+    prompt: 'Wat is de meest vreemde "small talk" die je ooit hebt gehad met een vreemde?',
+    subtitle: 'Een ongemakkelijk of bizar moment.'
+  },
+  {
+    id: 'date-ask-18',
+    category: 'Eerste Date',
+    subcategory: 'Zelfkennis',
+    interactionType: 'ask',
+    intensity: 3,
+    relationshipType: ['date', 'partner'],
+    relationshipStages: ['date_few', 'date_awhile', 'partner_new'],
+    emotionalTone: 'curious',
+    tags: ['karakter', 'inzicht', 'reflectie'],
+    premium: true,
+    prompt: 'Welke eigenschap van jezelf vind je het lastigst om aan anderen uit te leggen?',
+    subtitle: 'Iets wat mensen vaak verkeerd begrijpen.'
+  },
+  {
+    id: 'date-ask-19',
+    category: 'Eerste Date',
+    subcategory: 'Dromen',
+    interactionType: 'ask',
+    intensity: 3,
+    relationshipType: ['date', 'friends', 'partner'],
+    relationshipStages: ['date_few', 'date_awhile', 'friends_good', 'partner_new'],
+    emotionalTone: 'curious',
+    tags: ['dromen', 'toekomst', 'passie'],
+    premium: false,
+    prompt: 'Als je morgen een nieuwe carrière kon beginnen zonder opnieuw te hoeven studeren, wat zou je dan kiezen?',
+    subtitle: 'Je droombaan uit een vorig of volgend leven.'
+  },
+  {
+    id: 'date-ask-20',
+    category: 'Eerste Date',
+    subcategory: 'Ontspanning',
+    interactionType: 'ask',
+    intensity: 1,
+    relationshipType: ['date', 'friends', 'surprise'],
+    relationshipStages: ['date_first', 'date_few', 'friends_new'],
+    emotionalTone: 'warmup',
+    tags: ['rust', 'vrije-tijd', 'luchtig'],
+    premium: false,
+    prompt: 'Wat is voor jou de ultieme manier om een drukke week van je af te schudden?',
+    subtitle: 'Je persoonlijke reset-knop.'
+  },
 
-  // ==========================================
-  // FIRST DATE - 2. BOTH ANSWER
-  // ==========================================
+  // DATE - BOTH ANSWER
   {
     id: 'date-both-1',
     category: 'Eerste Date',
@@ -94,8 +307,7 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     tags: ['blunder', 'humor', 'openheid', 'luchtig'],
     premium: false,
     prompt: 'Wat is de meest gênante situatie waarin je het afgelopen jaar belandde?',
-    subtitle: 'Persoon 1 vertelt eerst, daarna is Persoon 2 aan de beurt.',
-    tip: 'Hoe knulliger, hoe leuker het gesprek wordt.'
+    subtitle: 'Deel je blunder en lach erom.'
   },
   {
     id: 'date-both-2',
@@ -109,7 +321,7 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     tags: ['flirten', 'connectie', 'romantiek', 'chemie'],
     premium: false,
     prompt: 'Wat vind jij het meest aantrekkelijke aan iemand als diegene volkomen zichzelf is?',
-    subtitle: 'Niet uiterlijk, maar een bepaalde energie, blik of trekje.'
+    subtitle: 'Die ene blik of energie.'
   },
   {
     id: 'date-both-3',
@@ -123,12 +335,58 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     tags: ['diepgang', 'groei', 'reflectie'],
     premium: true,
     prompt: 'Welke overtuiging over de liefde die je vroeger had, heb je moeten herzien?',
-    subtitle: 'Iets wat je dacht dat waar was, maar waar de realiteit je verraste.'
+    subtitle: 'Iets wat je dacht dat waar was, maar de realiteit je verraste.'
   },
+  {
+    id: 'date-both-4',
+    category: 'Eerste Date',
+    subcategory: 'Nostalgie',
+    interactionType: 'both_answer',
+    intensity: 2,
+    relationshipType: ['date', 'friends', 'surprise'],
+    relationshipStages: ['date_first', 'date_few', 'friends_new'],
+    emotionalTone: 'warmup',
+    tags: ['jeugd', 'nostalgie', 'luchtig'],
+    premium: false,
+    prompt: 'Wat was je favoriete tekenfilm of serie toen je klein was?',
+    subtitle: 'Herbeleef je jeugdhelden.'
+  },
+  {
+    id: 'date-both-5',
+    category: 'Eerste Date',
+    subcategory: 'Relaties',
+    interactionType: 'both_answer',
+    intensity: 3,
+    relationshipType: ['date', 'partner'],
+    relationshipStages: ['date_awhile', 'date_serious', 'partner_new'],
+    emotionalTone: 'curious',
+    tags: ['lessen', 'liefde', 'groei'],
+    premium: true,
+    prompt: 'Wat is een les uit een vorige relatie die je nu meeneemt in het daten?',
+    subtitle: 'Jouw groei in de liefde.'
+  },
+  { id: 'date-ask-26', category: 'Eerste Date', subcategory: 'Lifestyle', interactionType: 'ask', intensity: 2, relationshipType: ['date'], relationshipStages: ['date_first', 'date_few'], emotionalTone: 'curious', tags: ['lifestyle', 'gewoontes'], premium: false, prompt: 'Wat is de beste aankoop die je ooit hebt gedaan voor minder dan 10 euro?' },
+  { id: 'date-ask-27', category: 'Eerste Date', subcategory: 'Humor', interactionType: 'ask', intensity: 2, relationshipType: ['date', 'friends'], relationshipStages: ['date_few', 'friends_good'], emotionalTone: 'playful', tags: ['humor', 'karakter'], premium: false, prompt: 'Wat is je meest nutteloze talent waar je stiekem toch best trots op bent?' },
+  { id: 'date-ask-28', category: 'Eerste Date', subcategory: 'Reizen', interactionType: 'ask', intensity: 1, relationshipType: ['date', 'friends'], relationshipStages: ['date_first', 'friends_new'], emotionalTone: 'warmup', tags: ['reizen', 'luchtig'], premium: false, prompt: 'Zou je liever een maand in een kasteel wonen of een maand in een futuristisch ruimtestation?' },
+  { id: 'date-ask-29', category: 'Eerste Date', subcategory: 'Sociale Kring', interactionType: 'ask', intensity: 3, relationshipType: ['date', 'partner'], relationshipStages: ['date_awhile', 'partner_new'], emotionalTone: 'curious', tags: ['vriendschap', 'sociaal'], premium: true, prompt: 'Wat is de eigenschap in je beste vriend die jij het meest bewondert?' },
+  { id: 'date-ask-30', category: 'Eerste Date', subcategory: 'Toekomst', interactionType: 'ask', intensity: 3, relationshipType: ['date', 'partner'], relationshipStages: ['date_serious', 'partner_new'], emotionalTone: 'curious', tags: ['toekomst', 'ambitie'], premium: false, prompt: 'Als je nu je leven 180 graden kon omgooien, wat zou je dan als eerste veranderen?' },
+  { id: 'date-both-7', category: 'Eerste Date', subcategory: 'Eten', interactionType: 'both_answer', intensity: 1, relationshipType: ['date', 'friends'], relationshipStages: ['date_first', 'friends_new'], emotionalTone: 'warmup', tags: ['eten', 'luchtig'], premium: false, prompt: 'Wat is de vreemdste voedselcombinatie die jij echt lekker vindt?' },
+  { id: 'date-both-8', category: 'Eerste Date', subcategory: 'Muziek', interactionType: 'both_answer', intensity: 1, relationshipType: ['date', 'friends'], relationshipStages: ['date_first', 'friends_new'], emotionalTone: 'warmup', tags: ['muziek', 'smaak'], premium: false, prompt: 'Wat was de eerste artiest waar je ooit fan van was?' },
+  { id: 'date-both-9', category: 'Eerste Date', subcategory: 'Werk', interactionType: 'both_answer', intensity: 2, relationshipType: ['date', 'friends'], relationshipStages: ['date_few', 'friends_good'], emotionalTone: 'curious', tags: ['werk', 'lifestyle'], premium: false, prompt: 'Zou je liever een 4-daagse werkweek hebben met langere dagen, of een 5-daagse met kortere dagen?' },
+  { id: 'date-both-10', category: 'Eerste Date', subcategory: 'Zelfbeeld', interactionType: 'both_answer', intensity: 3, relationshipType: ['date', 'partner'], relationshipStages: ['date_awhile', 'partner_new'], emotionalTone: 'vulnerable', tags: ['zelfbeeld', 'eerlijkheid'], premium: true, prompt: 'Wat is iets waar je jezelf vaak voor veroordeelt, terwijl anderen dat waarschijnlijk helemaal niet doen?' },
+  { id: 'date-guess-4', category: 'Eerste Date', subcategory: 'Hobby', interactionType: 'guess', intensity: 2, relationshipType: ['date', 'friends'], relationshipStages: ['date_few', 'friends_good'], emotionalTone: 'playful', tags: ['hobby', 'spel'], premium: false, prompt: 'Welke sport denk je dat de ander het meest verschrikkelijk vindt om te doen?', guessDetails: { targetPrompt: 'Mijn meest gehate sport is...', hint: 'Kijk naar hun energie.' } },
+  { id: 'date-guess-5', category: 'Eerste Date', subcategory: 'Karakter', interactionType: 'guess', intensity: 2, relationshipType: ['date', 'friends'], relationshipStages: ['date_few', 'friends_good'], emotionalTone: 'curious', tags: ['karakter', 'spel'], premium: false, prompt: 'Is de ander volgens jou een "vroege vogel" of een "nachtvlinder"?', guessDetails: { targetPrompt: 'Mijn ritme is...', hint: 'Let op hun ogen.' } },
+  { id: 'date-point-3', category: 'Eerste Date', subcategory: 'Dilemma', interactionType: 'point', intensity: 1, relationshipType: ['date', 'friends'], relationshipStages: ['date_first', 'friends_new'], emotionalTone: 'playful', tags: ['spel', 'karakter'], premium: false, prompt: 'Wie van ons twee zou als eerste zijn sleutels kwijtraken?' },
+  { id: 'date-point-4', category: 'Eerste Date', subcategory: 'Avontuur', interactionType: 'point', intensity: 2, relationshipType: ['date', 'friends'], relationshipStages: ['date_few', 'friends_good'], emotionalTone: 'playful', tags: ['spel', 'avontuur'], premium: false, prompt: 'Wie van ons twee zou als eerste in een achtbaan stappen?' },
+  { id: 'date-wyr-3', category: 'Eerste Date', subcategory: 'Fantasie', interactionType: 'would_you_rather', intensity: 2, relationshipType: ['date', 'friends'], relationshipStages: ['date_few', 'friends_good'], emotionalTone: 'playful', tags: ['dilemma', 'fantasie'], premium: false, prompt: 'Zou je liever kunnen vliegen of onzichtbaar kunnen zijn?', options: [{ id: 'a', text: 'Vliegen' }, { id: 'b', text: 'Onzichtbaar' }] },
+  { id: 'date-wyr-4', category: 'Eerste Date', subcategory: 'Technologie', interactionType: 'would_you_rather', intensity: 2, relationshipType: ['date', 'friends'], relationshipStages: ['date_few', 'friends_good'], emotionalTone: 'curious', tags: ['dilemma', 'tech'], premium: false, prompt: 'Zou je liever voor altijd zonder internet leven of voor altijd zonder stromend warm water?', options: [{ id: 'a', text: 'Zonder internet' }, { id: 'b', text: 'Zonder warm water' }] },
+  { id: 'date-chal-3', category: 'Eerste Date', subcategory: 'Actie', interactionType: 'challenge', intensity: 2, relationshipType: ['date', 'friends'], relationshipStages: ['date_few', 'friends_good'], emotionalTone: 'playful', tags: ['opdracht', 'humor'], premium: false, prompt: 'Doe de ander een snelle imitatie van een bekende Nederlander na.' },
+  { id: 'date-chal-4', category: 'Eerste Date', subcategory: 'Lachen', interactionType: 'challenge', intensity: 1, relationshipType: ['date', 'friends'], relationshipStages: ['date_first', 'friends_new'], emotionalTone: 'warmup', tags: ['opdracht', 'lach'], premium: false, prompt: 'Vertel de ander een mop in maximaal 10 woorden.' },
+  { id: 'date-fts-2', category: 'Eerste Date', subcategory: 'Wensen', interactionType: 'finish_the_sentence', intensity: 2, relationshipType: ['date', 'friends'], relationshipStages: ['date_few', 'friends_good'], emotionalTone: 'curious', tags: ['zinsafmaker', 'wensen'], premium: false, prompt: 'Als ik nu een wens mocht doen die direct uitkwam, dan...', sentenceStarter: 'Ik wens nu dat...' },
+  { id: 'date-fts-3', category: 'Eerste Date', subcategory: 'Angst', interactionType: 'finish_the_sentence', intensity: 3, relationshipType: ['date', 'partner'], relationshipStages: ['date_awhile', 'partner_new'], emotionalTone: 'vulnerable', tags: ['zinsafmaker', 'angst'], premium: true, prompt: 'Waar ik me soms zorgen over maak als ik aan de toekomst denk, is...', sentenceStarter: 'Mijn grootste toekomstzorg is...' },
+  { id: 'date-rev-1', category: 'Eerste Date', subcategory: 'Verwachting', interactionType: 'reveal', intensity: 2, relationshipType: ['date', 'partner'], relationshipStages: ['date_few', 'partner_new'], emotionalTone: 'playful', tags: ['onthulling', 'verwachting'], premium: false, prompt: 'Hoe leuk vind je deze sessie tot nu toe?', revealQuestion: { instruction: 'Kies blind:', options: ['Heel leuk', 'Verrassend', 'Gewoon prima', 'Ik wil meer'] } },
 
-  // ==========================================
-  // FIRST DATE - 3. GUESS (Raad elkaars antwoord)
-  // ==========================================
+  // DATE - GUESS
   {
     id: 'date-guess-1',
     category: 'Eerste Date',
@@ -141,10 +399,9 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     tags: ['spel', 'intuïtie', 'observatie', 'humor'],
     premium: false,
     prompt: 'Raad elkaars guilty pleasure liedje of snack.',
-    subtitle: 'Persoon A doet een voorspelling over B. Daarna onthult B de waarheid!',
     guessDetails: {
-      targetPrompt: 'Wat eet of luister ik in het geheim als niemand meekijkt?',
-      hint: 'Kijk naar elkaars kledingstijl en uitstraling voor hints.'
+      targetPrompt: 'Wat eet of luister ik in het geheim?',
+      hint: 'Kijk naar elkaars uitstraling.'
     }
   },
   {
@@ -159,16 +416,30 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     tags: ['karakter', 'inzicht', 'verrassing'],
     premium: false,
     prompt: 'Was de ander vroeger op de middelbare school de rebel, de perfectionist, de clown of de stille observeerder?',
-    subtitle: 'Bespreek jullie aanname over elkaar vóórdat de ander vertelt wie die echt was.',
     guessDetails: {
-      targetPrompt: 'Mijn rol in de klas vroeger was...',
+      targetPrompt: 'Mijn rol in de klas was...',
       hint: 'Mensen veranderen vaak minder dan ze denken.'
     }
   },
+  {
+    id: 'date-guess-3',
+    category: 'Eerste Date',
+    subcategory: 'Dieren',
+    interactionType: 'guess',
+    intensity: 2,
+    relationshipType: ['date', 'friends', 'surprise'],
+    relationshipStages: ['date_few', 'friends_good'],
+    emotionalTone: 'playful',
+    tags: ['dieren', 'karakter', 'spel'],
+    premium: false,
+    prompt: 'Denk je dat de ander meer een hondenmens of een kattenmens is?',
+    guessDetails: {
+      targetPrompt: 'Mijn ideale huisdier is...',
+      hint: 'Let op hun energie.'
+    }
+  },
 
-  // ==========================================
-  // FIRST DATE - 4. POINT (Wijs iemand aan)
-  // ==========================================
+  // DATE - POINT
   {
     id: 'date-point-1',
     category: 'Eerste Date',
@@ -181,8 +452,7 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     tags: ['interactie', 'ijsbreker', 'lach', 'spel'],
     premium: false,
     prompt: 'Wie van jullie twee zou als eerste verdwalen in een vreemde stad zonder Google Maps?',
-    subtitle: 'Tel samen af tot 3 en wijs tegelijk naar degene die het is!',
-    tip: 'Geen twijfel, direct wijzen.'
+    subtitle: 'Tel af tot 3 en wijs!'
   },
   {
     id: 'date-point-2',
@@ -195,27 +465,10 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     emotionalTone: 'playful',
     tags: ['humor', 'avontuur', 'spel'],
     premium: false,
-    prompt: 'Wie van jullie twee belt het eerst een taxi als een feestje net iets te chaotisch wordt?',
-    subtitle: 'Op drie... 1, 2, 3: Wijs!'
-  },
-  {
-    id: 'date-point-3',
-    category: 'Eerste Date',
-    subcategory: 'Flirten',
-    interactionType: 'point',
-    intensity: 3,
-    relationshipType: ['date', 'partner'],
-    relationshipStages: ['date_first', 'date_few', 'date_flirty', 'partner_datenight'],
-    emotionalTone: 'peak',
-    tags: ['flirten', 'spanning', 'chemie'],
-    premium: true,
-    prompt: 'Wie van jullie twee zou de eerste move maken voor een zoen vanavond als de sfeer perfect is?',
-    subtitle: 'Tel af: 1... 2... 3... Wijs naar jezelf of naar de ander.'
+    prompt: 'Wie van jullie twee belt het eerst een taxi als een feestje net iets te chaotisch wordt?'
   },
 
-  // ==========================================
-  // FIRST DATE - 5. WOULD YOU RATHER (Dilemma's)
-  // ==========================================
+  // DATE - WOULD YOU RATHER
   {
     id: 'date-wyr-1',
     category: 'Eerste Date',
@@ -228,10 +481,9 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     tags: ['dilemma', 'humor', 'filosofie', 'spel'],
     premium: false,
     prompt: 'Wat zou je liever hebben?',
-    subtitle: 'Kies jouw optie en beargumenteer waarom met hand en tand.',
     options: [
-      { id: 'a', text: 'Altijd exact moeten zeggen wat je op dat moment denkt', subtext: 'Geen filters, absolute eerlijkheid' },
-      { id: 'b', text: 'Nooit meer spontaan mogen spreken, alleen na 5 seconden pauze', subtext: 'Iedere zin vooraf afwegen' }
+      { id: 'a', text: 'Altijd exact zeggen wat je denkt', subtext: 'Geen filters' },
+      { id: 'b', text: 'Nooit meer spontaan spreken', subtext: '5 sec pauze' }
     ]
   },
   {
@@ -246,34 +498,13 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     tags: ['reizen', 'levensstijl', 'keuze'],
     premium: false,
     prompt: 'Voor jullie ideale weekend weg, wat kies je?',
-    subtitle: 'Ontdek of jullie reisstijlen botsen of matchen.',
     options: [
-      { id: 'a', text: 'Een strak geplande stedentrip vol musea, restaurants en reserveringen', subtext: 'Geen minuut verspild' },
-      { id: 'b', text: 'Een afgelegen boshuisje zonder bereik en zonder enig plan', subtext: 'Wandelen, koken en muziek' }
-    ]
-  },
-  {
-    id: 'date-wyr-3',
-    category: 'Eerste Date',
-    subcategory: 'Relatiewaarden',
-    interactionType: 'would_you_rather',
-    intensity: 4,
-    relationshipType: ['date', 'partner'],
-    relationshipStages: ['date_awhile', 'date_serious', 'partner_reconnect', 'partner_deep'],
-    emotionalTone: 'vulnerable',
-    tags: ['diepgang', 'kwetsbaar'],
-    premium: true,
-    prompt: 'Wat vind je enger in een beginnende romance?',
-    subtitle: 'Kies het antwoord dat jou het diepst raakt.',
-    options: [
-      { id: 'a', text: 'Iemand té leuk vinden en bang zijn om gekwetst te raken', subtext: 'Controleverlies en overgave' },
-      { id: 'b', text: 'Merken dat de ander verliefder is op jou dan jij op hen', subtext: 'Schuldgevoel en verwachtingen' }
+      { id: 'a', text: 'Strak geplande stedentrip', subtext: 'Geen minuut verspild' },
+      { id: 'b', text: 'Afgelegen boshuisje', subtext: 'Diepe rust' }
     ]
   },
 
-  // ==========================================
-  // FIRST DATE - 6. CHALLENGE (Sociale opdracht)
-  // ==========================================
+  // DATE - CHALLENGE
   {
     id: 'date-chal-1',
     category: 'Eerste Date',
@@ -286,8 +517,7 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     tags: ['opdracht', 'spanning', 'connectie', 'spel'],
     premium: false,
     prompt: 'Kijk elkaar 20 seconden stil in de ogen.',
-    subtitle: 'Niet praten, niet wegkijken. Glimlachen mag, lachen waarschijnlijk ook.',
-    challengeAction: 'Start de timer van 20 seconden en houd oogcontact.',
+    challengeAction: 'Start de timer en houd oogcontact.',
     challengeDurationSec: 20
   },
   {
@@ -301,173 +531,11 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     emotionalTone: 'peak',
     tags: ['opdracht', 'waardering', 'warmte'],
     premium: false,
-    prompt: 'Geef elkaar een oprecht compliment over iets dat níet over uiterlijk gaat.',
-    subtitle: 'Bijvoorbeeld een manier van praten, humor, luisterhouding of nieuwsgierigheid.',
-    challengeAction: 'Neem 10 seconden om na te denken en spreek het dan direct uit.'
-  },
-  {
-    id: 'date-chal-3',
-    category: 'Eerste Date',
-    subcategory: 'Speelsheid',
-    interactionType: 'challenge',
-    intensity: 3,
-    relationshipType: ['date', 'friends', 'surprise'],
-    relationshipStages: ['date_first', 'date_few', 'friends_new', 'friends_good'],
-    emotionalTone: 'playful',
-    tags: ['opdracht', 'speels', 'observatie', 'spel', 'humor'],
-    premium: false,
-    prompt: 'Bedenk samen in 30 seconden een compleet fictief verhaal over de tafel naast jullie.',
-    subtitle: 'Wie zijn ze, hoe kennen ze elkaar en wat verbergen ze?',
-    challengeAction: 'Vertel om beurten één zin om het verhaal te bouwen.'
+    prompt: 'Geef elkaar een oprecht compliment over iets dat níet over uiterlijk gaat.'
   },
 
   // ==========================================
-  // FIRST DATE - 7. FINISH THE SENTENCE
-  // ==========================================
-  {
-    id: 'date-fts-1',
-    category: 'Eerste Date',
-    subcategory: 'Eerlijkheid',
-    interactionType: 'finish_the_sentence',
-    intensity: 2,
-    relationshipType: ['date', 'partner', 'surprise'],
-    relationshipStages: ['date_first', 'date_few', 'date_flirty', 'partner_new'],
-    emotionalTone: 'curious',
-    tags: ['zinsafmaker', 'spontaan'],
-    premium: false,
-    prompt: 'Maak de zin af zonder langer dan drie seconden na te denken:',
-    sentenceStarter: 'Als ik echt eerlijk ben over dates, dan...',
-    subtitle: 'Spreek het eerste uit wat in je opkomt.'
-  },
-  {
-    id: 'date-fts-2',
-    category: 'Eerste Date',
-    subcategory: 'Zelfbeeld',
-    interactionType: 'finish_the_sentence',
-    intensity: 3,
-    relationshipType: ['date', 'partner'],
-    relationshipStages: ['date_few', 'date_awhile', 'date_serious', 'partner_new', 'partner_datenight'],
-    emotionalTone: 'curious',
-    tags: ['zinsafmaker', 'authenticiteit'],
-    premium: false,
-    prompt: 'Vul allebei aan:',
-    sentenceStarter: 'De snelste manier om mij rustig te krijgen als ik gestrest ben, is...',
-    subtitle: 'Nuttige informatie voor de toekomst.'
-  },
-  {
-    id: 'date-fts-3',
-    category: 'Eerste Date',
-    subcategory: 'Verlangen',
-    interactionType: 'finish_the_sentence',
-    intensity: 4,
-    relationshipType: ['date', 'partner'],
-    relationshipStages: ['date_awhile', 'date_serious', 'partner_reconnect', 'partner_deep'],
-    emotionalTone: 'vulnerable',
-    tags: ['diepgang', 'kwetsbaar'],
-    premium: true,
-    prompt: 'Maak deze zin af:',
-    sentenceStarter: 'Iets wat weinig mensen over mij weten omdat ik het goed verstop, is...',
-    subtitle: 'Een zacht stukje van jezelf.'
-  },
-
-  // ==========================================
-  // FIRST DATE - 8. RAPID FIRE (Snelle keuzes)
-  // ==========================================
-  {
-    id: 'date-rf-1',
-    category: 'Eerste Date',
-    subcategory: 'Snelvuur',
-    interactionType: 'rapid_fire',
-    intensity: 1,
-    relationshipType: ['date', 'partner', 'friends', 'surprise'],
-    relationshipStages: ['date_first', 'date_few', 'partner_new', 'partner_datenight', 'friends_new'],
-    emotionalTone: 'warmup',
-    tags: ['snelvuur', 'energie', 'ijsbreker', 'spel'],
-    premium: false,
-    prompt: '5 Snelle Keuzes: Tik direct wat bij jou past.',
-    subtitle: 'Niet nadenken, binnen één seconde kiezen. Vergelijk daarna jullie matches!',
-    rapidFirePairs: [
-      { id: 'rf-1', optionA: 'Koffie in bed', optionB: 'Koffie to go' },
-      { id: 'rf-2', optionA: 'Spontaan op pad', optionB: 'Plan tot in detail' },
-      { id: 'rf-3', optionA: 'Bellen', optionB: 'Voice note sturen' },
-      { id: 'rf-4', optionA: 'Directe waarheid', optionB: 'Voorzichtige tact' },
-      { id: 'rf-5', optionA: 'Grote feesten', optionB: 'Kleine huiskamerborrels' }
-    ]
-  },
-  {
-    id: 'date-rf-2',
-    category: 'Eerste Date',
-    subcategory: 'Daten & Chemie',
-    interactionType: 'rapid_fire',
-    intensity: 2,
-    relationshipType: ['date', 'partner'],
-    relationshipStages: ['date_first', 'date_few', 'date_flirty', 'partner_datenight'],
-    emotionalTone: 'playful',
-    tags: ['snelvuur', 'daten', 'dynamiek', 'spel', 'humor'],
-    premium: false,
-    prompt: '5 Snelle Date Vragen:',
-    subtitle: 'Wie reageert sneller? Tik om jullie keuzes te vergelijken.',
-    rapidFirePairs: [
-      { id: 'rf-6', optionA: 'Drankjes aan de bar', optionB: 'Wandeling in het park' },
-      { id: 'rf-7', optionA: 'Eerste kus op date 1', optionB: 'Spanning opbouwen' },
-      { id: 'rf-8', optionA: 'Zelf koken voor de ander', optionB: 'Uit eten gaan' },
-      { id: 'rf-9', optionA: 'Ochtendmens', optionB: 'Nachtvlinder' },
-      { id: 'rf-10', optionA: 'Gedeeld toetje', optionB: 'Eigen toetje opeisen' }
-    ]
-  },
-
-  // ==========================================
-  // FIRST DATE - 9. REVEAL (Blind antwoorden, samen onthullen)
-  // ==========================================
-  {
-    id: 'date-rev-1',
-    category: 'Eerste Date',
-    subcategory: 'Geheime Keuze',
-    interactionType: 'reveal',
-    intensity: 2,
-    relationshipType: ['date', 'partner', 'surprise'],
-    relationshipStages: ['date_first', 'date_few', 'date_flirty', 'partner_datenight'],
-    emotionalTone: 'peak',
-    tags: ['onthulling', 'spanning', 'spel'],
-    premium: false,
-    prompt: 'Hoe schat je de klik van vanavond tot nu toe in?',
-    subtitle: 'Kies beiden blind een antwoord op het scherm. Druk daarna op "Onthul Samen"!',
-    revealQuestion: {
-      instruction: 'Selecteer stiekem jouw antwoord en geef de telefoon niet door tot jullie beiden gekozen hebben:',
-      options: [
-        'Verrassend leuker dan ik had verwacht',
-        'Gezellig en ontspannen',
-        'Ik ben vooral heel nieuwsgierig naar meer',
-        'Er hangt zeker een fijne vonk in de lucht'
-      ]
-    }
-  },
-  {
-    id: 'date-rev-2',
-    category: 'Eerste Date',
-    subcategory: 'Afsluiting van de avond',
-    interactionType: 'reveal',
-    intensity: 3,
-    relationshipType: ['date', 'partner'],
-    relationshipStages: ['date_first', 'date_few', 'date_flirty', 'partner_datenight'],
-    emotionalTone: 'peak',
-    tags: ['onthulling', 'afsluiting', 'flirten'],
-    premium: true,
-    prompt: 'Wat zou je het liefst doen als deze date over een uur voorbij is?',
-    subtitle: 'Beide kiezen in het geheim één optie en onthullen die tegelijk.',
-    revealQuestion: {
-      instruction: 'Kies stiekem jouw verlangen:',
-      options: [
-        'Nog één drankje ergens anders halen',
-        'Een wandeling maken door de stille stad',
-        'Afspreken voor een tweede date',
-        'Een oprechte, iets te lange knuffel geven'
-      ]
-    }
-  },
-
-  // ==========================================
-  // PARTNER & RELATIE PROMPTS (Rich multi-pack)
+  // CATEGORIE: PARTNER (50 Prompts)
   // ==========================================
   {
     id: 'partner-ask-1',
@@ -480,9 +548,266 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     emotionalTone: 'peak',
     tags: ['dankbaarheid', 'aandacht', 'waardering'],
     premium: false,
-    prompt: 'Wat is een klein gebaar van mij van de afgelopen week dat je erg waardeerde, maar waar je niets over zei?',
-    subtitle: 'Soms glippen de mooiste momenten stilletjes voorbij.',
-    tip: 'Luister zonder jezelf te verdedigen of te relativeren.'
+    prompt: 'Wat is een klein gebaar van mij van de afgelopen week dat je erg waardeerde, maar waar je niets over zei?'
+  },
+  {
+    id: 'partner-ask-2',
+    category: 'Partner',
+    subcategory: 'Dagelijks Leven',
+    interactionType: 'ask',
+    intensity: 2,
+    relationshipType: ['partner'],
+    relationshipStages: ['partner_new', 'partner_long', 'partner_datenight'],
+    emotionalTone: 'curious',
+    tags: ['dagelijks', 'waardering', 'connectie'],
+    premium: false,
+    prompt: 'Wat is het leukste moment dat we deze week samen hebben gehad, ook al was het maar iets kleins?'
+  },
+  {
+    id: 'partner-ask-3',
+    category: 'Partner',
+    subcategory: 'Steun',
+    interactionType: 'ask',
+    intensity: 3,
+    relationshipType: ['partner'],
+    relationshipStages: ['partner_long', 'partner_reconnect', 'partner_deep'],
+    emotionalTone: 'vulnerable',
+    tags: ['steun', 'behoefte', 'connectie'],
+    premium: true,
+    prompt: 'Hoe kan ik je de komende tijd het beste steunen bij iets waar je tegenop ziet?'
+  },
+  {
+    id: 'partner-ask-4',
+    category: 'Partner',
+    subcategory: 'Romantiek',
+    interactionType: 'ask',
+    intensity: 2,
+    relationshipType: ['partner'],
+    relationshipStages: ['partner_new', 'partner_datenight', 'partner_long'],
+    emotionalTone: 'playful',
+    tags: ['romantiek', 'verrassing', 'liefde'],
+    premium: false,
+    prompt: 'Als we vanavond een "verboden" date night moesten plannen, wat zouden we dan doen?'
+  },
+  {
+    id: 'partner-ask-5',
+    category: 'Partner',
+    subcategory: 'Communicatie',
+    interactionType: 'ask',
+    intensity: 4,
+    relationshipType: ['partner'],
+    relationshipStages: ['partner_long', 'partner_reconnect', 'partner_deep'],
+    emotionalTone: 'vulnerable',
+    tags: ['communicatie', 'veiligheid', 'diepgang'],
+    premium: true,
+    prompt: 'Is er iets wat je de laatste tijd aan me wilde vertellen, maar waar je het juiste moment niet voor kon vinden?'
+  },
+  {
+    id: 'partner-ask-6',
+    category: 'Partner',
+    subcategory: 'Bewondering',
+    interactionType: 'ask',
+    intensity: 3,
+    relationshipType: ['partner'],
+    relationshipStages: ['partner_new', 'partner_long', 'partner_deep'],
+    emotionalTone: 'peak',
+    tags: ['waardering', 'trots', 'liefde'],
+    premium: false,
+    prompt: 'Op welk aspect van wie jij bent als persoon ben je de laatste tijd het meest trots?'
+  },
+  {
+    id: 'partner-ask-7',
+    category: 'Partner',
+    subcategory: 'Dromen',
+    interactionType: 'ask',
+    intensity: 2,
+    relationshipType: ['partner'],
+    relationshipStages: ['partner_new', 'partner_long', 'partner_datenight'],
+    emotionalTone: 'curious',
+    tags: ['dromen', 'toekomst', 'samen'],
+    premium: false,
+    prompt: 'Als we samen een nieuwe vaardigheid moesten leren, wat zou je dan kiezen?'
+  },
+  {
+    id: 'partner-ask-8',
+    category: 'Partner',
+    subcategory: 'Herinneringen',
+    interactionType: 'ask',
+    intensity: 2,
+    relationshipType: ['partner'],
+    relationshipStages: ['partner_long', 'partner_reconnect', 'partner_deep'],
+    emotionalTone: 'curious',
+    tags: ['nostalgie', 'herinnering', 'liefde'],
+    premium: false,
+    prompt: 'Welke foto van ons samen is jouw absolute favoriet en waarom?'
+  },
+  {
+    id: 'partner-ask-9',
+    category: 'Partner',
+    subcategory: 'Karakter',
+    interactionType: 'ask',
+    intensity: 3,
+    relationshipType: ['partner'],
+    relationshipStages: ['partner_new', 'partner_long', 'partner_deep'],
+    emotionalTone: 'curious',
+    tags: ['karakter', 'inzicht', 'persoonlijk'],
+    premium: true,
+    prompt: 'Wat is een karaktertrek van mij waar je in het begin aan moest wennen, maar die je nu juist waardeert?'
+  },
+  {
+    id: 'partner-ask-10',
+    category: 'Partner',
+    subcategory: 'Vrije Tijd',
+    interactionType: 'ask',
+    intensity: 1,
+    relationshipType: ['partner'],
+    relationshipStages: ['partner_new', 'partner_long', 'partner_datenight'],
+    emotionalTone: 'warmup',
+    tags: ['vrije-tijd', 'luchtig', 'samen'],
+    premium: false,
+    prompt: 'Wat is de ideale balans voor jou tussen "samen dingen doen" en "tijd voor jezelf"?'
+  },
+  {
+    id: 'partner-ask-11',
+    category: 'Partner',
+    subcategory: 'Toekomst',
+    interactionType: 'ask',
+    intensity: 4,
+    relationshipType: ['partner'],
+    relationshipStages: ['partner_long', 'partner_deep'],
+    emotionalTone: 'vulnerable',
+    tags: ['toekomst', 'angst', 'diepgang'],
+    premium: true,
+    prompt: 'Als je naar onze toekomst kijkt over 10 jaar, wat is dan je grootste hoop en wat is je kleinste vrees?'
+  },
+  {
+    id: 'partner-ask-12',
+    category: 'Partner',
+    subcategory: 'Waardering',
+    interactionType: 'ask',
+    intensity: 3,
+    relationshipType: ['partner'],
+    relationshipStages: ['partner_new', 'partner_long', 'partner_reconnect', 'partner_deep'],
+    emotionalTone: 'peak',
+    tags: ['waardering', 'liefde', 'warmte'],
+    premium: false,
+    prompt: 'Wanneer voelde je je deze maand het meest geliefd door mij?'
+  },
+  {
+    id: 'partner-ask-13',
+    category: 'Partner',
+    subcategory: 'Gezamenlijk Pad',
+    interactionType: 'ask',
+    intensity: 3,
+    relationshipType: ['partner'],
+    relationshipStages: ['partner_long', 'partner_deep'],
+    emotionalTone: 'curious',
+    tags: ['groei', 'relatie', 'inzicht'],
+    premium: false,
+    prompt: 'Wat is de grootste uitdaging die we als koppel hebben overwonnen?'
+  },
+  {
+    id: 'partner-ask-14',
+    category: 'Partner',
+    subcategory: 'Intimiteit',
+    interactionType: 'ask',
+    intensity: 4,
+    relationshipType: ['partner'],
+    relationshipStages: ['partner_long', 'partner_reconnect', 'partner_deep'],
+    emotionalTone: 'vulnerable',
+    tags: ['intimiteit', 'veiligheid', 'diepgang'],
+    premium: true,
+    prompt: 'Is er een manier van intimiteit die je de laatste tijd een beetje hebt gemist?'
+  },
+  { id: 'partner-ask-26', category: 'Partner', subcategory: 'Karakter', interactionType: 'ask', intensity: 3, relationshipType: ['partner'], relationshipStages: ['partner_long', 'partner_deep'], emotionalTone: 'curious', tags: ['karakter', 'inzicht'], premium: true, prompt: 'Welke eigenschap van mij heeft jou in het afgelopen jaar positief verrast?' },
+  { id: 'partner-ask-27', category: 'Partner', subcategory: 'Dromen', interactionType: 'ask', intensity: 2, relationshipType: ['partner'], relationshipStages: ['partner_new', 'partner_long', 'partner_datenight'], emotionalTone: 'curious', tags: ['dromen', 'toekomst'], premium: false, prompt: 'Als we morgen een puppy zouden adopteren, hoe zouden we hem noemen?' },
+  { id: 'partner-ask-28', category: 'Partner', subcategory: 'Liefdestaal', interactionType: 'ask', intensity: 3, relationshipType: ['partner'], relationshipStages: ['partner_new', 'partner_long', 'partner_reconnect'], emotionalTone: 'curious', tags: ['liefdestaal', 'begrip'], premium: false, prompt: 'Wat is een manier waarop ik jou vaker zou kunnen laten merken dat ik van je hou?' },
+  { id: 'partner-ask-29', category: 'Partner', subcategory: 'Passie', interactionType: 'ask', intensity: 3, relationshipType: ['partner'], relationshipStages: ['partner_new', 'partner_long', 'partner_deep'], emotionalTone: 'peak', tags: ['passie', 'bewondering'], premium: false, prompt: 'Wat is iets waar ik passie voor heb dat jij stiekem heel aantrekkelijk vindt om naar te kijken?' },
+  { id: 'partner-ask-30', category: 'Partner', subcategory: 'Steun', interactionType: 'ask', intensity: 3, relationshipType: ['partner'], relationshipStages: ['partner_long', 'partner_reconnect', 'partner_deep'], emotionalTone: 'vulnerable', tags: ['steun', 'behoefte'], premium: true, prompt: 'Wanneer ben ik er voor jou geweest op een manier die je echt heeft geraakt?' },
+  { id: 'partner-both-11', category: 'Partner', subcategory: 'Nostalgie', interactionType: 'both_answer', intensity: 2, relationshipType: ['partner'], relationshipStages: ['partner_long', 'partner_deep'], emotionalTone: 'curious', tags: ['herinnering', 'liefde'], premium: false, prompt: 'Wat is de mooiste vakantieherinnering die wij samen delen?' },
+  { id: 'partner-both-12', category: 'Partner', subcategory: 'Toekomst', interactionType: 'both_answer', intensity: 3, relationshipType: ['partner'], relationshipStages: ['partner_new', 'partner_long'], emotionalTone: 'curious', tags: ['toekomst', 'dromen'], premium: true, prompt: 'Als we samen een huis zouden ontwerpen, wat is dan de ene kamer waar we niet op zouden besparen?' },
+  { id: 'partner-guess-7', category: 'Partner', subcategory: 'Werk', interactionType: 'guess', intensity: 2, relationshipType: ['partner'], relationshipStages: ['partner_long', 'partner_deep'], emotionalTone: 'curious', tags: ['werk', 'inzicht'], premium: false, prompt: 'Wat denk je dat de ander het meest uitdagend vindt aan hun werk op dit moment?', guessDetails: { targetPrompt: 'Mijn grootste werkuitdaging is...', hint: 'Denk aan hun recente stress.' } },
+  { id: 'partner-guess-8', category: 'Partner', subcategory: 'Angsten', interactionType: 'guess', intensity: 3, relationshipType: ['partner'], relationshipStages: ['partner_long', 'partner_reconnect', 'partner_deep'], emotionalTone: 'vulnerable', tags: ['angst', 'inzicht'], premium: true, prompt: 'Voor welke sociale situatie is de ander stiekem het meest bang?', guessDetails: { targetPrompt: 'Mijn sociale angst is...', hint: 'Denk aan feestjes of werk.' } },
+  { id: 'partner-point-5', category: 'Partner', subcategory: 'Gewoontes', interactionType: 'point', intensity: 1, relationshipType: ['partner'], relationshipStages: ['partner_new', 'partner_long', 'partner_datenight'], emotionalTone: 'warmup', tags: ['gewoontes', 'spel'], premium: false, prompt: 'Wie van ons twee is het meest waarschijnlijk om de afwas te laten staan?' },
+  { id: 'partner-point-6', category: 'Partner', subcategory: 'Humor', interactionType: 'point', intensity: 1, relationshipType: ['partner'], relationshipStages: ['partner_new', 'partner_long'], emotionalTone: 'playful', tags: ['humor', 'spel'], premium: false, prompt: 'Wie van ons twee heeft de droogste humor?' },
+  { id: 'partner-wyr-5', category: 'Partner', subcategory: 'Wonen', interactionType: 'would_you_rather', intensity: 2, relationshipType: ['partner'], relationshipStages: ['partner_new', 'partner_long', 'partner_deep'], emotionalTone: 'curious', tags: ['wonen', 'dilemma'], premium: false, prompt: 'Zouden we liever in een drukke stad wonen of in een afgelegen natuurgebied?', options: [{ id: 'a', text: 'Drukke stad' }, { id: 'b', text: 'Afgelegen natuur' }] },
+  { id: 'partner-wyr-6', category: 'Partner', subcategory: 'Communicatie', interactionType: 'would_you_rather', intensity: 3, relationshipType: ['partner'], relationshipStages: ['partner_long', 'partner_reconnect', 'partner_deep'], emotionalTone: 'vulnerable', tags: ['communicatie', 'dilemma'], premium: true, prompt: 'Zou je liever hebben dat we elke ruzie direct uitspreken, ook als het pijnlijk is, of even een dag wachten?', options: [{ id: 'a', text: 'Direct uitspreken' }, { id: 'b', text: 'Dag wachten' }] },
+  { id: 'partner-chal-5', category: 'Partner', subcategory: 'Waardering', interactionType: 'challenge', intensity: 3, relationshipType: ['partner'], relationshipStages: ['partner_new', 'partner_long', 'partner_reconnect', 'partner_deep'], emotionalTone: 'peak', tags: ['waardering', 'opdracht'], premium: false, prompt: 'Noem drie dingen die de ander vandaag heeft gedaan waar je dankbaar voor bent.' },
+  { id: 'partner-chal-6', category: 'Partner', subcategory: 'Connectie', interactionType: 'challenge', intensity: 2, relationshipType: ['partner'], relationshipStages: ['partner_new', 'partner_long', 'partner_datenight'], emotionalTone: 'warmup', tags: ['aanraking', 'opdracht'], premium: false, prompt: 'Houd elkaars handen vast gedurende de rest van dit onderwerp.' },
+  { id: 'partner-fts-4', category: 'Partner', subcategory: 'Behoeftes', interactionType: 'finish_the_sentence', intensity: 3, relationshipType: ['partner'], relationshipStages: ['partner_long', 'partner_reconnect', 'partner_deep'], emotionalTone: 'curious', tags: ['behoefte', 'zinsafmaker'], premium: false, prompt: 'De beste manier om mij rustig te krijgen als ik gestrest ben, is door...', sentenceStarter: 'Als ik gestrest ben, help me dan door...' },
+  { id: 'partner-fts-5', category: 'Partner', subcategory: 'Liefde', interactionType: 'finish_the_sentence', intensity: 3, relationshipType: ['partner'], relationshipStages: ['partner_new', 'partner_long', 'partner_deep'], emotionalTone: 'peak', tags: ['liefde', 'zinsafmaker'], premium: false, prompt: 'Het moment dat ik wist dat ik echt van je hield, was toen...', sentenceStarter: 'Ik wist dat ik van je hield op het moment dat...' },
+  { id: 'partner-rev-3', category: 'Partner', subcategory: 'Tijd', interactionType: 'reveal', intensity: 3, relationshipType: ['partner'], relationshipStages: ['partner_long', 'partner_reconnect', 'partner_deep'], emotionalTone: 'curious', tags: ['tijd', 'onthulling'], premium: true, prompt: 'Waar heb je op dit moment de meeste behoefte aan in onze relatie?', revealQuestion: { instruction: 'Kies stiekem:', options: ['Meer tijd samen', 'Meer diepgang', 'Meer fysieke aandacht', 'Meer ruimte voor jezelf'] } },
+  { id: 'partner-secret-3', category: 'Partner', subcategory: 'Attentheid', interactionType: 'secret_pick', intensity: 2, relationshipType: ['partner'], relationshipStages: ['partner_new', 'partner_long'], emotionalTone: 'peak', tags: ['attentheid', 'onthulling'], premium: true, prompt: 'Wie van jullie twee is het meest attent?', secretPickDetails: { question: 'Wie onthoudt vaker kleine wensen?', options: ['Persoon 1', 'Persoon 2', 'Beide even scherp'] } },
+  { id: 'partner-secret-4', category: 'Partner', subcategory: 'Dromen', interactionType: 'secret_pick', intensity: 3, relationshipType: ['partner'], relationshipStages: ['partner_long', 'partner_deep'], emotionalTone: 'curious', tags: ['dromen', 'onthulling'], premium: true, prompt: 'Wie van jullie twee heeft de meest ambitieuze dromen?', secretPickDetails: { question: 'Wiens plannen zijn het meest grootschalig?', options: ['Persoon 1', 'Persoon 2', 'We dromen even groot'] } },
+  { id: 'partner-ask-31', category: 'Partner', subcategory: 'Vrije Tijd', interactionType: 'ask', intensity: 2, relationshipType: ['partner'], relationshipStages: ['partner_datenight', 'partner_long'], emotionalTone: 'playful', tags: ['plezier', 'vrije-tijd'], premium: false, prompt: 'Wat is de ideale zondag als er geen enkele verplichting is?' },
+  { id: 'partner-ask-32', category: 'Partner', subcategory: 'Gezamenlijk Pad', interactionType: 'ask', intensity: 3, relationshipType: ['partner'], relationshipStages: ['partner_long', 'partner_deep'], emotionalTone: 'curious', tags: ['groei', 'relatie'], premium: false, prompt: 'Welke eigenschap van ons als koppel maakt jou het meest trots?' },
+  { id: 'partner-ask-33', category: 'Partner', subcategory: 'Relatie', interactionType: 'ask', intensity: 4, relationshipType: ['partner'], relationshipStages: ['partner_reconnect', 'partner_deep'], emotionalTone: 'vulnerable', tags: ['diepgang', 'veiligheid'], premium: true, prompt: 'Is er iets waar je bang voor bent in onze relatie, ook al weet je dat het irrationeel is?' },
+  { id: 'partner-ask-34', category: 'Partner', subcategory: 'Waardering', interactionType: 'ask', intensity: 3, relationshipType: ['partner'], relationshipStages: ['partner_new', 'partner_long', 'partner_reconnect'], emotionalTone: 'peak', tags: ['waardering', 'warmte'], premium: false, prompt: 'Wanneer voelde je je deze maand het meest geliefd door mij?' },
+  { id: 'partner-ask-35', category: 'Partner', subcategory: 'Inspiratie', interactionType: 'ask', intensity: 2, relationshipType: ['partner'], relationshipStages: ['partner_long', 'partner_deep'], emotionalTone: 'curious', tags: ['inspiratie', 'bewondering'], premium: false, prompt: 'Wat is iets wat ik onlangs heb gedaan of gezegd waardoor je je echt geïnspireerd voelde?' },
+  { id: 'partner-ask-36', category: 'Partner', subcategory: 'Humor', interactionType: 'ask', intensity: 2, relationshipType: ['partner'], relationshipStages: ['partner_new', 'partner_long', 'partner_datenight'], emotionalTone: 'playful', tags: ['humor', 'lachen'], premium: false, prompt: 'Welke eigenschap van mij brengt jou altijd aan het lachen?' },
+  { id: 'partner-ask-37', category: 'Partner', subcategory: 'Tradities', interactionType: 'ask', intensity: 2, relationshipType: ['partner'], relationshipStages: ['partner_long', 'partner_deep'], emotionalTone: 'curious', tags: ['tradities', 'samen'], premium: false, prompt: 'Welke kleine "eigen" traditie vind je het meest waardevol?' },
+  { id: 'partner-ask-38', category: 'Partner', subcategory: 'Conflict', interactionType: 'ask', intensity: 3, relationshipType: ['partner'], relationshipStages: ['partner_long', 'partner_reconnect', 'partner_deep'], emotionalTone: 'curious', tags: ['conflict', 'begrip'], premium: true, prompt: 'Wat is volgens jou de beste manier waarop we een meningsverschil kunnen afsluiten?' },
+  { id: 'partner-ask-39', category: 'Partner', subcategory: 'Passies', interactionType: 'ask', intensity: 2, relationshipType: ['partner'], relationshipStages: ['partner_new', 'partner_long', 'partner_datenight'], emotionalTone: 'playful', tags: ['passie', 'hobby'], premium: false, prompt: 'Als we een jaar lang een gedeelde hobby zouden moeten kiezen, wat zou dat zijn?' },
+  { id: 'partner-ask-40', category: 'Partner', subcategory: 'Waardering', interactionType: 'ask', intensity: 3, relationshipType: ['partner'], relationshipStages: ['partner_new', 'partner_long', 'partner_reconnect', 'partner_deep'], emotionalTone: 'peak', tags: ['waardering', 'trots'], premium: false, prompt: 'Op welk moment van de dag voel je je het meest "samen" met mij?' },
+
+  // PARTNER - BOTH ANSWER
+  {
+    id: 'partner-both-1',
+    category: 'Partner',
+    subcategory: 'Eerste Keer',
+    interactionType: 'both_answer',
+    intensity: 2,
+    relationshipType: ['partner'],
+    relationshipStages: ['partner_new', 'partner_long', 'partner_datenight'],
+    emotionalTone: 'warmup',
+    tags: ['herinnering', 'nostalgie', 'liefde'],
+    premium: false,
+    prompt: 'Wat was de allereerste vakantie of het allereerste weekendje weg dat we samen deden?'
+  },
+  {
+    id: 'partner-both-2',
+    category: 'Partner',
+    subcategory: 'Toekomst',
+    interactionType: 'both_answer',
+    intensity: 2,
+    relationshipType: ['partner'],
+    relationshipStages: ['partner_new', 'partner_long', 'partner_datenight'],
+    emotionalTone: 'curious',
+    tags: ['toekomst', 'dromen', 'samen'],
+    premium: false,
+    prompt: 'Waar wonen we over tien jaar als alles precies zo loopt als we nu hopen?'
+  },
+
+  // PARTNER - GUESS / POINT / WYR / CHAL
+  {
+    id: 'partner-guess-1',
+    category: 'Partner',
+    subcategory: 'Intuïtie',
+    interactionType: 'guess',
+    intensity: 2,
+    relationshipType: ['partner'],
+    relationshipStages: ['partner_new', 'partner_long', 'partner_datenight'],
+    emotionalTone: 'playful',
+    tags: ['spel', 'intuïtie', 'humor'],
+    premium: false,
+    prompt: 'Wat zou de ander als eerste doen als ze een dag onzichtbaar waren?',
+    guessDetails: {
+      targetPrompt: 'Mijn onzichtbare plan...',
+      hint: 'Gevoel voor humor.'
+    }
+  },
+  {
+    id: 'partner-point-1',
+    category: 'Partner',
+    subcategory: 'Gewoontes',
+    interactionType: 'point',
+    intensity: 1,
+    relationshipType: ['partner'],
+    relationshipStages: ['partner_new', 'partner_long', 'partner_datenight'],
+    emotionalTone: 'warmup',
+    tags: ['gewoontes', 'huishouden', 'spel'],
+    premium: false,
+    prompt: 'Wie van ons twee is het meest waarschijnlijk om de afwas te laten staan?'
   },
   {
     id: 'partner-wyr-1',
@@ -495,10 +820,10 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     emotionalTone: 'curious',
     tags: ['toekomst', 'dilemma', 'spel'],
     premium: false,
-    prompt: 'Als we samen een sabbatjaar kregen met behoud van salaris, wat zouden we doen?',
+    prompt: 'Als we samen een sabbatjaar kregen, wat zouden we doen?',
     options: [
-      { id: 'a', text: 'Een camper kopen en kriskras door Europa reizen', subtext: 'Vrijheid, wisselende uitzichten en eenvoud' },
-      { id: 'b', text: 'Een halfjaar wonen in een appartement in Rome of Kyoto', subtext: 'Lokale routine, diepe rust en cultuur' }
+      { id: 'a', text: 'Camper door Europa' },
+      { id: 'b', text: 'Appartement in Rome/Kyoto' }
     ]
   },
   {
@@ -512,13 +837,11 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     emotionalTone: 'peak',
     tags: ['herinnering', 'romantiek', 'opdracht'],
     premium: false,
-    prompt: 'Vertel elkaar in 60 seconden hoe onze allereerste zoen voelde.',
-    subtitle: 'Wie herinnert zich de meeste details?',
-    challengeAction: 'Vertel het met de blik van toen.'
+    prompt: 'Vertel elkaar in 60 seconden hoe onze allereerste zoen voelde.'
   },
 
   // ==========================================
-  // CATEGORIE: VRIENDSCHAP (Minimaal 10 prompts)
+  // CATEGORIE: VRIENDSCHAP (30 Prompts)
   // ==========================================
   {
     id: 'vriendschap-ask-1',
@@ -531,9 +854,46 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     emotionalTone: 'curious',
     tags: ['vriendschap', 'nostalgie', 'connectie'],
     premium: false,
-    prompt: 'Wat is het moment waarop je wist: met deze persoon ga ik jarenlang vrienden blijven?',
-    subtitle: 'Herinner je je nog waar we waren, wie erbij waren en wat er gebeurde?',
-    tip: 'Haal zo specifiek mogelijke herinneringen op.'
+    prompt: 'Wat is het moment waarop je wist: met deze persoon ga ik jarenlang vrienden blijven?'
+  },
+  {
+    id: 'vriendschap-ask-2',
+    category: 'Vriendschap',
+    subcategory: 'Levenspad',
+    interactionType: 'ask',
+    intensity: 4,
+    relationshipType: ['friends', 'surprise'],
+    relationshipStages: ['friends_good', 'friends_best'],
+    emotionalTone: 'vulnerable',
+    tags: ['diepgang', 'waarden', 'toekomst'],
+    premium: true,
+    prompt: 'Wat is iets waar je je vroeger voor schaamde, maar wat je nu juist als een kracht van jezelf ziet?'
+  },
+  {
+    id: 'vriendschap-ask-3',
+    category: 'Vriendschap',
+    subcategory: 'Loyaliteit',
+    interactionType: 'ask',
+    intensity: 3,
+    relationshipType: ['friends'],
+    relationshipStages: ['friends_good', 'friends_best'],
+    emotionalTone: 'curious',
+    tags: ['loyaliteit', 'steun', 'vriendschap'],
+    premium: false,
+    prompt: 'Wanneer ben ik er voor jou geweest op een manier die je niet snel zult vergeten?'
+  },
+  {
+    id: 'vriendschap-ask-4',
+    category: 'Vriendschap',
+    subcategory: 'Humor',
+    interactionType: 'ask',
+    intensity: 2,
+    relationshipType: ['friends', 'group'],
+    relationshipStages: ['friends_group', 'friends_good', 'friends_best'],
+    emotionalTone: 'playful',
+    tags: ['humor', 'avontuur', 'vriendschap'],
+    premium: false,
+    prompt: 'Wat is het meest absurde plan dat we ooit samen hebben uitgevoerd?'
   },
   {
     id: 'vriendschap-point-1',
@@ -544,10 +904,9 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     relationshipType: ['friends', 'group', 'surprise'],
     relationshipStages: ['friends_new', 'friends_good', 'friends_best', 'friends_group'],
     emotionalTone: 'playful',
-    tags: ['humor', 'chaos', 'vriendschap', 'spel', 'blunder'],
+    tags: ['humor', 'chaos', 'vriendschap', 'spel'],
     premium: false,
-    prompt: 'Wie van jullie twee heeft de meest onvoorspelbare, chaotische beslissingen genomen in het leven?',
-    subtitle: 'Tel samen af tot 3 en wijs tegelijk naar degene die het meeste spektakel veroorzaakt.'
+    prompt: 'Wie van jullie twee heeft de meest chaotische beslissingen genomen?'
   },
   {
     id: 'vriendschap-both-1',
@@ -560,9 +919,7 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     emotionalTone: 'curious',
     tags: ['vriendschap', 'reflectie', 'groei'],
     premium: false,
-    prompt: 'Op welk gebied van je leven heb je momenteel het gevoel dat je een beetje vastzit?',
-    subtitle: 'Persoon 1 deelt eerst, daarna Persoon 2. Geen ongevraagd advies, eerst alleen écht luisteren.',
-    tip: 'Vraag door met "hoe voelt dat voor je?" in plaats van meteen oplossingen aan te dragen.'
+    prompt: 'Op welk gebied van je leven heb je momenteel het gevoel dat je een beetje vastzit?'
   },
   {
     id: 'vriendschap-guess-1',
@@ -575,11 +932,10 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     emotionalTone: 'playful',
     tags: ['inzicht', 'spel', 'humor'],
     premium: false,
-    prompt: 'Raad wat de ander zou doen als die morgen 50.000 euro wint maar het binnen 24 uur móét uitgeven.',
-    subtitle: 'Persoon A doet een gedurfde voorspelling, waarna B de waarheid onthult!',
+    prompt: 'Raad wat de ander zou doen met 50.000 euro in 24 uur.',
     guessDetails: {
-      targetPrompt: 'Mijn ultieme 24-uurs impulsieve uitgave zou zijn...',
-      hint: 'Denk aan reizen, absurde gadgets of overdreven etentjes.'
+      targetPrompt: 'Mijn impulsieve uitgave...',
+      hint: 'Denk aan reizen.'
     }
   },
   {
@@ -591,12 +947,12 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     relationshipType: ['friends', 'group', 'surprise'],
     relationshipStages: ['friends_new', 'friends_good', 'friends_best', 'friends_group'],
     emotionalTone: 'playful',
-    tags: ['dilemma', 'reizen', 'vriendschap', 'spel'],
+    tags: ['dilemma', 'reizen', 'vriendschap'],
     premium: false,
-    prompt: 'Als we samen twee weken moeten reizen op een extreem budget, wat kiezen we?',
+    prompt: 'Als we samen op budget moeten reizen, wat kiezen we?',
     options: [
-      { id: 'a', text: 'Wildkamperen in Noorwegen met rugzak, instant noedels en koude meren', subtext: 'Fysiek zwaar, maar epische stilte en natuur' },
-      { id: 'b', text: 'Slapen in lawaaierige 12-persoons hostels in Oost-Europa en elke avond op stap', subtext: 'Weinig slaap, maar maximale sociale chaos' }
+      { id: 'a', text: 'Wildkamperen in de kou' },
+      { id: 'b', text: 'Hostels in de stad' }
     ]
   },
   {
@@ -610,87 +966,51 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     emotionalTone: 'peak',
     tags: ['warmte', 'waardering', 'opdracht'],
     premium: false,
-    prompt: 'Benoem drie specifieke kwaliteiten van de ander die jou inspireren om een beter mens te zijn.',
-    subtitle: 'Niet algemeen ("je bent gezellig"), maar heel concreet over hun karakter of loyaliteit.',
-    challengeAction: 'Kijk elkaar aan en spreek je bewondering rustig uit.'
+    prompt: 'Benoem drie specifieke kwaliteiten van de ander die jou inspireren.'
   },
-  {
-    id: 'vriendschap-fts-1',
-    category: 'Vriendschap',
-    subcategory: 'Eerlijkheid',
-    interactionType: 'finish_the_sentence',
-    intensity: 2,
-    relationshipType: ['friends', 'surprise'],
-    relationshipStages: ['friends_good', 'friends_best'],
-    emotionalTone: 'curious',
-    tags: ['zinsafmaker', 'authenticiteit'],
-    premium: false,
-    prompt: 'Vul allebei aan zonder te filteren:',
-    sentenceStarter: 'De grootste verandering die ik in jou heb gezien sinds we elkaar kennen is...',
-    subtitle: 'Kijk naar zelfvertrouwen, rust of levenskeuzes.'
-  },
-  {
-    id: 'vriendschap-rf-1',
-    category: 'Vriendschap',
-    subcategory: 'Vriendschapsgewoontes',
-    interactionType: 'rapid_fire',
-    intensity: 1,
-    relationshipType: ['friends', 'group', 'surprise'],
-    relationshipStages: ['friends_new', 'friends_good', 'friends_best', 'friends_group'],
-    emotionalTone: 'playful',
-    tags: ['snelvuur', 'gewoontes', 'humor', 'spel'],
-    premium: false,
-    prompt: '5 Snelle Vrienden Dilemma’s:',
-    subtitle: 'Direct tikken, niet overleggen!',
-    rapidFirePairs: [
-      { id: 'v-rf-1', optionA: 'Uren bellen over niks', optionB: '100 memes per dag sturen' },
-      { id: 'v-rf-2', optionA: 'Altijd 10 minuten te laat', optionB: 'Pijnlijk stipt op tijd' },
-      { id: 'v-rf-3', optionA: 'Kroegavond tot sluiting', optionB: 'Katerontbijt en wandeling' },
-      { id: 'v-rf-4', optionA: 'Recht voor z’n raap', optionB: 'Liefdevol verzachtend' },
-      { id: 'v-rf-5', optionA: 'Spontaan aanwaaien', optionB: 'Drie weken van tevoren datumprikker' }
-    ]
-  },
-  {
-    id: 'vriendschap-rev-1',
-    category: 'Vriendschap',
-    subcategory: 'Geheime Bekentenis',
-    interactionType: 'reveal',
-    intensity: 3,
-    relationshipType: ['friends', 'surprise'],
-    relationshipStages: ['friends_good', 'friends_best'],
-    emotionalTone: 'vulnerable',
-    tags: ['onthulling', 'loyaliteit'],
-    premium: true,
-    prompt: 'Waarover vraag jij de ander het minst vaak om hulp, terwijl je het eigenlijk wel zou willen?',
-    subtitle: 'Beide kiezen blind hun kwetsbare plek en onthullen die tegelijk.',
-    revealQuestion: {
-      instruction: 'Selecteer stiekem wat jou het meeste bezighoudt:',
-      options: [
-        'Financiële onzekerheid of geldzorgen',
-        'Liefdesverdriet of relationele twijfels',
-        'Eenzaamheid of stress op het werk',
-        'Zorgen over mijn gezondheid of mentale rust'
-      ]
-    }
-  },
-  {
-    id: 'vriendschap-ask-2',
-    category: 'Vriendschap',
-    subcategory: 'Levenspad',
-    interactionType: 'ask',
-    intensity: 4,
-    relationshipType: ['friends', 'surprise'],
-    relationshipStages: ['friends_good', 'friends_best'],
-    emotionalTone: 'vulnerable',
-    tags: ['diepgang', 'waarden', 'toekomst'],
-    premium: true,
-    prompt: 'Wat is iets waar je je vroeger voor schaamde, maar wat je nu juist als een kracht van jezelf ziet?',
-    subtitle: 'Iets waardoor je je anders voelde dan de rest van de groep.',
-    tip: 'Geef elkaar alle tijd om na te denken.'
-  },
+  { id: 'vriendschap-ask-11', category: 'Vriendschap', subcategory: 'Karakter', interactionType: 'ask', intensity: 2, relationshipType: ['friends'], relationshipStages: ['friends_good', 'friends_best'], emotionalTone: 'curious', tags: ['karakter'], premium: false, prompt: 'Als ik een personage in een film was, welk type zou ik dan zijn?' },
+  { id: 'vriendschap-ask-12', category: 'Vriendschap', subcategory: 'Loyaliteit', interactionType: 'ask', intensity: 3, relationshipType: ['friends'], relationshipStages: ['friends_best'], emotionalTone: 'vulnerable', tags: ['loyaliteit'], premium: true, prompt: 'Wat is een moment waarop je echt op mij kon rekenen?' },
+  { id: 'vriendschap-ask-13', category: 'Vriendschap', subcategory: 'Reizen', interactionType: 'ask', intensity: 2, relationshipType: ['friends'], relationshipStages: ['friends_good', 'friends_best'], emotionalTone: 'playful', tags: ['reizen'], premium: false, prompt: 'Wat is de grappigste herinnering aan een trip die we samen hebben gemaakt?' },
+  { id: 'vriendschap-ask-14', category: 'Vriendschap', subcategory: 'Toekomst', interactionType: 'ask', intensity: 2, relationshipType: ['friends'], relationshipStages: ['friends_good', 'friends_best'], emotionalTone: 'curious', tags: ['toekomst'], premium: false, prompt: 'Waar zie je ons over 5 jaar staan als vrienden?' },
+  { id: 'vriendschap-ask-15', category: 'Vriendschap', subcategory: 'Humor', interactionType: 'ask', intensity: 1, relationshipType: ['friends', 'group'], relationshipStages: ['friends_group'], emotionalTone: 'playful', tags: ['humor'], premium: false, prompt: 'Wat is het stomste waar we ooit samen om hebben gelachen?' },
+  { id: 'vriendschap-ask-16', category: 'Vriendschap', subcategory: 'Waardering', interactionType: 'ask', intensity: 3, relationshipType: ['friends'], relationshipStages: ['friends_good', 'friends_best'], emotionalTone: 'peak', tags: ['waardering'], premium: false, prompt: 'Welke eigenschap van mij bewonder je het meest?' },
+  { id: 'vriendschap-ask-17', category: 'Vriendschap', subcategory: 'Geheimen', interactionType: 'ask', intensity: 4, relationshipType: ['friends'], relationshipStages: ['friends_best'], emotionalTone: 'vulnerable', tags: ['diepgang'], premium: true, prompt: 'Wat is iets wat je bijna niemand vertelt, maar wel met mij durft te delen?' },
+  { id: 'vriendschap-ask-18', category: 'Vriendschap', subcategory: 'Advies', interactionType: 'ask', intensity: 2, relationshipType: ['friends'], relationshipStages: ['friends_good', 'friends_best'], emotionalTone: 'curious', tags: ['advies'], premium: false, prompt: 'Wat is het beste advies dat ik je ooit heb gegeven?' },
+  { id: 'vriendschap-ask-19', category: 'Vriendschap', subcategory: 'Sociale Kring', interactionType: 'ask', intensity: 2, relationshipType: ['friends', 'group'], relationshipStages: ['friends_group'], emotionalTone: 'playful', tags: ['sociaal'], premium: false, prompt: 'Wie van onze vrienden is de grootste "party animal"?' },
+  { id: 'vriendschap-ask-20', category: 'Vriendschap', subcategory: 'Connectie', interactionType: 'ask', intensity: 3, relationshipType: ['friends'], relationshipStages: ['friends_good', 'friends_best'], emotionalTone: 'curious', tags: ['verbinding'], premium: false, prompt: 'Wat maakt onze vriendschap uniek in jouw ogen?' },
+  { id: 'vriendschap-both-6', category: 'Vriendschap', subcategory: 'Hobby', interactionType: 'both_answer', intensity: 1, relationshipType: ['friends'], relationshipStages: ['friends_new', 'friends_good'], emotionalTone: 'warmup', tags: ['hobby'], premium: false, prompt: 'Wat is een hobby die we samen zouden kunnen gaan doen?' },
+  { id: 'vriendschap-both-7', category: 'Vriendschap', subcategory: 'Waarden', interactionType: 'both_answer', intensity: 3, relationshipType: ['friends'], relationshipStages: ['friends_good', 'friends_best'], emotionalTone: 'curious', tags: ['waarden'], premium: true, prompt: 'Wat is voor jou een "dealbreaker" in een vriendschap?' },
+  { id: 'vriendschap-guess-4', category: 'Vriendschap', subcategory: 'Eten', interactionType: 'guess', intensity: 1, relationshipType: ['friends'], relationshipStages: ['friends_new', 'friends_good'], emotionalTone: 'warmup', tags: ['eten'], premium: false, prompt: 'Wat is de absolute favoriete snack van de ander?', guessDetails: { targetPrompt: 'Mijn lievelingssnack is...', hint: 'Borrelhappen.' } },
+  { id: 'vriendschap-guess-5', category: 'Vriendschap', subcategory: 'Angst', interactionType: 'guess', intensity: 3, relationshipType: ['friends'], relationshipStages: ['friends_good', 'friends_best'], emotionalTone: 'curious', tags: ['angst'], premium: true, prompt: 'Waar is de ander stiekem het meest onzeker over?', guessDetails: { targetPrompt: 'Mijn onzekerheid is...', hint: 'Ambitie.' } },
+  { id: 'vriendschap-point-4', category: 'Vriendschap', subcategory: 'Geld', interactionType: 'point', intensity: 2, relationshipType: ['friends', 'group'], relationshipStages: ['friends_group'], emotionalTone: 'playful', tags: ['geld'], premium: false, prompt: 'Wie van de groep zou het eerste een miljoen euro opmaken?' },
+  { id: 'vriendschap-point-5', category: 'Vriendschap', subcategory: 'Liefde', interactionType: 'point', intensity: 2, relationshipType: ['friends'], relationshipStages: ['friends_good', 'friends_best'], emotionalTone: 'playful', tags: ['liefde'], premium: false, prompt: 'Wie van ons twee is de grootste romanticus?' },
+  { id: 'vriendschap-wyr-5', category: 'Vriendschap', subcategory: 'Activiteit', interactionType: 'would_you_rather', intensity: 2, relationshipType: ['friends'], relationshipStages: ['friends_good', 'friends_best'], emotionalTone: 'playful', tags: ['dilemma'], premium: false, prompt: 'Zou je liever samen in een huis wonen of elkaar elke dag zien?', options: [{ id: 'a', text: 'Samen wonen' }, { id: 'b', text: 'Elke dag zien' }] },
+  { id: 'vriendschap-chal-6', category: 'Vriendschap', subcategory: 'Compliment', interactionType: 'challenge', intensity: 3, relationshipType: ['friends'], relationshipStages: ['friends_good', 'friends_best'], emotionalTone: 'peak', tags: ['waardering'], premium: false, prompt: 'Geef de ander een compliment dat ze niet aan zagen komen.' },
+  { id: 'vriendschap-chal-7', category: 'Vriendschap', subcategory: 'Lachen', interactionType: 'challenge', intensity: 2, relationshipType: ['friends', 'group'], relationshipStages: ['friends_group'], emotionalTone: 'playful', tags: ['humor'], premium: false, prompt: 'Maak de ander binnen 30 seconden aan het lachen.' },
+  { id: 'vriendschap-fts-2', category: 'Vriendschap', subcategory: 'Eerlijkheid', interactionType: 'finish_the_sentence', intensity: 2, relationshipType: ['friends'], relationshipStages: ['friends_good', 'friends_best'], emotionalTone: 'curious', tags: ['authenticiteit'], premium: false, prompt: 'Als we elkaar één dag niet mochten spreken, dan...', sentenceStarter: 'Zonder jou in mijn leven zou ik...' },
+  { id: 'familie-ask-11', category: 'Familie', subcategory: 'Jeugd', interactionType: 'ask', intensity: 2, relationshipType: ['family'], relationshipStages: ['family_siblings', 'family_parent_child'], emotionalTone: 'curious', tags: ['jeugd'], premium: false, prompt: 'Wat was jouw favoriete speelgoed toen je klein was?' },
+  { id: 'familie-ask-12', category: 'Familie', subcategory: 'Traditie', interactionType: 'ask', intensity: 2, relationshipType: ['family'], relationshipStages: ['family_general'], emotionalTone: 'curious', tags: ['traditie'], premium: false, prompt: 'Welke familietraditie moeten we echt behouden?' },
+  { id: 'familie-ask-13', category: 'Familie', subcategory: 'Lessen', interactionType: 'ask', intensity: 3, relationshipType: ['family'], relationshipStages: ['family_parent_child'], emotionalTone: 'curious', tags: ['lessen'], premium: false, prompt: 'Wat is de belangrijkste les die je van mij hebt geleerd?' },
+  { id: 'familie-ask-14', category: 'Familie', subcategory: 'Trots', interactionType: 'ask', intensity: 3, relationshipType: ['family'], relationshipStages: ['family_siblings'], emotionalTone: 'peak', tags: ['trots'], premium: false, prompt: 'Wanneer was je voor het laatst echt trots op mij?' },
+  { id: 'familie-ask-15', category: 'Familie', subcategory: 'Toekomst', interactionType: 'ask', intensity: 2, relationshipType: ['family'], relationshipStages: ['family_general'], emotionalTone: 'curious', tags: ['toekomst'], premium: false, prompt: 'Waar zie je onze familie over 10 jaar?' },
+  { id: 'familie-ask-16', category: 'Familie', subcategory: 'Humor', interactionType: 'ask', intensity: 2, relationshipType: ['family'], relationshipStages: ['family_siblings'], emotionalTone: 'playful', tags: ['humor'], premium: false, prompt: 'Wat is de grappigste herinnering aan onze ouders?' },
+  { id: 'familie-ask-17', category: 'Familie', subcategory: 'Gezelligheid', interactionType: 'ask', intensity: 1, relationshipType: ['family'], relationshipStages: ['family_general'], emotionalTone: 'warmup', tags: ['gezelligheid'], premium: false, prompt: 'Wat is jouw favoriete familie-eten?' },
+  { id: 'familie-ask-18', category: 'Familie', subcategory: 'Begrip', interactionType: 'ask', intensity: 4, relationshipType: ['family'], relationshipStages: ['family_parent_child'], emotionalTone: 'vulnerable', tags: ['begrip'], premium: true, prompt: 'Is er iets wat je me altijd al wilde vragen maar nooit durfde?' },
+  { id: 'familie-ask-19', category: 'Familie', subcategory: 'Vakantie', interactionType: 'ask', intensity: 2, relationshipType: ['family'], relationshipStages: ['family_general'], emotionalTone: 'curious', tags: ['vakantie'], premium: false, prompt: 'Wat was de mooiste plek waar we als familie zijn geweest?' },
+  { id: 'familie-ask-20', category: 'Familie', subcategory: 'Karakter', interactionType: 'ask', intensity: 3, relationshipType: ['family'], relationshipStages: ['family_siblings'], emotionalTone: 'curious', tags: ['karakter'], premium: false, prompt: 'Op welke eigenschap van mij ben je stiekem een beetje jaloers?' },
+  { id: 'familie-both-5', category: 'Familie', subcategory: 'Eten', interactionType: 'both_answer', intensity: 1, relationshipType: ['family'], relationshipStages: ['family_general'], emotionalTone: 'warmup', tags: ['eten'], premium: false, prompt: 'Wat is het allerlekkerste dat we ooit als familie hebben gegeten?' },
+  { id: 'familie-both-6', category: 'Familie', subcategory: 'Muziek', interactionType: 'both_answer', intensity: 1, relationshipType: ['family'], relationshipStages: ['family_siblings'], emotionalTone: 'warmup', tags: ['muziek'], premium: false, prompt: 'Welk liedje doet je direct aan vroeger denken?' },
+  { id: 'familie-both-7', category: 'Familie', subcategory: 'Vrije Tijd', interactionType: 'both_answer', intensity: 2, relationshipType: ['family'], relationshipStages: ['family_general'], emotionalTone: 'playful', tags: ['vrije-tijd'], premium: false, prompt: 'Wat zouden we als familie echt een keer moeten gaan doen?' },
+  { id: 'familie-guess-4', category: 'Familie', subcategory: 'Hobby', interactionType: 'guess', intensity: 2, relationshipType: ['family'], relationshipStages: ['family_siblings'], emotionalTone: 'playful', tags: ['hobby'], premium: false, prompt: 'Wat was de favoriete hobby van de ander toen ze 10 waren?', guessDetails: { targetPrompt: 'Mijn hobby op m\'n 10e...', hint: 'Denk aan buiten spelen.' } },
+  { id: 'familie-guess-5', category: 'Familie', subcategory: 'Slaap', interactionType: 'guess', intensity: 1, relationshipType: ['family'], relationshipStages: ['family_general'], emotionalTone: 'warmup', tags: ['gewoontes'], premium: false, prompt: 'Is de ander een ochtendmens of een avondmens?', guessDetails: { targetPrompt: 'Mijn ritme is...', hint: 'Kijk naar hun ogen.' } },
+  { id: 'familie-point-4', category: 'Familie', subcategory: 'Lachen', interactionType: 'point', intensity: 1, relationshipType: ['family'], relationshipStages: ['family_siblings'], emotionalTone: 'playful', tags: ['humor'], premium: false, prompt: 'Wie van ons heeft de meest aanstekelijke lach?' },
+  { id: 'familie-point-5', category: 'Familie', subcategory: 'Reizen', interactionType: 'point', intensity: 2, relationshipType: ['family'], relationshipStages: ['family_general'], emotionalTone: 'playful', tags: ['reizen'], premium: false, prompt: 'Wie van ons zou als eerste verdwalen op vakantie?' },
+  { id: 'familie-wyr-4', category: 'Familie', subcategory: 'Traditie', interactionType: 'would_you_rather', intensity: 2, relationshipType: ['family'], relationshipStages: ['family_general'], emotionalTone: 'curious', tags: ['dilemma'], premium: false, prompt: 'Zou je liever elke zondag samen eten of één keer per jaar een grote vakantie?', options: [{ id: 'a', text: 'Elke zondag eten' }, { id: 'b', text: 'Jaarlijkse vakantie' }] },
+  { id: 'familie-chal-5', category: 'Familie', subcategory: 'Waardering', interactionType: 'challenge', intensity: 3, relationshipType: ['family'], relationshipStages: ['family_parent_child'], emotionalTone: 'peak', tags: ['waardering'], premium: false, prompt: 'Zeg iets moois tegen de ander dat je nog nooit hebt gezegd.' },
+  { id: 'familie-chal-6', category: 'Familie', subcategory: 'Lachen', interactionType: 'challenge', intensity: 2, relationshipType: ['family'], relationshipStages: ['family_siblings'], emotionalTone: 'playful', tags: ['humor'], premium: false, prompt: 'Doe de ander na op een grappige manier.' },
 
   // ==========================================
-  // CATEGORIE: FAMILIE (Minimaal 10 prompts)
+  // CATEGORIE: FAMILIE (25 Prompts)
   // ==========================================
   {
     id: 'familie-ask-1',
@@ -703,9 +1023,20 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     emotionalTone: 'curious',
     tags: ['familie', 'herinnering', 'waarden'],
     premium: false,
-    prompt: 'Wat is een eigenschap van onze familie die je ontzettend koestert, en eentje die je liever loslaat?',
-    subtitle: 'Kijk naar onze gewoontes rond eten, humor, geld of hoe we met spanning omgaan.',
-    tip: 'Houd het warm en nieuwsgierig, zonder beschuldigingen.'
+    prompt: 'Wat is een eigenschap van onze familie die je koestert, en eentje die je liever loslaat?'
+  },
+  {
+    id: 'familie-ask-2',
+    category: 'Familie',
+    subcategory: 'Wijsheid',
+    interactionType: 'ask',
+    intensity: 4,
+    relationshipType: ['family', 'surprise'],
+    relationshipStages: ['family_parent_child', 'family_siblings', 'family_general'],
+    emotionalTone: 'vulnerable',
+    tags: ['diepgang', 'generaties', 'liefde'],
+    premium: true,
+    prompt: 'Wat is de belangrijkste les die je hebt geleerd door naar onze ouders te kijken?'
   },
   {
     id: 'familie-fts-1',
@@ -718,9 +1049,8 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     emotionalTone: 'curious',
     tags: ['begrip', 'verbinding', 'jeugd'],
     premium: false,
-    prompt: 'Maak de zin af zonder lang na te denken:',
-    sentenceStarter: 'Toen ik kind was dacht ik altijd dat volwassenen alles wisten, totdat...',
-    subtitle: 'Deel een ontwapenend moment waarop het volwassen masker afviel.'
+    prompt: 'Maak de zin af:',
+    sentenceStarter: 'Toen ik kind was dacht ik altijd dat volwassenen alles wisten, totdat...'
   },
   {
     id: 'familie-both-1',
@@ -731,11 +1061,9 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     relationshipType: ['family', 'surprise'],
     relationshipStages: ['family_parent_child', 'family_siblings', 'family_general'],
     emotionalTone: 'warmup',
-    tags: ['familie', 'herinnering', 'lach', 'humor', 'blunder'],
+    tags: ['familie', 'herinnering', 'lach', 'humor'],
     premium: false,
-    prompt: 'Wat was de meest legendarische familievakantie of verjaardag waarbij álles misging?',
-    subtitle: 'Persoon 1 vertelt hun perspectief, waarna Persoon 2 aanvult met details die de ander vergeten was.',
-    tip: 'Lach om de chaos van toen.'
+    prompt: 'Wat was de meest legendarische familievakantie waarbij álles misging?'
   },
   {
     id: 'familie-point-1',
@@ -748,8 +1076,7 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     emotionalTone: 'playful',
     tags: ['dynamiek', 'humor', 'rollen', 'spel'],
     premium: false,
-    prompt: 'Wie van ons heeft de koppigste trekjes geërfd van de (groot)ouders?',
-    subtitle: 'Tel af: 1, 2, 3... Wijs tegelijk naar degene die het hardst weigert toe te geven!'
+    prompt: 'Wie van ons heeft de koppigste trekjes geërfd van de (groot)ouders?'
   },
   {
     id: 'familie-guess-1',
@@ -763,10 +1090,9 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     tags: ['verrassing', 'historie', 'spel'],
     premium: false,
     prompt: 'Wat was volgens jou de grootste droom van de ander toen die 16 jaar oud was?',
-    subtitle: 'Raad elkaars tienerdromen, muzikale idolen of carrièredoelen.',
     guessDetails: {
-      targetPrompt: 'Mijn grootste droom als 16-jarige was...',
-      hint: 'Kijk naar oude posters of hobbies die intussen verwaterd zijn.'
+      targetPrompt: 'Mijn droom als 16-jarige was...',
+      hint: 'Denk aan oude hobby\'s.'
     }
   },
   {
@@ -780,10 +1106,10 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     emotionalTone: 'curious',
     tags: ['traditie', 'keuzes', 'dilemma'],
     premium: false,
-    prompt: 'Wat zou je liever doen voor het volgende grote familiefeest?',
+    prompt: 'Wat doen we voor het volgende feest?',
     options: [
-      { id: 'a', text: 'Samen drie dagen koken voor een gigantisch traditioneel familiediner aan een lange tafel', subtext: 'Warme gezelligheid, hectiek en recepten van vroeger' },
-      { id: 'b', text: 'Met z’n allen een weekend naar een bungalowpark met spelletjesavonden en boswandelingen', subtext: 'Weg van huis, ongedwongen en lekker buiten' }
+      { id: 'a', text: 'Groot familiediner koken' },
+      { id: 'b', text: 'Weekend weg naar een park' }
     ]
   },
   {
@@ -797,9 +1123,7 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     emotionalTone: 'peak',
     tags: ['waardering', 'ontroering', 'opdracht'],
     premium: false,
-    prompt: 'Bedank de ander voor een herinnering of les uit je jeugd die je nooit bent vergeten.',
-    subtitle: 'Iets kleins dat de ander misschien allang vergeten is, maar jou heeft gevormd.',
-    challengeAction: 'Vertel wat het met jou deed en waarom het je is bijgebleven.'
+    prompt: 'Bedank de ander voor een herinnering of les uit je jeugd.'
   },
   {
     id: 'familie-rf-1',
@@ -813,13 +1137,12 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     tags: ['snelvuur', 'herkenning', 'humor', 'spel'],
     premium: false,
     prompt: '5 Snelle Familie DNA Vragen:',
-    subtitle: 'Herken elkaars gewoontes:',
     rapidFirePairs: [
-      { id: 'f-rf-1', optionA: 'Kliekjes 3 dagen bewaren', optionB: 'Alles vers weggooien/opmaken' },
-      { id: 'f-rf-2', optionA: 'Spanning weglachen', optionB: 'Meteen uitpraten aan tafel' },
-      { id: 'f-rf-3', optionA: 'Bordjes leegeten tot de laatste kruimel', optionB: 'Stoppen als je vol zit' },
-      { id: 'f-rf-4', optionA: 'Verjaardag groots vieren', optionB: 'Liever stilletjes ontvluchten' },
-      { id: 'f-rf-5', optionA: 'Koffie met koekje om 10:00 stipt', optionB: 'Wanneer het maar uitkomt' }
+      { id: 'f-rf-1', optionA: 'Kliekjes bewaren', optionB: 'Vers weggooien' },
+      { id: 'f-rf-2', optionA: 'Spanning weglachen', optionB: 'Meteen uitpraten' },
+      { id: 'f-rf-3', optionA: 'Bordjes leegeten', optionB: 'Stoppen als vol' },
+      { id: 'f-rf-4', optionA: 'Verjaardag groots', optionB: 'Stilletjes vieren' },
+      { id: 'f-rf-5', optionA: 'Koffie met koekje', optionB: 'Wanneer het uitkomt' }
     ]
   },
   {
@@ -833,36 +1156,15 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     emotionalTone: 'vulnerable',
     tags: ['onthulling', 'diepgang'],
     premium: true,
-    prompt: 'Welke familietraditie of verwachting vind jij stiekem het meest vermoeiend?',
-    subtitle: 'Kies blind en onthul samen met een knipoog.',
+    prompt: 'Welke familietraditie vind jij stiekem het meest vermoeiend?',
     revealQuestion: {
-      instruction: 'Kies eerlijk jouw minst favoriete familie-aspect:',
-      options: [
-        'Verplichte feestdagen en strakke eetschema’s',
-        'Steeds dezelfde oude verhalen moeten aanhoren',
-        'Vragen over relaties, carrière of kinderen',
-        'De onuitgesproken druk om altijd vrolijk te doen'
-      ]
+      instruction: 'Kies jouw minst favoriete:',
+      options: ['Verplichte feestdagen', 'Dezelfde oude verhalen', 'Vragen over carrière', 'Altijd vrolijk doen']
     }
-  },
-  {
-    id: 'familie-ask-2',
-    category: 'Familie',
-    subcategory: 'Wijsheid',
-    interactionType: 'ask',
-    intensity: 4,
-    relationshipType: ['family', 'surprise'],
-    relationshipStages: ['family_parent_child', 'family_siblings', 'family_general'],
-    emotionalTone: 'vulnerable',
-    tags: ['diepgang', 'generaties', 'liefde'],
-    premium: true,
-    prompt: 'Wat is de belangrijkste les over het leven die je hebt geleerd door naar onze ouders of grootouders te kijken?',
-    subtitle: 'Zowel in wat ze wél deden, als wat je zelf juist bewust heel anders aanpakt.',
-    tip: 'Luister met mildheid en respect.'
   },
 
   // ==========================================
-  // CATEGORIE: GROEPSIJSBREKERS (Minimaal 10 prompts)
+  // CATEGORIE: GROEP (20 Prompts)
   // ==========================================
   {
     id: 'groep-point-1',
@@ -871,12 +1173,11 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     interactionType: 'point',
     intensity: 1,
     relationshipType: ['group', 'surprise', 'friends'],
-    relationshipStages: ['friends_group', 'friends_new', 'friends_good', 'any'],
+    relationshipStages: ['friends_group', 'any'],
     emotionalTone: 'warmup',
-    tags: ['ijsbreker', 'groep', 'lach', 'spel', 'humor'],
+    tags: ['ijsbreker', 'groep', 'lach', 'spel'],
     premium: false,
-    prompt: 'Wie aan deze tafel heeft de meest bizarre slaapgewoonte of ochtendritueel?',
-    subtitle: 'Iedereen telt samen af tot 3 en wijst tegelijk naar degene die het meest excentriek is!'
+    prompt: 'Wie aan deze tafel heeft de meest bizarre slaapgewoonte?'
   },
   {
     id: 'groep-point-2',
@@ -885,12 +1186,11 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     interactionType: 'point',
     intensity: 2,
     relationshipType: ['group', 'surprise', 'friends'],
-    relationshipStages: ['friends_group', 'friends_new', 'friends_good', 'any'],
+    relationshipStages: ['friends_group', 'any'],
     emotionalTone: 'playful',
     tags: ['groep', 'humor', 'avontuur', 'spel'],
     premium: false,
-    prompt: 'Als deze hele groep op een onbewoond eiland strandt, wie overleeft er dan als allerlaatste?',
-    subtitle: 'Tel af: 3, 2, 1... Wijs de ultieme survivor van de groep aan!'
+    prompt: 'Wie overleeft als allerlaatste op een onbewoond eiland?'
   },
   {
     id: 'groep-rf-1',
@@ -899,18 +1199,17 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     interactionType: 'rapid_fire',
     intensity: 1,
     relationshipType: ['group', 'surprise', 'friends'],
-    relationshipStages: ['friends_group', 'friends_new', 'friends_good', 'any'],
+    relationshipStages: ['friends_group', 'any'],
     emotionalTone: 'warmup',
-    tags: ['snelvuur', 'groep', 'tempo', 'spel', 'humor'],
+    tags: ['snelvuur', 'groep', 'tempo', 'spel'],
     premium: false,
-    prompt: '5 Snelle Groepskeuzes: Laat de stemmen horen!',
-    subtitle: 'Iedereen roept tegelijk hun keuze!',
+    prompt: '5 Snelle Groepskeuzes!',
     rapidFirePairs: [
-      { id: 'g-rf-1', optionA: 'Karaoke tot 04:00', optionB: 'Bordspellen met borrelplank' },
-      { id: 'g-rf-2', optionA: 'Friet met mayonaise', optionB: 'Pizza met knoflooksaus' },
-      { id: 'g-rf-3', optionA: 'Festival in de modder', optionB: 'Luxe strandbedje' },
-      { id: 'g-rf-4', optionA: 'Rechttoe rechtaan praten', optionB: 'Diplomatieke vrede bewaren' },
-      { id: 'g-rf-5', optionA: 'Groepsapp met 500 berichten', optionB: 'Groepsapp op stil voor altijd' }
+      { id: 'g-rf-1', optionA: 'Karaoke tot 04:00', optionB: 'Bordspellen' },
+      { id: 'g-rf-2', optionA: 'Friet', optionB: 'Pizza' },
+      { id: 'g-rf-3', optionA: 'Festival', optionB: 'Luxe strand' },
+      { id: 'g-rf-4', optionA: 'Rechttoe rechtaan', optionB: 'Diplomatiek' },
+      { id: 'g-rf-5', optionA: 'Groepsapp 500 ber.', optionB: 'Groepsapp op stil' }
     ]
   },
   {
@@ -920,14 +1219,14 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     interactionType: 'would_you_rather',
     intensity: 2,
     relationshipType: ['group', 'surprise', 'friends'],
-    relationshipStages: ['friends_group', 'friends_new', 'friends_good', 'any'],
+    relationshipStages: ['friends_group', 'any'],
     emotionalTone: 'playful',
-    tags: ['dilemma', 'debat', 'groep', 'spel', 'humor'],
+    tags: ['dilemma', 'debat', 'groep', 'spel'],
     premium: false,
-    prompt: 'Iedereen aan tafel kiest één kant en probeert de rest te overtuigen:',
+    prompt: 'Wat kies je voor de rest van de groep?',
     options: [
-      { id: 'a', text: 'Elke dag wakker worden om 05:00 uur met oneindige energie en focus', subtext: 'De ultieme ochtendheld, maar nooit meer uitslapen' },
-      { id: 'b', text: 'Nooit meer een kater of vermoeidheid na een wilde avond stappen', subtext: 'Altijd fit de dag erna, ongeacht het tijdstip' }
+      { id: 'a', text: '05:00 uur wakker met energie' },
+      { id: 'b', text: 'Nooit meer een kater' }
     ]
   },
   {
@@ -937,13 +1236,11 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     interactionType: 'challenge',
     intensity: 2,
     relationshipType: ['group', 'surprise', 'friends'],
-    relationshipStages: ['friends_group', 'friends_new', 'friends_good', 'any'],
+    relationshipStages: ['friends_group', 'any'],
     emotionalTone: 'playful',
-    tags: ['opdracht', 'groep', 'lach', 'spel', 'humor'],
+    tags: ['opdracht', 'groep', 'lach', 'spel'],
     premium: false,
-    prompt: 'Tafeluitdaging: Vertel in 60 seconden om de beurt één woord om samen een bizar verhaal te maken.',
-    subtitle: 'Wie hapert of dubbel praat moet een slok van zijn drankje nemen!',
-    challengeAction: 'Start met "Er was eens een verwarde pinguïn die..." en ga met de klok mee.'
+    prompt: 'Tafeluitdaging: Vertel in 60 seconden om de beurt één woord om samen een bizar verhaal te maken.'
   },
   {
     id: 'groep-guess-1',
@@ -952,15 +1249,14 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     interactionType: 'guess',
     intensity: 2,
     relationshipType: ['group', 'surprise', 'friends'],
-    relationshipStages: ['friends_group', 'friends_new', 'friends_good', 'any'],
+    relationshipStages: ['friends_group', 'any'],
     emotionalTone: 'curious',
     tags: ['raadsel', 'observatie', 'spel'],
     premium: false,
-    prompt: 'Kies één persoon aan tafel. De rest raadt gezamenlijk wat diens allereerste bijbaantje ooit was.',
-    subtitle: 'Was het vakkenvullen, krantenwijk, afwas of iets totaal onverwachts?',
+    prompt: 'Kies één persoon. De rest raadt hun allereerste bijbaantje.',
     guessDetails: {
-      targetPrompt: 'Mijn allereerste betaalde baantje was...',
-      hint: 'Let op handigheid, geduld en verhalen van vroeger.'
+      targetPrompt: 'Mijn eerste baantje was...',
+      hint: 'Let op handigheid.'
     }
   },
   {
@@ -970,13 +1266,11 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     interactionType: 'both_answer',
     intensity: 1,
     relationshipType: ['group', 'surprise', 'friends'],
-    relationshipStages: ['friends_group', 'friends_new', 'friends_good', 'any'],
+    relationshipStages: ['friends_group', 'any'],
     emotionalTone: 'warmup',
-    tags: ['blunder', 'ijsbreker', 'groep', 'humor', 'luchtig'],
+    tags: ['blunder', 'ijsbreker', 'groep', 'humor'],
     premium: false,
-    prompt: 'Wat is de slechtste aankoop van onder de €50 die je ooit hebt gedaan?',
-    subtitle: 'Ga de tafel rond. Degene met de domste miskoop wint de ronde.',
-    tip: 'Denk aan Tell Sell artikelen, kleding die je nooit droeg of rare keukenspullen.'
+    prompt: 'Wat is de slechtste aankoop van onder de €50 die je ooit hebt gedaan?'
   },
   {
     id: 'groep-fts-1',
@@ -985,13 +1279,12 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     interactionType: 'finish_the_sentence',
     intensity: 2,
     relationshipType: ['group', 'surprise', 'friends'],
-    relationshipStages: ['friends_group', 'friends_new', 'friends_good', 'any'],
+    relationshipStages: ['friends_group', 'any'],
     emotionalTone: 'curious',
     tags: ['zinsafmaker', 'groep', 'humor'],
     premium: false,
-    prompt: 'Ga de tafel rond en maak deze zin af in maximaal 5 woorden:',
-    sentenceStarter: 'De ultieme sfeerbreker op een feestje is wanneer iemand...',
-    subtitle: 'Deel je allergrootste party-pet-peeve.'
+    prompt: 'Vul aan voor de sfeer:',
+    sentenceStarter: 'De ultieme sfeerbreker op een feestje is wanneer iemand...'
   },
   {
     id: 'groep-rev-1',
@@ -1000,200 +1293,44 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     interactionType: 'reveal',
     intensity: 2,
     relationshipType: ['group', 'surprise', 'friends'],
-    relationshipStages: ['friends_group', 'friends_new', 'friends_good', 'any'],
+    relationshipStages: ['friends_group', 'any'],
     emotionalTone: 'playful',
     tags: ['onthulling', 'spanning', 'groep', 'spel'],
     premium: false,
     prompt: 'Hoe energiek voelt deze tafel zich op dit moment?',
-    subtitle: 'Laat twee tegenpolen aan tafel blind kiezen en onthul de energie!',
     revealQuestion: {
-      instruction: 'Selecteer stiekem jouw huidige batterijpercentage:',
-      options: [
-        '100% - Klaar om door te feesten tot het ochtendgloren',
-        '70% - Heerlijk ontspannen en genietend van het gesprek',
-        '40% - Een beetje rozig van het eten en drinken',
-        '15% - Houd me gezellig vast maar breng me bijna naar bed'
-      ]
+      instruction: 'Selecteer stiekem jouw batterij:',
+      options: ['100% - Ready to party', '70% - Ontspannen', '40% - Rozig', '15% - Bijna naar bed']
     }
   },
-  {
-    id: 'groep-ask-1',
-    category: 'Groepsijsbrekers',
-    subcategory: 'Reisverhalen',
-    interactionType: 'ask',
-    intensity: 3,
-    relationshipType: ['group', 'surprise', 'friends'],
-    relationshipStages: ['friends_group', 'friends_new', 'friends_good', 'any'],
-    emotionalTone: 'curious',
-    tags: ['verhalen', 'groep', 'avontuur'],
-    premium: false,
-    prompt: 'Wat is het vreemdste toeval dat iemand aan deze tafel ooit op reis heeft meegemaakt?',
-    subtitle: 'Een bekende tegenkomen aan de andere kant van de wereld, of een wonderbaarlijke redding.',
-    tip: 'Laat iedereen even kort nadenken en geef het woord aan de beste anekdote.'
-  },
-  {
-    id: 'groep-ask-2',
-    category: 'Groepsijsbrekers',
-    subcategory: 'Diepere Connectie',
-    interactionType: 'ask',
-    intensity: 4,
-    relationshipType: ['group', 'surprise', 'friends'],
-    relationshipStages: ['friends_group', 'friends_good', 'friends_best'],
-    emotionalTone: 'peak',
-    tags: ['diepgang', 'waardering', 'groep'],
-    premium: true,
-    prompt: 'Als we over 20 jaar als groep terugkijken op vanavond, wat hopen we dat er dan nog exact hetzelfde is?',
-    subtitle: 'Onze vriendschap, de humor, de manier waarop we praten of hoe we elkaar vasthouden.',
-    tip: 'Een mooi moment om even stil te staan bij het gezelschap.'
-  },
+  { id: 'groep-point-3', category: 'Groepsijsbrekers', subcategory: 'Lachen', interactionType: 'point', intensity: 1, relationshipType: ['group', 'friends'], relationshipStages: ['friends_group'], emotionalTone: 'playful', tags: ['humor'], premium: false, prompt: 'Wie van deze groep heeft de meest onleesbare handschrift?' },
+  { id: 'groep-point-4', category: 'Groepsijsbrekers', subcategory: 'Avontuur', interactionType: 'point', intensity: 2, relationshipType: ['group', 'friends'], relationshipStages: ['friends_group'], emotionalTone: 'playful', tags: ['avontuur'], premium: false, prompt: 'Wie zou als eerste een parachute-sprong durven maken?' },
+  { id: 'groep-rf-2', category: 'Groepsijsbrekers', subcategory: 'Eten', interactionType: 'rapid_fire', intensity: 1, relationshipType: ['group', 'friends'], relationshipStages: ['friends_group'], emotionalTone: 'warmup', tags: ['eten'], premium: false, prompt: 'Zoet of Hartig? Koffie of Thee? Bier of Wijn? Pizza of Sushi? Zelf koken of Afhalen?', rapidFirePairs: [{ id: 'grf-1', optionA: 'Zoet', optionB: 'Hartig' }, { id: 'grf-2', optionA: 'Koffie', optionB: 'Thee' }, { id: 'grf-3', optionA: 'Bier', optionB: 'Wijn' }, { id: 'grf-4', optionA: 'Pizza', optionB: 'Sushi' }, { id: 'grf-5', optionA: 'Koken', optionB: 'Afhalen' }] },
+  { id: 'groep-wyr-2', category: 'Groepsijsbrekers', subcategory: 'Fantasie', interactionType: 'would_you_rather', intensity: 2, relationshipType: ['group', 'friends'], relationshipStages: ['friends_group'], emotionalTone: 'playful', tags: ['dilemma'], premium: false, prompt: 'Zou je liever voor altijd in de toekomst kunnen kijken of voor altijd in het verleden kunnen reizen?', options: [{ id: 'a', text: 'Toekomst kijken' }, { id: 'b', text: 'Verleden reizen' }] },
+  { id: 'groep-chal-2', category: 'Groepsijsbrekers', subcategory: 'Humor', interactionType: 'challenge', intensity: 2, relationshipType: ['group', 'friends'], relationshipStages: ['friends_group'], emotionalTone: 'playful', tags: ['humor'], premium: false, prompt: 'Iedereen moet nu binnen 10 seconden zijn meest indrukwekkende dansmove laten zien.' },
+  { id: 'groep-guess-2', category: 'Groepsijsbrekers', subcategory: 'Reizen', interactionType: 'guess', intensity: 2, relationshipType: ['group', 'friends'], relationshipStages: ['friends_group'], emotionalTone: 'curious', tags: ['reizen'], premium: false, prompt: 'Wat is de verste plek waar iemand aan deze tafel ooit is geweest?', guessDetails: { targetPrompt: 'Mijn verste reis...', hint: 'Denk aan uithoeken van de wereld.' } },
+  { id: 'groep-both-2', category: 'Groepsijsbrekers', subcategory: 'Nostalgie', interactionType: 'both_answer', intensity: 1, relationshipType: ['group', 'friends'], relationshipStages: ['friends_group'], emotionalTone: 'warmup', tags: ['nostalgie'], premium: false, prompt: 'Wat was je allereerste e-mailadres of schermnaam?' },
+  { id: 'groep-fts-2', category: 'Groepsijsbrekers', subcategory: 'Toekomst', interactionType: 'finish_the_sentence', intensity: 2, relationshipType: ['group', 'friends'], relationshipStages: ['friends_group'], emotionalTone: 'curious', tags: ['toekomst'], premium: false, prompt: 'Als we over 10 jaar weer zo samen zitten, dan...', sentenceStarter: 'Over 10 jaar zijn we...' },
+  { id: 'groep-rev-2', category: 'Groepsijsbrekers', subcategory: 'Vakantie', interactionType: 'reveal', intensity: 2, relationshipType: ['group', 'friends'], relationshipStages: ['friends_group'], emotionalTone: 'playful', tags: ['reizen'], premium: false, prompt: 'Wat is de ideale vakantie voor deze groep?', revealQuestion: { instruction: 'Kies blind:', options: ['Actief wandelen', 'Luieren op het strand', 'Stedentrip chaos', 'Wintersport plezier'] } },
+  { id: 'groep-ask-2', category: 'Groepsijsbrekers', subcategory: 'Inspiratie', interactionType: 'ask', intensity: 3, relationshipType: ['group', 'friends'], relationshipStages: ['friends_group'], emotionalTone: 'curious', tags: ['inspiratie'], premium: true, prompt: 'Wat is iets waar de persoon links van je echt bewonderenswaardig goed in is?' },
 
   // ==========================================
-  // SECRET PICK INTERACTIONS (Game Mechanic)
+  // SPECIALS & AFSLUITING
   // ==========================================
-  {
-    id: 'secret-pick-1',
-    category: 'Eerste Date & Chemie',
-    subcategory: 'Secret Pick',
-    interactionType: 'secret_pick',
-    intensity: 2,
-    relationshipType: ['date', 'partner', 'surprise'],
-    relationshipStages: ['date_first', 'date_few', 'date_flirty', 'partner_datenight'],
-    emotionalTone: 'playful',
-    tags: ['spel', 'chemie', 'flirten', 'verrassend', 'humor'],
-    premium: false,
-    prompt: 'Wie van jullie zou eerder halsoverkop verliefd worden?',
-    subtitle: 'Kies eerst in het geheim jouw antwoord zonder dat de ander meekijkt. Pas na het aftellen onthullen we jullie keuzes tegelijk!',
-    tip: 'Geef de telefoon rustig door aan de ander.',
-    secretPickDetails: {
-      question: 'Wie van jullie zou eerder halsoverkop verliefd worden?',
-      options: ['De ander', 'Ikzelf', 'Echt precies gelijk']
-    }
-  },
-  {
-    id: 'secret-pick-2',
-    category: 'Partner & Dynamiek',
-    subcategory: 'Secret Pick',
-    interactionType: 'secret_pick',
-    intensity: 2,
-    relationshipType: ['partner', 'date', 'surprise'],
-    relationshipStages: ['partner_datenight', 'partner_reconnect', 'date_flirty', 'date_awhile'],
-    emotionalTone: 'playful',
-    tags: ['humor', 'spel', 'herkenning', 'verrassend'],
-    premium: false,
-    prompt: 'Wat zou onze perfecte spontane date zijn als we nu direct de deur uit liepen?',
-    subtitle: 'Kies beiden blind één optie. Hebben jullie dezelfde chemie of juist een leuke verrassing?',
-    secretPickDetails: {
-      question: 'Wat zou onze perfecte spontane date zijn als we nu de deur uit liepen?',
-      options: ['Cocktails in een schemerige bar', 'Late night wandeling & diepe gesprekken', 'Snacks halen en samen op de bank kruipen']
-    }
-  },
-  {
-    id: 'secret-pick-3',
-    category: 'Vriendschap & Spel',
-    subcategory: 'Secret Pick',
-    interactionType: 'secret_pick',
-    intensity: 2,
-    relationshipType: ['friends', 'group', 'surprise'],
-    relationshipStages: ['friends_new', 'friends_good', 'friends_best', 'friends_group'],
-    emotionalTone: 'playful',
-    tags: ['lachen', 'spel', 'humor', 'blunder'],
-    premium: false,
-    prompt: 'Wie van jullie zou in een noodsituatie de rust bewaren en wie raakt meteen in paniek?',
-    subtitle: 'Kies beiden eerlijk over wie de absolute rots in de branding is.',
-    secretPickDetails: {
-      question: 'Wie is de ultieme rots in de branding?',
-      options: ['Persoon 1 bewaart de rust', 'Persoon 2 bewaart de rust', 'We raken allebei in paniek']
-    }
-  },
-  {
-    id: 'secret-pick-4',
-    category: 'Chemie & Aantrekkingskracht',
-    subcategory: 'Secret Pick',
-    interactionType: 'secret_pick',
-    intensity: 3,
-    relationshipType: ['date', 'partner'],
-    relationshipStages: ['date_flirty', 'date_few', 'partner_datenight'],
-    emotionalTone: 'peak',
-    tags: ['flirten', 'chemie', 'aantrekkingskracht', 'spel'],
-    premium: false,
-    prompt: 'Wat trok jou bij de allereerste ontmoeting het meest aan in de ander?',
-    subtitle: 'Kies jouw favoriete detail in stilte. 3... 2... 1... onthul tegelijkertijd!',
-    secretPickDetails: {
-      question: 'Wat trok jou als eerste het meeste aan?',
-      options: ['De ogen en blik', 'De lach en stemgeluid', 'De zelfverzekerde energie & stijl']
-    }
-  },
-
-  // ==========================================
-  // POSITIVE LANDINGS (Ending Curve Mastery)
-  // ==========================================
-  {
-    id: 'positive-landing-1',
-    category: 'Positieve Afsluiting',
-    subcategory: 'Compliment & Blik Vooruit',
-    interactionType: 'ask',
-    intensity: 2,
-    relationshipType: ['date', 'partner', 'friends', 'surprise'],
-    relationshipStages: ['any'],
-    tags: ['waardering', 'afsluiting', 'positief', 'compliment'],
-    emotionalTone: 'positive_landing',
-    premium: false,
-    prompt: 'Wat is iets subtiels dat de ander tijdens dit gesprek deed of zei, dat je een warm of fijn gevoel gaf?',
-    subtitle: 'Een blik, een openhartig antwoord, of een moment waarop jullie samen moesten lachen.',
-    tip: 'Kijk elkaar aan tijdens het antwoord en neem de tijd.'
-  },
-  {
-    id: 'positive-landing-2',
-    category: 'Positieve Afsluiting',
-    subcategory: 'Lichte Toekomst',
-    interactionType: 'both_answer',
-    intensity: 2,
-    relationshipType: ['date', 'partner', 'friends', 'surprise'],
-    relationshipStages: ['any'],
-    tags: ['toekomst', 'energie', 'positief'],
-    emotionalTone: 'positive_landing',
-    premium: false,
-    prompt: 'Welk gevoel of welk woord beschrijft de energie tussen ons vanavond het allerbeste?',
-    subtitle: 'Beide noemen binnen 5 seconden één woord.',
-    tip: 'Zonder te overpeinzen; ga op je allereerste gevoel af.'
-  },
-  {
-    id: 'positive-landing-3',
-    category: 'Positieve Afsluiting',
-    subcategory: 'Samen Vieren',
-    interactionType: 'challenge',
-    intensity: 1,
-    relationshipType: ['date', 'partner', 'friends', 'family', 'surprise'],
-    relationshipStages: ['any'],
-    tags: ['speels', 'proost', 'afsluiting', 'warmte'],
-    emotionalTone: 'positive_landing',
-    premium: false,
-    prompt: 'Sluit deze ronde af met een toast of blik: hef samen het glas op één specifiek ding van vandaag.',
-    subtitle: 'Of geef elkaar een high five / knuffel voor de eerlijke en leuke antwoorden.',
-    challengeAction: 'Hef het glas of wissel een glimlach uit en spreek één kleine wens uit voor de rest van de avond.'
-  }
+  { id: 'secret-pick-1', category: 'Geheime Keuze', subcategory: 'Spanning', interactionType: 'secret_pick', intensity: 3, relationshipType: ['date', 'partner'], relationshipStages: ['date_flirty', 'partner_datenight'], emotionalTone: 'peak', tags: ['spanning', 'onthulling', 'flirten'], premium: true, prompt: 'Wie is er vanavond het meest flirty?', secretPickDetails: { question: 'Wie flirt er nu het hardst?', options: ['Persoon 1', 'Persoon 2', 'Gelijkspel'] } },
+  { id: 'secret-pick-2', category: 'Geheime Keuze', subcategory: 'Verbinding', interactionType: 'secret_pick', intensity: 3, relationshipType: ['date', 'partner'], relationshipStages: ['date_awhile', 'partner_long'], emotionalTone: 'peak', tags: ['verbinding', 'onthulling', 'liefde'], premium: true, prompt: 'Wie van de twee is het meest romantisch ingesteld?', secretPickDetails: { question: 'Wie is de grootste romanticus?', options: ['Persoon 1', 'Persoon 2', 'Beide even erg'] } },
+  { id: 'secret-pick-3', category: 'Geheime Keuze', subcategory: 'Leven', interactionType: 'secret_pick', intensity: 2, relationshipType: ['date', 'partner', 'friends'], relationshipStages: ['any'], emotionalTone: 'curious', tags: ['karakter', 'onthulling'], premium: false, prompt: 'Wie van ons twee is het meest gedisciplineerd?', secretPickDetails: { question: 'Wie is de meeste doorzetter?', options: ['Persoon 1', 'Persoon 2', 'Wisselt af'] } },
+  { id: 'secret-pick-4', category: 'Geheime Keuze', subcategory: 'Humor', interactionType: 'secret_pick', intensity: 1, relationshipType: ['date', 'partner', 'friends', 'group'], relationshipStages: ['any'], emotionalTone: 'playful', tags: ['humor', 'onthulling'], premium: false, prompt: 'Wie heeft de slechtste grappen?', secretPickDetails: { question: 'Wiens humor is het meest pijnlijk?', options: ['Persoon 1', 'Persoon 2', 'De hele groep'] } },
+  { id: 'positive-landing-1', category: 'Afsluiting', subcategory: 'Dankbaarheid', interactionType: 'ask', intensity: 2, relationshipType: ['date', 'partner', 'friends', 'family', 'surprise'], relationshipStages: ['any'], emotionalTone: 'positive_landing', tags: ['afsluiting', 'warmte', 'waardering'], premium: false, prompt: 'Wat is één ding dat je vandaag aan de ander hebt ontdekt waar je blij van werd?' },
+  { id: 'positive-landing-2', category: 'Afsluiting', subcategory: 'Energie', interactionType: 'ask', intensity: 2, relationshipType: ['date', 'partner', 'friends', 'surprise'], relationshipStages: ['any'], emotionalTone: 'positive_landing', tags: ['toekomst', 'energie', 'positief'], premium: false, prompt: 'Welk woord beschrijft de energie tussen ons vanavond het best?' },
+  { id: 'positive-landing-3', category: 'Afsluiting', subcategory: 'Vieren', interactionType: 'challenge', intensity: 1, relationshipType: ['date', 'partner', 'friends', 'family', 'surprise'], relationshipStages: ['any'], emotionalTone: 'positive_landing', tags: ['speels', 'proost', 'afsluiting'], premium: false, prompt: 'Sluit af met een toast: hef het glas op één specifiek ding van vandaag.' }
 ];
 
-// Helper to filter prompts for session logic
-export function getFilteredPrompts(
-  relationship: string,
-  vibe: string,
-  includePremium: boolean = false
-): PromptItem[] {
+export function getFilteredPrompts(relationship: string, vibe: string, includePremium: boolean = false): PromptItem[] {
   return PROMPTS_DATABASE.filter((item) => {
-    // Relationship match
-    const relMatch =
-      relationship === 'surprise' ||
-      item.relationshipType.includes(relationship as RelationshipType) ||
-      item.relationshipType.includes('surprise');
-
+    const relMatch = relationship === 'surprise' || item.relationshipType.includes(relationship as RelationshipType) || item.relationshipType.includes('surprise');
     if (!relMatch) return false;
-
-    // Premium gate check
-    if (item.premium && !includePremium) {
-      return false;
-    }
-
+    if (item.premium && !includePremium) return false;
     return true;
   });
 }
