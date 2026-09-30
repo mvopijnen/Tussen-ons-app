@@ -127,9 +127,12 @@ export interface SessionStats {
   sessionFavoriteIds: string[];
 }
 
+export type HistoryOutcome = 'shown' | 'completed' | 'skipped';
+
 export interface PlayHistoryRecord {
   lastPlayedAt: number;
   timesPlayed: number;
+  outcome?: HistoryOutcome;
 }
 
 export type PlayHistoryMap = Record<string, PlayHistoryRecord>;

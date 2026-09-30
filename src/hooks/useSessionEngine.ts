@@ -4,13 +4,16 @@ import {
   SessionConfig, 
   SessionStats, 
   InteractionType, 
-  PlayHistoryMap 
+  PlayHistoryMap,
+  PlayHistoryRecord,
+  HistoryOutcome
 } from '../types';
 import { PROMPTS_DATABASE } from '../data/prompts';
 import { safeGetPlayHistory, safeSavePlayHistory } from '../utils/storage';
 
-const COOLDOWN_DAYS = 30;
-const COOLDOWN_MS = COOLDOWN_DAYS * 24 * 60 * 60 * 1000;
+export const COOLDOWN_COMPLETED_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
+export const COOLDOWN_SKIPPED_MS = 7 * 24 * 60 * 60 * 1000;    // 7 days
+export const COOLDOWN_SHOWN_MS = 24 * 60 * 60 * 1000;          // 1 day
 
 /**
  * Load local play history map with validated schema
@@ -20,14 +23,32 @@ export function getPlayHistory(): PlayHistoryMap {
 }
 
 /**
- * Record a prompt as played with timestamp
+ * Check if a prompt record is still within its outcome-specific cooldown window
  */
-export function recordPromptPlayed(promptId: string): void {
+export function isPromptOnCooldown(record?: PlayHistoryRecord, now: number = Date.now()): boolean {
+  if (!record || !record.lastPlayedAt) return false;
+  const elapsed = now - record.lastPlayedAt;
+  const outcome = record.outcome || 'shown';
+
+  if (outcome === 'completed') {
+    return elapsed < COOLDOWN_COMPLETED_MS;
+  } else if (outcome === 'skipped') {
+    return elapsed < COOLDOWN_SKIPPED_MS;
+  } else {
+    return elapsed < COOLDOWN_SHOWN_MS;
+  }
+}
+
+/**
+ * Record a prompt as played with timestamp and outcome (shown, completed, skipped)
+ */
+export function recordPromptPlayed(promptId: string, outcome: HistoryOutcome = 'shown'): void {
   const history = safeGetPlayHistory();
   const existing = history[promptId] || { lastPlayedAt: 0, timesPlayed: 0 };
   history[promptId] = {
     lastPlayedAt: Date.now(),
-    timesPlayed: existing.timesPlayed + 1
+    timesPlayed: existing.timesPlayed + 1,
+    outcome
   };
   safeSavePlayHistory(history);
 }
@@ -44,7 +65,15 @@ export function getPromptStableHash(id: string): number {
   return Math.abs(hash);
 }
 
-interface ArcTarget {
+export function getTargetStepCount(duration: string): number {
+  if (duration === '5min') return 5;
+  if (duration === '15min') return 9;
+  if (duration === '30min') return 14;
+  if (duration === 'unlimited') return 16;
+  return 9;
+}
+
+export interface ArcTarget {
   minIntensity: number;
   maxIntensity: number;
   preferredTypes: InteractionType[];
@@ -133,17 +162,36 @@ export function getTargetIntensityAndType(
   }
 }
 
+export interface AdaptiveScoringContext {
+  lastInteractionType?: InteractionType;
+  usedInteractionTypes?: InteractionType[];
+  adaptiveIntensityBias?: number;
+  consecutiveSkips?: number;
+  isAfterDeepSkip?: boolean;
+  laughedCount?: number;
+  playfulBias?: number;
+  sessionFavorites?: Set<string>;
+}
+
 /**
- * Score candidate prompt deterministically based on relationship stage, vibe, intensity, cooldown and variety
+ * Score candidate prompt deterministically based on emotional arc, active state,
+ * playfulBias (laughter), skip history, relationship stage, vibe, cooldown and favorites.
  */
-function scoreCandidatePrompt(
+export function scoreCandidatePrompt(
   prompt: PromptItem,
   arc: ArcTarget,
   config: SessionConfig,
   history: PlayHistoryMap,
-  lastInteractionType?: InteractionType
+  context: AdaptiveScoringContext = {}
 ): number {
   let score = 20;
+  const {
+    lastInteractionType,
+    consecutiveSkips = 0,
+    isAfterDeepSkip = false,
+    playfulBias = 0,
+    sessionFavorites
+  } = context;
 
   // 1. Preferred interaction type bonus
   if (arc.preferredTypes.includes(prompt.interactionType)) {
@@ -152,7 +200,7 @@ function scoreCandidatePrompt(
 
   // Avoid repeating the exact same interaction type consecutively
   if (lastInteractionType && prompt.interactionType === lastInteractionType) {
-    score -= 10;
+    score -= 12;
   }
 
   // 2. Intensity match
@@ -160,32 +208,87 @@ function scoreCandidatePrompt(
     score += 10;
   } else {
     const targetMid = (arc.minIntensity + arc.maxIntensity) / 2;
-    score -= Math.abs(prompt.intensity - targetMid) * 4;
+    score -= Math.abs(prompt.intensity - targetMid) * 5;
   }
 
-  // 3. Positieve Landing bonus in final step
-  if (arc.isEnding) {
-    if (prompt.emotionalTone === 'positive_landing' || prompt.tags.includes('afsluiting') || prompt.tags.includes('waardering') || prompt.tags.includes('compliment')) {
-      score += 25;
+  // 3. Skip Direct Effect (Requirement 4)
+  // When an intense prompt was skipped, heavily penalize high intensity on the immediate next prompt
+  if (isAfterDeepSkip && prompt.intensity >= 3) {
+    score -= 30;
+  }
+
+  // After two consecutive skips, trigger safe reset: heavily prioritize warmup or playful card (intensity <= 2)
+  if (consecutiveSkips >= 2) {
+    if (prompt.emotionalTone === 'warmup' || prompt.emotionalTone === 'playful') {
+      score += 35;
     }
-    // Strongly penalize super heavy vulnerability at the very end
-    if (prompt.intensity >= 4 || prompt.tags.includes('eenzaamheid') || prompt.tags.includes('verdriet')) {
+    if (prompt.intensity > 2) {
       score -= 30;
     }
   }
 
-  // 4. Relationship Stage Matching
-  if (config.relationshipStage && config.relationshipStage !== 'any') {
-    if (prompt.relationshipStages?.includes(config.relationshipStage)) {
-      score += 12;
-    } else if (prompt.relationshipStages?.includes('any')) {
-      score += 4;
-    } else if (prompt.relationshipStages && prompt.relationshipStages.length > 0) {
-      score -= 8;
+  // 4. Laughter / Playful Bias (Requirement 3)
+  if (playfulBias > 0) {
+    const playfulTypes: InteractionType[] = ['point', 'rapid_fire', 'challenge', 'would_you_rather', 'secret_pick'];
+    if (playfulTypes.includes(prompt.interactionType)) {
+      score += playfulBias * 4;
+    }
+    const playfulTags = ['humor', 'luchtig', 'spel', 'blunder'];
+    if (prompt.tags.some(t => playfulTags.includes(t)) || prompt.emotionalTone === 'playful') {
+      score += playfulBias * 4;
     }
   }
 
-  // 5. Explicit Vibe Differentiation
+  // 5. Emotional Tone active scoring (Requirement 6)
+  if (arc.isEnding) {
+    if (prompt.emotionalTone === 'positive_landing' || prompt.tags.includes('afsluiting') || prompt.tags.includes('waardering') || prompt.tags.includes('compliment')) {
+      score += 35;
+    }
+    // Strongly penalize super heavy vulnerability at the very end
+    if (prompt.intensity >= 4 || prompt.emotionalTone === 'vulnerable' || prompt.tags.includes('eenzaamheid') || prompt.tags.includes('verdriet')) {
+      score -= 40;
+    }
+  } else {
+    switch (arc.stageName) {
+      case 'Warm-up':
+        if (prompt.emotionalTone === 'warmup') score += 14;
+        else if (prompt.emotionalTone === 'playful') score += 8;
+        break;
+      case 'Luchtig & Speels':
+        if (prompt.emotionalTone === 'playful') score += 15;
+        else if (prompt.emotionalTone === 'warmup') score += 6;
+        break;
+      case 'Nieuwsgierigheid':
+        if (prompt.emotionalTone === 'curious') score += 14;
+        else if (prompt.emotionalTone === 'playful') score += 6;
+        break;
+      case 'Persoonlijke Connectie':
+        if (prompt.emotionalTone === 'curious' || prompt.emotionalTone === 'vulnerable') score += 12;
+        break;
+      case 'Piekmoment':
+        if (prompt.emotionalTone === 'peak') score += 16;
+        else if (prompt.emotionalTone === 'vulnerable') score += 8;
+        break;
+    }
+  }
+
+  // 6. Relationship Stage Matching & Date First Guard (Requirement 5)
+  if (config.relationshipStage && config.relationshipStage !== 'any') {
+    if (prompt.relationshipStages?.includes(config.relationshipStage)) {
+      score += 14;
+    } else if (prompt.relationshipStages?.includes('any')) {
+      score += 4;
+    } else if (prompt.relationshipStages && prompt.relationshipStages.length > 0) {
+      score -= 10;
+    }
+
+    // Safety guard: first date must never receive inappropriate heavy prompts
+    if (config.relationshipStage === 'date_first' && prompt.intensity >= 4) {
+      score -= 50;
+    }
+  }
+
+  // 7. Explicit Vibe Differentiation
   switch (config.vibe) {
     case 'lachen':
       if (['point', 'rapid_fire', 'would_you_rather', 'secret_pick'].includes(prompt.interactionType)) score += 9;
@@ -213,12 +316,24 @@ function scoreCandidatePrompt(
       break;
   }
 
-  // 6. Play History Cooldown
+  // 8. Session Favorites subtle influence (Requirement 8)
+  if (sessionFavorites && sessionFavorites.size > 0) {
+    const favoritedPrompts = PROMPTS_DATABASE.filter(p => sessionFavorites.has(p.id));
+    const favTags = new Set(favoritedPrompts.flatMap(p => p.tags));
+    const favTypes = new Set(favoritedPrompts.map(p => p.interactionType));
+    if (favTypes.has(prompt.interactionType)) {
+      score += 4;
+    }
+    if (prompt.tags.some(t => favTags.has(t))) {
+      score += 3;
+    }
+  }
+
+  // 9. Play History Cooldown (Requirement 7)
   const playedRecord = history[prompt.id];
   if (playedRecord) {
-    const elapsed = Date.now() - playedRecord.lastPlayedAt;
-    if (elapsed < COOLDOWN_MS) {
-      score -= 25;
+    if (isPromptOnCooldown(playedRecord)) {
+      score -= 30;
     } else {
       score -= Math.min(10, playedRecord.timesPlayed * 2);
     }
@@ -231,26 +346,39 @@ function scoreCandidatePrompt(
 }
 
 /**
- * Curate session prompts based on configuration, stage, emotional arc and cooldown
- * Guarantees zero premium leakage, strict safety in easy mode, and full targetCount.
+ * Select a single adaptive prompt using realtime session state, preventing duplicates
+ * and applying all emotional arc, skip, laughter, stage, and cooldown criteria.
  */
-export function buildCuratedSession(config: SessionConfig): PromptItem[] {
-  // Determine target length
-  let targetCount = 9;
-  if (config.duration === '5min') targetCount = 5;
-  else if (config.duration === '15min') targetCount = 9;
-  else if (config.duration === '30min') targetCount = 14;
-  else if (config.duration === 'unlimited') targetCount = 16;
-
-  const history = getPlayHistory();
+export function selectAdaptivePrompt(
+  stepIndex: number,
+  totalSteps: number,
+  config: SessionConfig,
+  history: PlayHistoryMap,
+  context: {
+    usedPromptIds: Set<string>;
+    usedInteractionTypes?: InteractionType[];
+    lastPrompt?: PromptItem;
+    adaptiveIntensityBias?: number;
+    consecutiveSkips?: number;
+    isAfterDeepSkip?: boolean;
+    laughedCount?: number;
+    playfulBias?: number;
+    sessionFavorites?: Set<string>;
+  }
+): PromptItem {
+  const arc = getTargetIntensityAndType(
+    stepIndex,
+    totalSteps,
+    config.intensity,
+    context.adaptiveIntensityBias ?? 0
+  );
 
   // Filter candidate pool strictly
   let candidatePool = PROMPTS_DATABASE.filter((item) => {
     // 1. Relationship match
     const relMatch =
       config.relationship === 'surprise' ||
-      item.relationshipType.includes(config.relationship) ||
-      item.relationshipType.includes('surprise');
+      item.relationshipType.includes(config.relationship);
 
     if (!relMatch) return false;
 
@@ -264,56 +392,78 @@ export function buildCuratedSession(config: SessionConfig): PromptItem[] {
       return false;
     }
 
+    // 4. Date first safeguard: never allow intensity 4 or 5
+    if (config.relationshipStage === 'date_first' && item.intensity >= 4) {
+      return false;
+    }
+
     return true;
   });
 
-  // Emergency safe fallback pool if candidatePool is empty: NEVER leak premium, NEVER exceed intensity 2
+  // Emergency safe fallback pool if candidatePool is empty
   if (candidatePool.length === 0) {
     candidatePool = PROMPTS_DATABASE.filter((item) => {
       if (item.premium && !config.isPremiumUnlocked) return false;
       if (config.intensity === 'easy' && item.intensity >= 4) return false;
+      if (config.relationshipStage === 'date_first' && item.intensity >= 4) return false;
       return !item.premium && item.intensity <= 2;
     });
   }
 
+  // Filter out prompts already used in this session to prevent duplicates
+  let available = candidatePool.filter((p) => !context.usedPromptIds.has(p.id));
+
+  // If available unique prompts exhausted, recycle safely without breaking premium/intensity rules
+  if (available.length === 0) {
+    available = candidatePool;
+  }
+
+  // Separate cooldown candidates from fresh candidates if possible
+  const freshCandidates = available.filter((p) => !isPromptOnCooldown(history[p.id]));
+  const poolToScore = freshCandidates.length >= 2 ? freshCandidates : available;
+
+  const scoringContext: AdaptiveScoringContext = {
+    lastInteractionType: context.lastPrompt?.interactionType,
+    usedInteractionTypes: context.usedInteractionTypes,
+    adaptiveIntensityBias: context.adaptiveIntensityBias ?? 0,
+    consecutiveSkips: context.consecutiveSkips ?? 0,
+    isAfterDeepSkip: context.isAfterDeepSkip ?? false,
+    playfulBias: context.playfulBias ?? 0,
+    laughedCount: context.laughedCount ?? 0,
+    sessionFavorites: context.sessionFavorites
+  };
+
+  const scored = poolToScore.map((p) => ({
+    prompt: p,
+    score: scoreCandidatePrompt(p, arc, config, history, scoringContext)
+  }));
+
+  // Deterministic sort: primary by score, secondary by prompt id
+  scored.sort((a, b) => (b.score - a.score) || a.prompt.id.localeCompare(b.prompt.id));
+
+  return scored[0].prompt;
+}
+
+/**
+ * Curate full session sequentially using selectAdaptivePrompt.
+ * Guarantees zero premium leakage, strict safety in easy mode, and full targetCount.
+ */
+export function buildCuratedSession(config: SessionConfig): PromptItem[] {
+  const targetCount = getTargetStepCount(config.duration);
+  const history = getPlayHistory();
   const selectedPrompts: PromptItem[] = [];
   const usedIds = new Set<string>();
-  let lastType: InteractionType | undefined = undefined;
 
   for (let i = 0; i < targetCount; i++) {
-    const arc = getTargetIntensityAndType(i, targetCount, config.intensity);
-
-    let available = candidatePool.filter((p) => !usedIds.has(p.id));
-
-    // If available unique prompts exhausted but we haven't reached targetCount yet:
-    // Safely reset usedIds to recycle candidatePool without ever leaking premium prompts
-    if (available.length === 0) {
-      usedIds.clear();
-      available = candidatePool;
-    }
-
-    if (available.length === 0) break; // Theoretical absolute empty DB guard
-
-    // Separate cooldown candidates from fresh candidates if possible
-    const freshCandidates = available.filter((p) => {
-      const rec = history[p.id];
-      return !rec || Date.now() - rec.lastPlayedAt >= COOLDOWN_MS;
+    const prompt = selectAdaptivePrompt(i, targetCount, config, history, {
+      usedPromptIds: usedIds,
+      lastPrompt: selectedPrompts[selectedPrompts.length - 1],
+      adaptiveIntensityBias: 0,
+      consecutiveSkips: 0,
+      playfulBias: 0
     });
-
-    const poolToScore = freshCandidates.length >= 2 ? freshCandidates : available;
-
-    const scored = poolToScore.map((p) => ({
-      prompt: p,
-      score: scoreCandidatePrompt(p, arc, config, history, lastType)
-    }));
-
-    // Deterministic sort: primary by score, secondary by prompt id
-    scored.sort((a, b) => (b.score - a.score) || a.prompt.id.localeCompare(b.prompt.id));
-    const chosen = scored[0].prompt;
-
-    selectedPrompts.push(chosen);
-    usedIds.add(chosen.id);
-    lastType = chosen.interactionType;
+    selectedPrompts.push(prompt);
+    usedIds.add(prompt.id);
   }
 
   return selectedPrompts;
@@ -321,6 +471,7 @@ export function buildCuratedSession(config: SessionConfig): PromptItem[] {
 
 interface SessionEngineState {
   currentPromptIndex: number;
+  targetCount: number;
   prompts: PromptItem[];
   globalFavorites: Set<string>;
   sessionFavorites: Set<string>;
@@ -334,6 +485,8 @@ interface SessionEngineState {
   // Adaptive in-session tuning
   adaptiveIntensityBias: number; // -1 to +1
   consecutiveSkips: number;
+  isAfterDeepSkip: boolean;
+  playfulBias: number;
 }
 
 export function useSessionEngine(
@@ -344,10 +497,16 @@ export function useSessionEngine(
   }
 ) {
   const [state, setState] = useState<SessionEngineState>(() => {
-    const initialPrompts = buildCuratedSession(config);
+    const target = getTargetStepCount(config.duration);
+    const history = getPlayHistory();
+    const firstPrompt = selectAdaptivePrompt(0, target, config, history, {
+      usedPromptIds: new Set<string>()
+    });
+
     return {
       currentPromptIndex: 0,
-      prompts: initialPrompts,
+      targetCount: target,
+      prompts: [firstPrompt],
       globalFavorites: new Set<string>(options?.initialFavorites || []),
       sessionFavorites: new Set<string>(),
       laughedCount: 0,
@@ -358,22 +517,33 @@ export function useSessionEngine(
       isCompleted: false,
       interactionData: {},
       adaptiveIntensityBias: 0,
-      consecutiveSkips: 0
+      consecutiveSkips: 0,
+      isAfterDeepSkip: false,
+      playfulBias: 0
     };
   });
 
-  // Track initial config changes
+  // Reset engine when config changes (e.g. user restarts with new duration or settings)
   useEffect(() => {
+    const target = getTargetStepCount(config.duration);
+    const history = getPlayHistory();
+    const firstPrompt = selectAdaptivePrompt(0, target, config, history, {
+      usedPromptIds: new Set<string>()
+    });
+
     setState((prev) => ({
       ...prev,
-      prompts: buildCuratedSession(config),
+      targetCount: target,
+      prompts: [firstPrompt],
       currentPromptIndex: 0,
       sessionFavorites: new Set<string>(),
       completedPromptIds: [],
       isCompleted: false,
       isPaused: false,
       adaptiveIntensityBias: 0,
-      consecutiveSkips: 0
+      consecutiveSkips: 0,
+      isAfterDeepSkip: false,
+      playfulBias: 0
     }));
   }, [config]);
 
@@ -394,7 +564,7 @@ export function useSessionEngine(
   useEffect(() => {
     if (currentPrompt && !recordedPromptIdsRef.current.has(currentPrompt.id)) {
       recordedPromptIdsRef.current.add(currentPrompt.id);
-      recordPromptPlayed(currentPrompt.id);
+      recordPromptPlayed(currentPrompt.id, 'shown');
     }
   }, [currentPrompt]);
 
@@ -417,20 +587,25 @@ export function useSessionEngine(
     if (!state.prompts.length) return 'Start';
     const info = getTargetIntensityAndType(
       state.currentPromptIndex,
-      state.prompts.length,
+      state.targetCount,
       config.intensity,
       state.adaptiveIntensityBias
     );
     return info.stageName;
-  }, [state.currentPromptIndex, state.prompts.length, config.intensity, state.adaptiveIntensityBias]);
+  }, [state.currentPromptIndex, state.targetCount, config.intensity, state.adaptiveIntensityBias]);
 
-  // Next prompt
+  // Realtime Adaptive Next prompt
   const nextPrompt = useCallback(() => {
     setState((prev) => {
       const cur = prev.prompts[prev.currentPromptIndex];
-      const completedIds = cur ? [...prev.completedPromptIds, cur.id] : prev.completedPromptIds;
+      if (cur) {
+        recordPromptPlayed(cur.id, 'completed');
+      }
 
-      if (prev.currentPromptIndex + 1 >= prev.prompts.length) {
+      const completedIds = cur ? [...prev.completedPromptIds, cur.id] : prev.completedPromptIds;
+      const nextIndex = prev.currentPromptIndex + 1;
+
+      if (nextIndex >= prev.targetCount) {
         return {
           ...prev,
           completedPromptIds: completedIds,
@@ -438,21 +613,60 @@ export function useSessionEngine(
         };
       }
 
+      // Decay playfulBias gradually upon next prompt
+      const nextPlayfulBias = Math.max(0, prev.playfulBias - 1);
+
+      // If next prompt was already chosen (e.g. user clicked Previous earlier and now clicks Next), use it
+      if (prev.prompts[nextIndex]) {
+        return {
+          ...prev,
+          currentPromptIndex: nextIndex,
+          completedPromptIds: completedIds,
+          consecutiveSkips: 0,
+          isAfterDeepSkip: false,
+          playfulBias: nextPlayfulBias
+        };
+      }
+
+      // Dynamically select the next prompt using current realtime state
+      const usedIds = new Set(prev.prompts.map((p) => p.id));
+      const usedTypes = prev.prompts.map((p) => p.interactionType);
+      const history = getPlayHistory();
+
+      const nextItem = selectAdaptivePrompt(nextIndex, prev.targetCount, config, history, {
+        usedPromptIds: usedIds,
+        usedInteractionTypes: usedTypes,
+        lastPrompt: cur,
+        adaptiveIntensityBias: prev.adaptiveIntensityBias,
+        consecutiveSkips: 0,
+        isAfterDeepSkip: false,
+        playfulBias: nextPlayfulBias,
+        sessionFavorites: prev.sessionFavorites
+      });
+
       return {
         ...prev,
-        currentPromptIndex: prev.currentPromptIndex + 1,
+        prompts: [...prev.prompts, nextItem],
+        currentPromptIndex: nextIndex,
         completedPromptIds: completedIds,
-        consecutiveSkips: 0
+        consecutiveSkips: 0,
+        isAfterDeepSkip: false,
+        playfulBias: nextPlayfulBias
       };
     });
-  }, []);
+  }, [config]);
 
-  // Adaptive Skip: If user skips multiple questions or deep questions, gracefully dial down upcoming intensity
+  // Realtime Adaptive Skip prompt
   const skipPrompt = useCallback(() => {
     setState((prev) => {
       const cur = prev.prompts[prev.currentPromptIndex];
-      const isDeep = cur && cur.intensity >= 3;
+      if (cur) {
+        recordPromptPlayed(cur.id, 'skipped');
+      }
+
+      const isDeep = cur ? cur.intensity >= 3 : false;
       const nextConsecutiveSkips = prev.consecutiveSkips + 1;
+      const nextIndex = prev.currentPromptIndex + 1;
 
       // Adaptively reduce intensity if skipped repeatedly or if a deep question was skipped
       let nextBias = prev.adaptiveIntensityBias;
@@ -460,25 +674,48 @@ export function useSessionEngine(
         nextBias = Math.max(-1, prev.adaptiveIntensityBias - 1);
       }
 
-      if (prev.currentPromptIndex + 1 >= prev.prompts.length) {
+      const nextPlayfulBias = Math.max(0, prev.playfulBias - 1);
+
+      if (nextIndex >= prev.targetCount) {
         return {
           ...prev,
           skippedCount: prev.skippedCount + 1,
           isCompleted: true,
           consecutiveSkips: nextConsecutiveSkips,
-          adaptiveIntensityBias: nextBias
+          adaptiveIntensityBias: nextBias,
+          isAfterDeepSkip: isDeep,
+          playfulBias: nextPlayfulBias
         };
       }
 
+      // Dynamically select next prompt with immediate adaptation for deep skip and consecutive skips
+      const usedIds = new Set(prev.prompts.map((p) => p.id));
+      const usedTypes = prev.prompts.map((p) => p.interactionType);
+      const history = getPlayHistory();
+
+      const nextItem = selectAdaptivePrompt(nextIndex, prev.targetCount, config, history, {
+        usedPromptIds: usedIds,
+        usedInteractionTypes: usedTypes,
+        lastPrompt: cur,
+        adaptiveIntensityBias: nextBias,
+        consecutiveSkips: nextConsecutiveSkips,
+        isAfterDeepSkip: isDeep,
+        playfulBias: nextPlayfulBias,
+        sessionFavorites: prev.sessionFavorites
+      });
+
       return {
         ...prev,
+        prompts: [...prev.prompts.slice(0, nextIndex), nextItem],
         skippedCount: prev.skippedCount + 1,
-        currentPromptIndex: prev.currentPromptIndex + 1,
+        currentPromptIndex: nextIndex,
         consecutiveSkips: nextConsecutiveSkips,
-        adaptiveIntensityBias: nextBias
+        adaptiveIntensityBias: nextBias,
+        isAfterDeepSkip: isDeep,
+        playfulBias: nextPlayfulBias
       };
     });
-  }, []);
+  }, [config]);
 
   const previousPrompt = useCallback(() => {
     setState((prev) => ({
@@ -501,7 +738,7 @@ export function useSessionEngine(
         nextSession.add(promptId);
       }
 
-      const curPrompt = prev.prompts.find(p => p.id === promptId);
+      const curPrompt = prev.prompts.find((p) => p.id === promptId);
       let nextBias = prev.adaptiveIntensityBias;
       if (curPrompt && curPrompt.intensity >= 3 && nextSession.has(promptId)) {
         nextBias = Math.min(1, prev.adaptiveIntensityBias + 1);
@@ -518,11 +755,12 @@ export function useSessionEngine(
     options?.onToggleGlobalFavorite?.(promptId);
   }, [options]);
 
-  // Record laugh: Adaptive engine remembers laughter for playful atmosphere
+  // Record laugh: Introduces immediate playful bias to influence subsequent selections
   const recordLaugh = useCallback(() => {
     setState((prev) => ({
       ...prev,
-      laughedCount: prev.laughedCount + 1
+      laughedCount: prev.laughedCount + 1,
+      playfulBias: Math.min(4, prev.playfulBias + 2)
     }));
   }, []);
 
@@ -553,6 +791,7 @@ export function useSessionEngine(
   const startCustomSession = useCallback((customPrompts: PromptItem[]) => {
     setState({
       currentPromptIndex: 0,
+      targetCount: customPrompts.length,
       prompts: customPrompts,
       globalFavorites: new Set<string>(options?.initialFavorites || []),
       sessionFavorites: new Set<string>(),
@@ -564,14 +803,23 @@ export function useSessionEngine(
       isCompleted: false,
       interactionData: {},
       adaptiveIntensityBias: 0,
-      consecutiveSkips: 0
+      consecutiveSkips: 0,
+      isAfterDeepSkip: false,
+      playfulBias: 0
     });
   }, [options?.initialFavorites]);
 
   const restartSession = useCallback(() => {
+    const target = getTargetStepCount(config.duration);
+    const history = getPlayHistory();
+    const firstPrompt = selectAdaptivePrompt(0, target, config, history, {
+      usedPromptIds: new Set<string>()
+    });
+
     setState({
       currentPromptIndex: 0,
-      prompts: buildCuratedSession(config),
+      targetCount: target,
+      prompts: [firstPrompt],
       globalFavorites: new Set<string>(options?.initialFavorites || []),
       sessionFavorites: new Set<string>(),
       laughedCount: 0,
@@ -582,7 +830,9 @@ export function useSessionEngine(
       isCompleted: false,
       interactionData: {},
       adaptiveIntensityBias: 0,
-      consecutiveSkips: 0
+      consecutiveSkips: 0,
+      isAfterDeepSkip: false,
+      playfulBias: 0
     });
   }, [config, options?.initialFavorites]);
 
@@ -602,7 +852,7 @@ export function useSessionEngine(
   return {
     currentPrompt,
     currentPromptIndex: state.currentPromptIndex,
-    totalPrompts: state.prompts.length,
+    totalPrompts: state.targetCount,
     currentPhase,
     isFavorite: currentPrompt ? state.globalFavorites.has(currentPrompt.id) : false,
     favoritesList: Array.from(state.globalFavorites),

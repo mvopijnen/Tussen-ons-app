@@ -28,9 +28,16 @@ export function validatePlayHistory(data: unknown): PlayHistoryMap {
       typeof (value as { lastPlayedAt: unknown }).lastPlayedAt === 'number' &&
       typeof (value as { timesPlayed: unknown }).timesPlayed === 'number'
     ) {
+      const valObj = value as Record<string, unknown>;
+      const validOutcomes = ['shown', 'completed', 'skipped'] as const;
+      const outcome = typeof valObj.outcome === 'string' && validOutcomes.includes(valObj.outcome as typeof validOutcomes[number])
+        ? (valObj.outcome as typeof validOutcomes[number])
+        : undefined;
+
       result[key] = {
         lastPlayedAt: (value as { lastPlayedAt: number }).lastPlayedAt,
-        timesPlayed: Math.max(0, (value as { timesPlayed: number }).timesPlayed)
+        timesPlayed: Math.max(0, (value as { timesPlayed: number }).timesPlayed),
+        ...(outcome ? { outcome } : {})
       };
     }
   }
