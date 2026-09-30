@@ -40,17 +40,34 @@ export function isPromptOnCooldown(record?: PlayHistoryRecord, now: number = Dat
 }
 
 /**
- * Record a prompt as played with timestamp and outcome (shown, completed, skipped)
+ * Record that a prompt was shown. Increments timesPlayed and sets outcome to 'shown'.
  */
-export function recordPromptPlayed(promptId: string, outcome: HistoryOutcome = 'shown'): void {
+export function recordPromptShown(promptId: string): void {
   const history = safeGetPlayHistory();
   const existing = history[promptId] || { lastPlayedAt: 0, timesPlayed: 0 };
   history[promptId] = {
     lastPlayedAt: Date.now(),
     timesPlayed: existing.timesPlayed + 1,
-    outcome
+    outcome: 'shown'
   };
   safeSavePlayHistory(history);
+}
+
+/**
+ * Update the outcome of the most recent exposure (completed or skipped).
+ * Does NOT increment timesPlayed.
+ */
+export function updatePromptOutcome(promptId: string, outcome: 'completed' | 'skipped'): void {
+  const history = safeGetPlayHistory();
+  const existing = history[promptId];
+  if (existing) {
+    history[promptId] = {
+      ...existing,
+      lastPlayedAt: Date.now(),
+      outcome
+    };
+    safeSavePlayHistory(history);
+  }
 }
 
 /**
@@ -229,13 +246,13 @@ export function scoreCandidatePrompt(
 
   // 4. Laughter / Playful Bias (Requirement 3)
   if (playfulBias > 0) {
-    const playfulTypes: InteractionType[] = ['point', 'rapid_fire', 'challenge', 'would_you_rather', 'secret_pick'];
+    const playfulTypes: InteractionType[] = ['point', 'rapid_fire', 'challenge', 'would_you_rather', 'secret_pick', 'guess'];
     if (playfulTypes.includes(prompt.interactionType)) {
-      score += playfulBias * 4;
+      score += playfulBias * 6;
     }
-    const playfulTags = ['humor', 'luchtig', 'spel', 'blunder'];
+    const playfulTags = ['humor', 'luchtig', 'spel', 'blunder', 'lachen'];
     if (prompt.tags.some(t => playfulTags.includes(t)) || prompt.emotionalTone === 'playful') {
-      score += playfulBias * 4;
+      score += playfulBias * 6;
     }
   }
 
@@ -251,6 +268,11 @@ export function scoreCandidatePrompt(
       score -= 40;
     }
   } else {
+    // PENALTY: Prevent positive landing prompts from appearing outside the ending phase
+    if (prompt.emotionalTone === 'positive_landing') {
+      score -= 100;
+    }
+
     switch (arc.stageName) {
       case 'Warm-up':
         if (prompt.emotionalTone === 'warmup') score += 14;
@@ -318,16 +340,16 @@ export function scoreCandidatePrompt(
       break;
   }
 
-  // 8. Session Favorites subtle influence (Requirement 8)
+  // 8. Session Favorites influence (Requirement 8)
   if (sessionFavorites && sessionFavorites.size > 0) {
     const favoritedPrompts = PROMPTS_DATABASE.filter(p => sessionFavorites.has(p.id));
     const favTags = new Set(favoritedPrompts.flatMap(p => p.tags));
     const favTypes = new Set(favoritedPrompts.map(p => p.interactionType));
     if (favTypes.has(prompt.interactionType)) {
-      score += 4;
+      score += 12; // Increased from 4
     }
     if (prompt.tags.some(t => favTags.has(t))) {
-      score += 3;
+      score += 8; // Increased from 3
     }
   }
 
@@ -547,6 +569,9 @@ export function useSessionEngine(
       isAfterDeepSkip: false,
       playfulBias: 0
     }));
+    
+    // Clear session-specific exposure ref when config changes (new session)
+    recordedPromptIdsRef.current.clear();
   }, [config]);
 
   // Sync global favorites if updated from outside
@@ -566,7 +591,7 @@ export function useSessionEngine(
   useEffect(() => {
     if (currentPrompt && !recordedPromptIdsRef.current.has(currentPrompt.id)) {
       recordedPromptIdsRef.current.add(currentPrompt.id);
-      recordPromptPlayed(currentPrompt.id, 'shown');
+      recordPromptShown(currentPrompt.id);
     }
   }, [currentPrompt]);
 
@@ -601,10 +626,13 @@ export function useSessionEngine(
     setState((prev) => {
       const cur = prev.prompts[prev.currentPromptIndex];
       if (cur) {
-        recordPromptPlayed(cur.id, 'completed');
+        updatePromptOutcome(cur.id, 'completed');
       }
 
-      const completedIds = cur ? [...prev.completedPromptIds, cur.id] : prev.completedPromptIds;
+      const completedIds = cur && !prev.completedPromptIds.includes(cur.id) 
+        ? [...prev.completedPromptIds, cur.id] 
+        : prev.completedPromptIds;
+      
       const nextIndex = prev.currentPromptIndex + 1;
 
       if (nextIndex >= prev.targetCount) {
@@ -663,7 +691,7 @@ export function useSessionEngine(
     setState((prev) => {
       const cur = prev.prompts[prev.currentPromptIndex];
       if (cur) {
-        recordPromptPlayed(cur.id, 'skipped');
+        updatePromptOutcome(cur.id, 'skipped');
       }
 
       const isDeep = cur ? cur.intensity >= 3 : false;
@@ -817,6 +845,9 @@ export function useSessionEngine(
     const firstPrompt = selectAdaptivePrompt(0, target, config, history, {
       usedPromptIds: new Set<string>()
     });
+
+    // Reset exposure tracking for the new session
+    recordedPromptIdsRef.current.clear();
 
     setState({
       currentPromptIndex: 0,

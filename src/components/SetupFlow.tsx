@@ -98,18 +98,18 @@ export const SetupFlow: React.FC<SetupFlowProps> = ({
   return (
     <div className="flex flex-col justify-between min-h-screen max-w-md mx-auto px-5 py-5 sm:py-7">
       {/* Top Bar with Brand, Favorites, Theme Button & Profile Pill */}
-      <div className="flex items-center justify-between pb-3">
+      <div className="sticky top-0 z-30 flex items-center justify-between py-2 bg-[var(--bg-app)]/80 backdrop-blur-md">
         <div className="flex items-center gap-2">
           {step > 1 ? (
             <button
               onClick={handleBack}
-              className="p-2 -ml-2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
+              className="w-10 h-10 flex items-center justify-center -ml-2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
               aria-label="Vorige stap"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
           ) : (
-            <span className="font-editorial text-lg tracking-tight text-[var(--text-primary)] font-medium">
+            <span className="font-editorial text-lg tracking-tight text-[var(--text-primary)] font-semibold px-1">
               Tussen Ons
             </span>
           )}

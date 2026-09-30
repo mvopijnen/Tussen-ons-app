@@ -10,6 +10,7 @@ import { ProfileModal } from './components/ProfileModal';
 import { SurpriseModal } from './components/SurpriseModal';
 import { ThemeSelectorModal } from './components/ThemeSelectorModal';
 import { AmbientBackground } from './components/AmbientBackground';
+import { PWAInstallButton } from './components/PWAInstallButton';
 import { SessionConfig, UserProfile, ThemeId, PromptItem } from './types';
 import { useSessionEngine } from './hooks/useSessionEngine';
 import { 
@@ -169,11 +170,26 @@ export default function App() {
 
       {/* Responsive Shell: Native fluid on mobile, elegant centered device canvas on wider displays */}
       <div className="w-full max-w-md min-h-screen flex flex-col bg-[var(--bg-app)] shadow-2xl relative transition-colors duration-300 overflow-hidden">
+        {/* Mock Status Bar (Native App Feel) */}
+        <div className="h-7 flex items-center justify-between px-6 text-[11px] font-bold text-[var(--text-muted)] select-none z-[60] shrink-0">
+          <span>{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+          <div className="flex items-center gap-1.5">
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12.01 21.49L23.64 7c-.45-.34-4.93-4-11.64-4C5.28 3 .81 6.66.36 7l11.63 14.49.01.01.01-.01z" fillOpacity=".3"/>
+              <path d="M4.77 12.5L12.01 21.49l7.24-8.99C18.85 12.24 16.1 10 12.01 10c-4.09 0-6.84 2.24-7.24 2.5z"/>
+            </svg>
+            <div className="w-5 h-2.5 border border-[var(--text-muted)] rounded-[3px] p-[1px] relative">
+              <div className="bg-[var(--text-muted)] h-full w-[70%] rounded-[1px]" />
+              <div className="absolute -right-1 top-0.5 w-0.5 h-1 bg-[var(--text-muted)] rounded-r-full" />
+            </div>
+          </div>
+        </div>
+
         {/* Subtle, slow floating ambient shapes */}
         <AmbientBackground />
 
         {/* Content layer above the floating shapes */}
-        <div className="relative z-10 flex-1 flex flex-col min-h-screen">
+        <div className="relative z-10 flex-1 flex flex-col min-h-[calc(100vh-28px-16px)]">
           <AnimatePresence mode="wait">
             {view === 'onboarding' && (
               <Onboarding
@@ -197,44 +213,50 @@ export default function App() {
                 />
                 
                 {/* Subtle footer toggle to switch theme, review onboarding or surprise me */}
-                <div className="py-2.5 text-center text-[11px] text-[var(--text-muted)] flex items-center justify-center gap-2 flex-wrap px-4">
-                  <button
-                    onClick={() => setView('favorites')}
-                    className="hover:text-[var(--text-primary)] transition-colors flex items-center gap-1 cursor-pointer font-medium"
-                  >
-                    <Heart className="w-3.5 h-3.5 fill-[var(--color-accent)] text-[var(--color-accent)]" />
-                    <span>Favorieten ({globalFavorites.length})</span>
-                  </button>
-                  <span>·</span>
-                  <button
-                    onClick={() => setShowThemeModal(true)}
-                    className="hover:text-[var(--text-primary)] transition-colors flex items-center gap-1 cursor-pointer font-medium"
-                  >
-                    <Palette className="w-3.5 h-3.5" style={{ color: 'var(--color-accent)' }} />
-                    <span>Stijl: {themeLabelMap[theme]}</span>
-                  </button>
-                  <span>·</span>
-                  <button
-                    onClick={() => setShowSurpriseModal(true)}
-                    className="hover:text-[var(--text-primary)] transition-colors flex items-center gap-1 cursor-pointer"
-                  >
-                    <Dices className="w-3 h-3" style={{ color: 'var(--color-accent)' }} /> Surprise Me
-                  </button>
-                  <span>·</span>
-                  <button
-                    onClick={handleResetToOnboarding}
-                    className="hover:text-[var(--text-primary)] transition-colors flex items-center gap-1 cursor-pointer"
-                  >
-                    <RotateCcw className="w-3 h-3" /> Intro
-                  </button>
-                  <span>·</span>
-                  <button
-                    onClick={() => setShowPaywall(true)}
-                    className="hover:text-[var(--color-accent)] transition-colors flex items-center gap-1 cursor-pointer"
-                  >
-                    <Sparkles className="w-3 h-3" style={{ color: 'var(--color-accent)' }} />
-                    {isPremiumUnlocked ? 'Plus Actief' : 'Plus'}
-                  </button>
+                <div className="py-3 px-4 flex flex-col items-center gap-3">
+                  <div className="w-full max-w-[240px]">
+                    <PWAInstallButton variant="minimal" />
+                  </div>
+                  
+                  <div className="text-[11px] text-[var(--text-muted)] flex items-center justify-center gap-2 flex-wrap">
+                    <button
+                      onClick={() => setView('favorites')}
+                      className="hover:text-[var(--text-primary)] transition-colors flex items-center gap-1 cursor-pointer font-medium"
+                    >
+                      <Heart className="w-3.5 h-3.5 fill-[var(--color-accent)] text-[var(--color-accent)]" />
+                      <span>Favorieten ({globalFavorites.length})</span>
+                    </button>
+                    <span>·</span>
+                    <button
+                      onClick={() => setShowThemeModal(true)}
+                      className="hover:text-[var(--text-primary)] transition-colors flex items-center gap-1 cursor-pointer font-medium"
+                    >
+                      <Palette className="w-3.5 h-3.5" style={{ color: 'var(--color-accent)' }} />
+                      <span>Stijl: {themeLabelMap[theme]}</span>
+                    </button>
+                    <span>·</span>
+                    <button
+                      onClick={() => setShowSurpriseModal(true)}
+                      className="hover:text-[var(--text-primary)] transition-colors flex items-center gap-1 cursor-pointer"
+                    >
+                      <Dices className="w-3 h-3" style={{ color: 'var(--color-accent)' }} /> Surprise Me
+                    </button>
+                    <span>·</span>
+                    <button
+                      onClick={handleResetToOnboarding}
+                      className="hover:text-[var(--text-primary)] transition-colors flex items-center gap-1 cursor-pointer"
+                    >
+                      <RotateCcw className="w-3 h-3" /> Intro
+                    </button>
+                    <span>·</span>
+                    <button
+                      onClick={() => setShowPaywall(true)}
+                      className="hover:text-[var(--color-accent)] transition-colors flex items-center gap-1 cursor-pointer"
+                    >
+                      <Sparkles className="w-3 h-3" style={{ color: 'var(--color-accent)' }} />
+                      {isPremiumUnlocked ? 'Plus Actief' : 'Plus'}
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
@@ -286,6 +308,11 @@ export default function App() {
               />
             )}
           </AnimatePresence>
+        </div>
+
+        {/* Mock Home Indicator (iOS feel) */}
+        <div className="h-4 w-full flex items-center justify-center shrink-0 z-[60] pb-1">
+          <div className="w-32 h-1 bg-[var(--text-muted)] opacity-20 rounded-full" />
         </div>
 
         {/* User Profile Modal */}
