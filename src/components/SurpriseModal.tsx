@@ -111,8 +111,22 @@ export const SurpriseModal: React.FC<SurpriseModalProps> = ({
       : 'Deep & Intiem';
 
   const handleStart = () => {
+    let stage: any = 'any';
+    if (selectedRel === 'date') {
+      const dateStages = ['date_first', 'date_few', 'date_flirty', 'date_awhile'];
+      stage = dateStages[Math.floor(Math.random() * dateStages.length)];
+    } else if (selectedRel === 'partner') {
+      const partnerStages = ['partner_datenight', 'partner_reconnect', 'partner_new'];
+      stage = partnerStages[Math.floor(Math.random() * partnerStages.length)];
+    } else if (selectedRel === 'friends') {
+      stage = 'friends_good';
+    } else if (selectedRel === 'family') {
+      stage = 'family_general';
+    }
+
     onConfirm({
       relationship: selectedRel,
+      relationshipStage: stage,
       vibe: selectedVibe,
       duration: selectedDur,
       intensity: selectedInt,

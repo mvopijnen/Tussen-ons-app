@@ -925,6 +925,128 @@ export const PROMPTS_DATABASE: PromptItem[] = [
     prompt: 'Als we over 20 jaar als groep terugkijken op vanavond, wat hopen we dat er dan nog exact hetzelfde is?',
     subtitle: 'Onze vriendschap, de humor, de manier waarop we praten of hoe we elkaar vasthouden.',
     tip: 'Een mooi moment om even stil te staan bij het gezelschap.'
+  },
+
+  // ==========================================
+  // SECRET PICK INTERACTIONS (Game Mechanic)
+  // ==========================================
+  {
+    id: 'secret-pick-1',
+    category: 'Eerste Date & Chemie',
+    subcategory: 'Secret Pick',
+    interactionType: 'secret_pick',
+    intensity: 2,
+    relationshipType: ['date', 'partner', 'surprise'],
+    relationshipStages: ['date_first', 'date_few', 'date_flirty', 'partner_datenight'],
+    tags: ['spel', 'chemie', 'flirten', 'verrassend'],
+    premium: false,
+    prompt: 'Wie van jullie zou eerder halsoverkop verliefd worden?',
+    subtitle: 'Kies eerst in het geheim jouw antwoord zonder dat de ander meekijkt. Pas na het aftellen onthullen we jullie keuzes tegelijk!',
+    tip: 'Geef de telefoon rustig door aan de ander.',
+    secretPickDetails: {
+      question: 'Wie van jullie zou eerder halsoverkop verliefd worden?',
+      options: ['De ander', 'Ikzelf', 'Echt precies gelijk']
+    }
+  },
+  {
+    id: 'secret-pick-2',
+    category: 'Partner & Dynamiek',
+    subcategory: 'Secret Pick',
+    interactionType: 'secret_pick',
+    intensity: 2,
+    relationshipType: ['partner', 'date', 'surprise'],
+    relationshipStages: ['partner_datenight', 'partner_reconnect', 'date_flirty', 'date_awhile'],
+    tags: ['humor', 'spel', 'herkenning', 'verrassend'],
+    premium: false,
+    prompt: 'Wat zou onze perfecte spontane date zijn als we nu direct de deur uit liepen?',
+    subtitle: 'Kies beiden blind één optie. Hebben jullie dezelfde chemie of juist een leuke verrassing?',
+    secretPickDetails: {
+      question: 'Wat zou onze perfecte spontane date zijn als we nu de deur uit liepen?',
+      options: ['Cocktails in een schemerige bar', 'Late night wandeling & diepe gesprekken', 'Snacks halen en samen op de bank kruipen']
+    }
+  },
+  {
+    id: 'secret-pick-3',
+    category: 'Vriendschap & Spel',
+    subcategory: 'Secret Pick',
+    interactionType: 'secret_pick',
+    intensity: 2,
+    relationshipType: ['friends', 'group', 'surprise'],
+    relationshipStages: ['friends_new', 'friends_good', 'friends_best', 'friends_group'],
+    tags: ['lachen', 'spel', 'humor'],
+    premium: false,
+    prompt: 'Wie van jullie zou in een noodsituatie de rust bewaren en wie raakt meteen in paniek?',
+    subtitle: 'Kies beiden eerlijk over wie de absolute rots in de branding is.',
+    secretPickDetails: {
+      question: 'Wie is de ultieme rots in de branding?',
+      options: ['Persoon 1 bewaart de rust', 'Persoon 2 bewaart de rust', 'We raken allebei in paniek']
+    }
+  },
+  {
+    id: 'secret-pick-4',
+    category: 'Chemie & Aantrekkingskracht',
+    subcategory: 'Secret Pick',
+    interactionType: 'secret_pick',
+    intensity: 3,
+    relationshipType: ['date', 'partner'],
+    relationshipStages: ['date_flirty', 'date_few', 'partner_datenight'],
+    tags: ['flirten', 'chemie', 'aantrekkingskracht'],
+    premium: false,
+    prompt: 'Wat trok jou bij de allereerste ontmoeting het meest aan in de ander?',
+    subtitle: 'Kies jouw favoriete detail in stilte. 3... 2... 1... onthul tegelijkertijd!',
+    secretPickDetails: {
+      question: 'Wat trok jou als eerste het meeste aan?',
+      options: ['De ogen en blik', 'De lach en stemgeluid', 'De zelfverzekerde energie & stijl']
+    }
+  },
+
+  // ==========================================
+  // POSITIVE LANDINGS (Ending Curve Mastery)
+  // ==========================================
+  {
+    id: 'positive-landing-1',
+    category: 'Positieve Afsluiting',
+    subcategory: 'Compliment & Blik Vooruit',
+    interactionType: 'ask',
+    intensity: 2,
+    relationshipType: ['date', 'partner', 'friends', 'surprise'],
+    relationshipStages: ['any'],
+    tags: ['waardering', 'afsluiting', 'positief', 'compliment'],
+    emotionalTone: 'positive_landing',
+    premium: false,
+    prompt: 'Wat is iets subtiels dat de ander tijdens dit gesprek deed of zei, dat je een warm of fijn gevoel gaf?',
+    subtitle: 'Een blik, een openhartig antwoord, of een moment waarop jullie samen moesten lachen.',
+    tip: 'Kijk elkaar aan tijdens het antwoord en neem de tijd.'
+  },
+  {
+    id: 'positive-landing-2',
+    category: 'Positieve Afsluiting',
+    subcategory: 'Lichte Toekomst',
+    interactionType: 'both_answer',
+    intensity: 2,
+    relationshipType: ['date', 'partner', 'friends', 'surprise'],
+    relationshipStages: ['any'],
+    tags: ['toekomst', 'energie', 'positief'],
+    emotionalTone: 'positive_landing',
+    premium: false,
+    prompt: 'Welk gevoel of welk woord beschrijft de energie tussen ons vanavond het allerbeste?',
+    subtitle: 'Beide noemen binnen 5 seconden één woord.',
+    tip: 'Zonder te overpeinzen; ga op je allereerste gevoel af.'
+  },
+  {
+    id: 'positive-landing-3',
+    category: 'Positieve Afsluiting',
+    subcategory: 'Samen Vieren',
+    interactionType: 'challenge',
+    intensity: 1,
+    relationshipType: ['date', 'partner', 'friends', 'family', 'surprise'],
+    relationshipStages: ['any'],
+    tags: ['speels', 'proost', 'afsluiting', 'warmte'],
+    emotionalTone: 'positive_landing',
+    premium: false,
+    prompt: 'Sluit deze ronde af met een toast of blik: hef samen het glas op één specifiek ding van vandaag.',
+    subtitle: 'Of geef elkaar een high five / knuffel voor de eerlijke en leuke antwoorden.',
+    challengeAction: 'Hef het glas of wissel een glimlach uit en spreek één kleine wens uit voor de rest van de avond.'
   }
 ];
 

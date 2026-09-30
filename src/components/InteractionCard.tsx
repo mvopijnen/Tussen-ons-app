@@ -59,6 +59,14 @@ export const InteractionCard: React.FC<InteractionCardProps> = ({
           onUpdate={(state) => onRecordInteraction({ revealState: state })}
         />
       );
+    case 'secret_pick':
+      return (
+        <SecretPickView
+          prompt={prompt}
+          state={interactionData?.secretPickState}
+          onUpdate={(state) => onRecordInteraction({ secretPickState: state })}
+        />
+      );
     case 'ask':
     default:
       return <AskView prompt={prompt} />;
@@ -802,6 +810,294 @@ const RevealView: React.FC<{
 
       <div className="text-xs text-[var(--text-muted)] text-center">
         Eerst blind kiezen, dan samen lachen om het resultaat.
+      </div>
+    </div>
+  );
+};
+
+/* ----------------------------------------------------
+   9. SECRET PICK VIEW (Blind kiezen -> Doorsturen -> 3,2,1 Reveal!)
+---------------------------------------------------- */
+interface SecretPickState {
+  step: 'p1_turn' | 'pass_phone' | 'p2_turn' | 'countdown' | 'revealed';
+  p1Choice?: string;
+  p2Choice?: string;
+}
+
+const SecretPickView: React.FC<{
+  prompt: PromptItem;
+  state?: SecretPickState;
+  onUpdate: (state: SecretPickState) => void;
+}> = ({ prompt, state, onUpdate }) => {
+  const options = prompt.secretPickDetails?.options || [
+    'Optie 1',
+    'Optie 2',
+    'Gelijkspel'
+  ];
+  const questionText = prompt.secretPickDetails?.question || prompt.prompt;
+
+  const currentStep = state?.step || 'p1_turn';
+  const p1Choice = state?.p1Choice;
+  const p2Choice = state?.p2Choice;
+  const [countdown, setCountdown] = useState<number>(3);
+
+  // Trigger countdown timer
+  useEffect(() => {
+    if (currentStep === 'countdown') {
+      setCountdown(3);
+      const timer1 = setTimeout(() => setCountdown(2), 650);
+      const timer2 = setTimeout(() => setCountdown(1), 1300);
+      const timer3 = setTimeout(() => {
+        onUpdate({
+          step: 'revealed',
+          p1Choice,
+          p2Choice
+        });
+      }, 1950);
+
+      return () => {
+        clearTimeout(timer1);
+        clearTimeout(timer2);
+        clearTimeout(timer3);
+      };
+    }
+  }, [currentStep, p1Choice, p2Choice, onUpdate]);
+
+  const handleP1Select = (opt: string) => {
+    onUpdate({
+      step: 'pass_phone',
+      p1Choice: opt,
+      p2Choice: undefined
+    });
+  };
+
+  const handleReadyForP2 = () => {
+    onUpdate({
+      step: 'p2_turn',
+      p1Choice,
+      p2Choice: undefined
+    });
+  };
+
+  const handleP2Select = (opt: string) => {
+    onUpdate({
+      step: 'countdown',
+      p1Choice,
+      p2Choice: opt
+    });
+  };
+
+  const handleReset = () => {
+    onUpdate({
+      step: 'p1_turn',
+      p1Choice: undefined,
+      p2Choice: undefined
+    });
+  };
+
+  return (
+    <div className="flex flex-col justify-between h-full py-2 space-y-4">
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <span 
+            style={{ backgroundColor: 'var(--color-accent-subtle)', color: 'var(--color-accent)' }}
+            className="text-[11px] font-mono uppercase px-2.5 py-0.5 rounded-full font-semibold border border-[var(--border-subtle)]"
+          >
+            Secret Pick
+          </span>
+          <span className="text-[11px] text-[var(--text-muted)] font-mono">
+            {currentStep === 'p1_turn' && 'Stap 1/2 · Persoon 1'}
+            {currentStep === 'pass_phone' && 'Doorgeven 🔒'}
+            {currentStep === 'p2_turn' && 'Stap 2/2 · Persoon 2'}
+            {currentStep === 'countdown' && '3, 2, 1...'}
+            {currentStep === 'revealed' && 'Onthuld ✨'}
+          </span>
+        </div>
+
+        <h2 className="font-editorial text-xl sm:text-2xl text-[var(--text-primary)] leading-snug font-medium">
+          &ldquo;{questionText}&rdquo;
+        </h2>
+      </div>
+
+      {/* Main Interactive Stage */}
+      <div className="my-auto py-2">
+        <AnimatePresence mode="wait">
+          {currentStep === 'p1_turn' && (
+            <motion.div
+              key="p1_turn"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="space-y-3"
+            >
+              <div 
+                style={{ backgroundColor: 'var(--bg-card-subtle)', borderColor: 'var(--border-subtle)' }}
+                className="p-3 rounded-xl border text-xs text-[var(--text-secondary)] flex items-center gap-2"
+              >
+                <EyeOff className="w-4 h-4 text-[var(--color-accent)] shrink-0" />
+                <span><strong>Persoon 1:</strong> Kies in het geheim jouw keuze zonder dat de ander meekijkt.</span>
+              </div>
+
+              <div className="space-y-2">
+                {options.map((opt, i) => (
+                  <button
+                    key={i}
+                    onClick={() => handleP1Select(opt)}
+                    style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)' }}
+                    className="w-full p-3.5 rounded-xl border text-left text-xs sm:text-sm font-medium hover:border-[var(--color-accent)] hover:shadow-xs active:scale-[0.99] transition-all cursor-pointer flex items-center justify-between text-[var(--text-primary)]"
+                  >
+                    <span>{opt}</span>
+                    <span className="text-[10px] uppercase font-mono tracking-wider opacity-60">Kies</span>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {currentStep === 'pass_phone' && (
+            <motion.div
+              key="pass_phone"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)' }}
+              className="p-6 rounded-2xl border text-center space-y-4 shadow-xs"
+            >
+              <div 
+                style={{ backgroundColor: 'var(--color-accent-subtle)' }}
+                className="w-14 h-14 rounded-full flex items-center justify-center mx-auto text-xl"
+              >
+                🔒
+              </div>
+              <div className="space-y-1">
+                <h3 className="font-editorial text-lg text-[var(--text-primary)] font-semibold">
+                  Keuze veilig opgeslagen!
+                </h3>
+                <p className="text-xs text-[var(--text-secondary)] font-light leading-relaxed max-w-xs mx-auto">
+                  Draai het scherm weg of geef de telefoon rustig door aan <strong>Persoon 2</strong>.
+                </p>
+              </div>
+
+              <button
+                onClick={handleReadyForP2}
+                style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-accent-text)' }}
+                className="w-full py-3 rounded-xl text-xs sm:text-sm font-medium shadow-md active:scale-98 transition-transform cursor-pointer"
+              >
+                Ik ben Persoon 2 →
+              </button>
+            </motion.div>
+          )}
+
+          {currentStep === 'p2_turn' && (
+            <motion.div
+              key="p2_turn"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="space-y-3"
+            >
+              <div 
+                style={{ backgroundColor: 'var(--bg-card-subtle)', borderColor: 'var(--border-subtle)' }}
+                className="p-3 rounded-xl border text-xs text-[var(--text-secondary)] flex items-center gap-2"
+              >
+                <EyeOff className="w-4 h-4 text-[var(--color-accent)] shrink-0" />
+                <span><strong>Persoon 2:</strong> Kies nu in stilte jouw antwoord.</span>
+              </div>
+
+              <div className="space-y-2">
+                {options.map((opt, i) => (
+                  <button
+                    key={i}
+                    onClick={() => handleP2Select(opt)}
+                    style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)' }}
+                    className="w-full p-3.5 rounded-xl border text-left text-xs sm:text-sm font-medium hover:border-[var(--color-accent)] hover:shadow-xs active:scale-[0.99] transition-all cursor-pointer flex items-center justify-between text-[var(--text-primary)]"
+                  >
+                    <span>{opt}</span>
+                    <span className="text-[10px] uppercase font-mono tracking-wider opacity-60">Kies</span>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {currentStep === 'countdown' && (
+            <motion.div
+              key="countdown"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 1.2, opacity: 0 }}
+              className="py-10 text-center space-y-3"
+            >
+              <div className="text-xs uppercase tracking-widest font-mono text-[var(--text-muted)]">
+                Tel samen hardop af!
+              </div>
+              <motion.div 
+                key={countdown}
+                initial={{ scale: 1.6, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                className="text-6xl sm:text-7xl font-editorial font-bold text-[var(--color-accent)]"
+              >
+                {countdown}
+              </motion.div>
+            </motion.div>
+          )}
+
+          {currentStep === 'revealed' && (
+            <motion.div
+              key="revealed"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)' }}
+              className="p-5 rounded-2xl border space-y-4 shadow-xs"
+            >
+              <div className="text-center space-y-0.5">
+                <span className="text-[10px] font-mono uppercase tracking-wider font-semibold" style={{ color: 'var(--color-accent)' }}>
+                  Beide keuzes onthuld!
+                </span>
+                <h3 className="font-editorial text-base sm:text-lg font-semibold text-[var(--text-primary)]">
+                  {p1Choice === p2Choice ? '✨ Perfecte Match!' : '👀 Verschillende keuzes!'}
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div 
+                  style={{ backgroundColor: 'var(--bg-card-subtle)', borderColor: 'var(--border-subtle)' }}
+                  className="p-3.5 rounded-xl border text-center space-y-1"
+                >
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)]">Persoon 1</div>
+                  <div className="text-xs sm:text-sm font-semibold text-[var(--text-primary)]">{p1Choice}</div>
+                </div>
+
+                <div 
+                  style={{ backgroundColor: 'var(--bg-card-subtle)', borderColor: 'var(--border-subtle)' }}
+                  className="p-3.5 rounded-xl border text-center space-y-1"
+                >
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-[var(--text-muted)]">Persoon 2</div>
+                  <div className="text-xs sm:text-sm font-semibold text-[var(--text-primary)]">{p2Choice}</div>
+                </div>
+              </div>
+
+              <p className="text-xs text-[var(--text-secondary)] font-light text-center leading-relaxed">
+                {p1Choice === p2Choice
+                  ? 'Jullie zaten direct op één lijn. Wat maakte deze keuze zo vanzelfsprekend?'
+                  : 'Wie begint met uitleggen waarom deze keuze werd gemaakt?'}
+              </p>
+
+              <button
+                onClick={handleReset}
+                style={{ color: 'var(--color-accent)' }}
+                className="w-full text-center text-xs hover:underline pt-1 flex items-center justify-center gap-1 cursor-pointer"
+              >
+                <RotateCcw className="w-3.5 h-3.5" /> Opnieuw kiezen
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      <div className="text-[11px] text-[var(--text-muted)] text-center font-light pt-2 border-t border-[var(--border-subtle)]">
+        Eerst in stilte kiezen, daarna samen lachen om het resultaat.
       </div>
     </div>
   );

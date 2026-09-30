@@ -7,7 +7,14 @@ export type InteractionType =
   | 'challenge'
   | 'finish_the_sentence'
   | 'rapid_fire'
-  | 'reveal';
+  | 'reveal'
+  | 'secret_pick'
+  | 'predict'
+  | 'match'
+  | 'ranking'
+  | 'one_word'
+  | 'story'
+  | 'wildcard';
 
 export type RelationshipType =
   | 'date'
@@ -17,6 +24,30 @@ export type RelationshipType =
   | 'surprise'
   | 'work'
   | 'group';
+
+export type RelationshipStage =
+  // Date
+  | 'date_first'       // Eerste ontmoeting
+  | 'date_few'         // Een paar dates
+  | 'date_awhile'      // We daten al even
+  | 'date_serious'     // Het wordt serieuzer
+  | 'date_flirty'      // Flirty avond
+  // Partner
+  | 'partner_new'      // Net samen
+  | 'partner_long'     // Al langer samen
+  | 'partner_datenight'// Date night
+  | 'partner_reconnect'// We willen weer eens echt praten
+  | 'partner_deep'     // We kennen elkaar door en door
+  // Friends
+  | 'friends_new'      // Nieuwe vrienden
+  | 'friends_good'     // Goede vrienden
+  | 'friends_best'     // Beste vrienden
+  | 'friends_group'    // Vriendengroep
+  // Family
+  | 'family_parent_child' // Ouder/kind
+  | 'family_siblings'     // Broer/zus
+  | 'family_general'      // Familie algemeen
+  | 'any';
 
 export type VibeType =
   | 'lachen'
@@ -43,6 +74,11 @@ export interface RapidFirePair {
   optionB: string;
 }
 
+export interface SecretPickDetails {
+  question: string;
+  options: string[];
+}
+
 export interface PromptItem {
   id: string;
   category: string;
@@ -50,6 +86,7 @@ export interface PromptItem {
   interactionType: InteractionType;
   intensity: IntensityLevel;
   relationshipType: RelationshipType[];
+  relationshipStages?: RelationshipStage[];
   tags: string[];
   premium: boolean;
   prompt: string;
@@ -59,10 +96,12 @@ export interface PromptItem {
   challengeAction?: string;
   challengeDurationSec?: number;
   sentenceStarter?: string;
+  emotionalTone?: 'warmup' | 'playful' | 'curious' | 'vulnerable' | 'peak' | 'positive_landing';
   revealQuestion?: {
     instruction: string;
     options: string[];
   };
+  secretPickDetails?: SecretPickDetails;
   guessDetails?: {
     targetPrompt: string;
     hint: string;
@@ -72,6 +111,7 @@ export interface PromptItem {
 
 export interface SessionConfig {
   relationship: RelationshipType;
+  relationshipStage?: RelationshipStage;
   vibe: VibeType;
   duration: DurationType;
   intensity: IntensitySetting;
@@ -84,7 +124,15 @@ export interface SessionStats {
   favoritesCount: number;
   durationSeconds: number;
   favoritePromptIds: string[];
+  sessionFavoriteIds: string[];
 }
+
+export interface PlayHistoryRecord {
+  lastPlayedAt: number;
+  timesPlayed: number;
+}
+
+export type PlayHistoryMap = Record<string, PlayHistoryRecord>;
 
 export interface UserProfile {
   name: string;

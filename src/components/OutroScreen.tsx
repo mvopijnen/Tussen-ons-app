@@ -126,7 +126,7 @@ export const OutroScreen: React.FC<OutroScreenProps> = ({
               {stats.favoritesCount}
             </div>
             <div className="text-xs text-[var(--text-secondary)] font-light flex items-center justify-center gap-1.5">
-              <Heart className="w-3.5 h-3.5" style={{ color: 'var(--color-accent)', fill: 'var(--color-accent)' }} /> Favorieten
+              <Heart className="w-3.5 h-3.5" style={{ color: 'var(--color-accent)', fill: 'var(--color-accent)' }} /> Nieuw bewaard
             </div>
           </div>
 
@@ -143,15 +143,15 @@ export const OutroScreen: React.FC<OutroScreenProps> = ({
           </div>
         </motion.div>
 
-        {/* Favorited prompts list (if any) */}
-        {favoritedPrompts.length > 0 && (
+        {/* Favorited prompts list for THIS session (if any) */}
+        {favoritedPrompts.length > 0 ? (
           <div 
             style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)' }}
             className="border rounded-2xl p-4 space-y-2.5 shadow-xs"
           >
             <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-primary)]">
               <BookmarkCheck className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
-              <span>Jullie bewaarde vragen:</span>
+              <span>Tijdens deze ronde bewaard ({favoritedPrompts.length}):</span>
             </div>
             <div className="space-y-2 max-h-36 overflow-y-auto pr-1">
               {favoritedPrompts.map((fav) => (
@@ -171,12 +171,29 @@ export const OutroScreen: React.FC<OutroScreenProps> = ({
                 style={{ color: 'var(--color-accent)' }}
                 className="w-full text-center text-xs font-semibold hover:underline flex items-center justify-center gap-1 cursor-pointer pt-1"
               >
-                <span>Bekijk al jullie favorieten</span>
+                <span>Bekijk al jullie opgeslagen favorieten</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             )}
           </div>
-        )}
+        ) : onOpenFavorites ? (
+          <div 
+            style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)' }}
+            className="border rounded-2xl p-3.5 text-center space-y-1 shadow-xs"
+          >
+            <p className="text-xs text-[var(--text-secondary)] font-light">
+              Geen vragen bewaard deze ronde – alle aandacht ging naar het gesprek.
+            </p>
+            <button
+              onClick={onOpenFavorites}
+              style={{ color: 'var(--color-accent)' }}
+              className="text-xs font-semibold hover:underline inline-flex items-center gap-1 cursor-pointer pt-0.5"
+            >
+              <span>Bekijk al jullie opgeslagen favorieten</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        ) : null}
       </div>
 
       {/* Action Buttons */}

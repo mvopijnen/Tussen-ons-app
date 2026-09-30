@@ -92,10 +92,10 @@ export const PremiumPaywallModal: React.FC<PremiumPaywallModalProps> = ({
               </div>
               <div>
                 <h4 className="text-xs font-semibold text-[var(--text-primary)]">
-                  500+ Unieke Interacties
+                  Steeds Nieuwe Vragen & Verrassende Sessies
                 </h4>
                 <p className="text-[11px] text-[var(--text-secondary)] font-light">
-                  Geheime onthullingen, zinsafmakers en op maat gemaakte uitdagingen.
+                  Toegang tot alle diepe thema’s, geavanceerde spelmechanieken en unieke relatiefases.
                 </p>
               </div>
             </div>
@@ -109,10 +109,27 @@ export const PremiumPaywallModal: React.FC<PremiumPaywallModalProps> = ({
               </div>
               <div>
                 <h4 className="text-xs font-semibold text-[var(--text-primary)]">
-                  Persoonlijke Favorieten & Momenten
+                  Bewaar Jullie Favoriete Vragen
                 </h4>
                 <p className="text-[11px] text-[var(--text-secondary)] font-light">
-                  Sla bijzondere antwoorden op en herbeleef jullie mooiste gesprekken.
+                  Sla vragen op die een bijzonder, grappig of mooi gesprek opleverden en speel eigen rondes.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <div 
+                style={{ backgroundColor: 'var(--color-accent-subtle)', color: 'var(--color-accent)' }}
+                className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5"
+              >
+                <Shield className="w-4 h-4" />
+              </div>
+              <div>
+                <h4 className="text-xs font-semibold text-[var(--text-primary)]">
+                  Volledig Privé & Veilig
+                </h4>
+                <p className="text-[11px] text-[var(--text-secondary)] font-light">
+                  Wat tussen jullie wordt gezegd, blijft tussen jullie. Geen opnames of data naar servers.
                 </p>
               </div>
             </div>
