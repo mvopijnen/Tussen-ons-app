@@ -266,11 +266,13 @@ const GuessView: React.FC<{ prompt: PromptItem }> = ({ prompt }) => {
           >
             {isRevealed ? (
               <>
-                <EyeOff className="w-3.5 h-3.5" /> Verberg instructie
+                <EyeOff className="w-3.5 h-3.5" />
+                <span>Verberg instructie</span>
               </>
             ) : (
               <>
-                <Eye className="w-3.5 h-3.5" /> Stap 2: Onthul de waarheid
+                <Eye className="w-3.5 h-3.5" />
+                <span>Stap 2: Onthul de waarheid</span>
               </>
             )}
           </button>
@@ -574,12 +576,13 @@ const ChallengeView: React.FC<{ prompt: PromptItem }> = ({ prompt }) => {
                   className="px-4 py-2 text-xs font-medium rounded-xl flex items-center gap-2 transition-all cursor-pointer shadow-xs active:scale-95"
                 >
                   {isRunning ? (
-                    'Pauzeren'
+                    <span>Pauzeren</span>
                   ) : isFinished ? (
-                    'Opnieuw starten ↻'
+                    <span>Opnieuw starten ↻</span>
                   ) : (
                     <>
-                      <Play className="w-3.5 h-3.5 fill-current" /> Start timer
+                      <Play className="w-3.5 h-3.5 fill-current" />
+                      <span>Start timer</span>
                     </>
                   )}
                 </button>

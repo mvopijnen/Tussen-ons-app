@@ -226,13 +226,8 @@ export const SetupFlow: React.FC<SetupFlowProps> = ({
           style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-accent-text)' }}
           className="w-full h-12.5 rounded-2xl active:scale-[0.98] font-medium text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer"
         >
-          {step === 5 ? (
-            'Begin gesprek'
-          ) : (
-            <>
-              Verder <ArrowRight className="w-4 h-4 ml-0.5" />
-            </>
-          )}
+          <span>{step === 5 ? 'Begin gesprek' : 'Verder'}</span>
+          {step < 5 && <ArrowRight className="w-4 h-4 ml-0.5" />}
         </button>
 
         {/* Step indicator dots & Privacy badge */}

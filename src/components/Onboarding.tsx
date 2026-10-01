@@ -61,7 +61,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
           onClick={handleSkip}
           className="text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors py-2 px-3 -mr-3 cursor-pointer"
         >
-          Overslaan
+          <span>Overslaan</span>
         </button>
       </div>
 
@@ -121,13 +121,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
           style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-accent-text)' }}
           className="w-full h-13 rounded-2xl active:scale-[0.98] font-medium text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer"
         >
-          {currentStep === ONBOARDING_STEPS.length - 1 ? (
-            'Start sessie'
-          ) : (
-            <>
-              Volgende <ArrowRight className="w-4 h-4 ml-1" />
-            </>
-          )}
+          <span>{currentStep === ONBOARDING_STEPS.length - 1 ? 'Start sessie' : 'Volgende'}</span>
+          {currentStep < ONBOARDING_STEPS.length - 1 && <ArrowRight className="w-4 h-4 ml-1" />}
         </button>
       </div>
     </div>

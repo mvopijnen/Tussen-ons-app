@@ -192,14 +192,27 @@ export default function App() {
         <div className="relative z-10 flex-1 flex flex-col min-h-[calc(100vh-28px-16px)]">
           <AnimatePresence mode="wait">
             {view === 'onboarding' && (
-              <Onboarding
+              <motion.div
                 key="onboarding"
-                onComplete={() => setView('setup')}
-              />
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="flex-1 flex flex-col"
+              >
+                <Onboarding onComplete={() => setView('setup')} />
+              </motion.div>
             )}
 
             {view === 'setup' && (
-              <div key="setup" className="relative flex-1 flex flex-col">
+              <motion.div
+                key="setup"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="relative flex-1 flex flex-col"
+              >
                 <SetupFlow
                   onStartSession={handleStartSession}
                   onOpenPaywall={() => setShowPaywall(true)}
@@ -212,100 +225,110 @@ export default function App() {
                   isPremiumUnlocked={isPremiumUnlocked}
                 />
                 
-                {/* Subtle footer toggle to switch theme, review onboarding or surprise me */}
-                <div className="py-3 px-4 flex flex-col items-center gap-3">
-                  <div className="w-full max-w-[240px]">
+                {/* Clean footer with non-duplicated utility actions */}
+                <div className="py-2.5 px-4 flex flex-col items-center gap-2">
+                  <div className="w-full max-w-[240px] flex justify-center">
                     <PWAInstallButton variant="minimal" />
                   </div>
                   
-                  <div className="text-[11px] text-[var(--text-muted)] flex items-center justify-center gap-2 flex-wrap">
-                    <button
-                      onClick={() => setView('favorites')}
-                      className="hover:text-[var(--text-primary)] transition-colors flex items-center gap-1 cursor-pointer font-medium"
-                    >
-                      <Heart className="w-3.5 h-3.5 fill-[var(--color-accent)] text-[var(--color-accent)]" />
-                      <span>Favorieten ({globalFavorites.length})</span>
-                    </button>
-                    <span>·</span>
-                    <button
-                      onClick={() => setShowThemeModal(true)}
-                      className="hover:text-[var(--text-primary)] transition-colors flex items-center gap-1 cursor-pointer font-medium"
-                    >
-                      <Palette className="w-3.5 h-3.5" style={{ color: 'var(--color-accent)' }} />
-                      <span>Stijl: {themeLabelMap[theme]}</span>
-                    </button>
-                    <span>·</span>
+                  <div className="text-[11px] text-[var(--text-muted)] flex items-center justify-center gap-2.5 flex-wrap">
                     <button
                       onClick={() => setShowSurpriseModal(true)}
-                      className="hover:text-[var(--text-primary)] transition-colors flex items-center gap-1 cursor-pointer"
+                      className="hover:text-[var(--text-primary)] transition-colors flex items-center gap-1 cursor-pointer font-medium"
                     >
-                      <Dices className="w-3 h-3" style={{ color: 'var(--color-accent)' }} /> Surprise Me
+                      <Dices className="w-3.5 h-3.5" style={{ color: 'var(--color-accent)' }} />
+                      <span>Surprise Me</span>
                     </button>
                     <span>·</span>
                     <button
                       onClick={handleResetToOnboarding}
                       className="hover:text-[var(--text-primary)] transition-colors flex items-center gap-1 cursor-pointer"
                     >
-                      <RotateCcw className="w-3 h-3" /> Intro
+                      <RotateCcw className="w-3 h-3" />
+                      <span>Intro</span>
                     </button>
                     <span>·</span>
                     <button
                       onClick={() => setShowPaywall(true)}
-                      className="hover:text-[var(--color-accent)] transition-colors flex items-center gap-1 cursor-pointer"
+                      className="hover:text-[var(--color-accent)] transition-colors flex items-center gap-1 cursor-pointer font-medium"
                     >
                       <Sparkles className="w-3 h-3" style={{ color: 'var(--color-accent)' }} />
-                      {isPremiumUnlocked ? 'Plus Actief' : 'Plus'}
+                      <span>{isPremiumUnlocked ? 'Plus Actief' : 'Plus'}</span>
                     </button>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             )}
 
             {view === 'favorites' && (
-              <FavoritesView
+              <motion.div
                 key="favorites"
-                favoriteIds={globalFavorites}
-                onToggleFavorite={toggleGlobalFavorite}
-                onBack={() => setView('setup')}
-                onStartCustomSession={handleStartFavoritesSession}
-                onOpenTheme={() => setShowThemeModal(true)}
-              />
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="flex-1 flex flex-col"
+              >
+                <FavoritesView
+                  favoriteIds={globalFavorites}
+                  onToggleFavorite={toggleGlobalFavorite}
+                  onBack={() => setView('setup')}
+                  onStartCustomSession={handleStartFavoritesSession}
+                  onOpenTheme={() => setShowThemeModal(true)}
+                />
+              </motion.div>
             )}
 
             {view === 'session' && currentPrompt && (
-              <SessionView
+              <motion.div
                 key="session"
-                currentPrompt={currentPrompt}
-                currentPromptIndex={currentPromptIndex}
-                totalPrompts={totalPrompts}
-                currentPhase={currentPhase}
-                isFavorite={isFavorite}
-                laughedCount={laughedCount}
-                interactionData={interactionData}
-                onNext={nextPrompt}
-                onSkip={skipPrompt}
-                onToggleFavorite={toggleFavorite}
-                onRecordLaugh={recordLaugh}
-                onRecordInteraction={recordInteraction}
-                onExitSession={finishSession}
-                onOpenTheme={() => setShowThemeModal(true)}
-                config={sessionConfig}
-              />
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="flex-1 flex flex-col"
+              >
+                <SessionView
+                  currentPrompt={currentPrompt}
+                  currentPromptIndex={currentPromptIndex}
+                  totalPrompts={totalPrompts}
+                  currentPhase={currentPhase}
+                  isFavorite={isFavorite}
+                  laughedCount={laughedCount}
+                  interactionData={interactionData}
+                  onNext={nextPrompt}
+                  onSkip={skipPrompt}
+                  onToggleFavorite={toggleFavorite}
+                  onRecordLaugh={recordLaugh}
+                  onRecordInteraction={recordInteraction}
+                  onExitSession={finishSession}
+                  onOpenTheme={() => setShowThemeModal(true)}
+                  config={sessionConfig}
+                />
+              </motion.div>
             )}
 
             {view === 'outro' && (
-              <OutroScreen
+              <motion.div
                 key="outro"
-                stats={stats}
-                onPlayAnotherRound={() => {
-                  restartSession();
-                  setView('session');
-                }}
-                onChangeVibe={() => setView('setup')}
-                onFinish={() => setView('setup')}
-                onOpenTheme={() => setShowThemeModal(true)}
-                onOpenFavorites={() => setView('favorites')}
-              />
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="flex-1 flex flex-col"
+              >
+                <OutroScreen
+                  stats={stats}
+                  onPlayAnotherRound={() => {
+                    restartSession();
+                    setView('session');
+                  }}
+                  onChangeVibe={() => setView('setup')}
+                  onFinish={() => setView('setup')}
+                  onOpenTheme={() => setShowThemeModal(true)}
+                  onOpenFavorites={() => setView('favorites')}
+                />
+              </motion.div>
             )}
           </AnimatePresence>
         </div>
