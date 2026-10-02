@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f8f5ee">
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} – {{ current_tags | join: ', ' }}{% endif -%}
+      {%- if current_page != 1 %} – Pagina {{ current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} – {{ shop.name }}{% endunless -%}
+    </title>
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+    <link rel="canonical" href="{{ canonical_url }}">
+    {{ content_for_header }}
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: Arial, sans-serif;
+        color: #292521;
+        background: #f8f5ee;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-width: 320px;
+        min-height: 100vh;
+        margin: 0;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .site-header {
+        padding: 1.25rem max(1.5rem, calc((100vw - 72rem) / 2));
+      }
+
+      .site-header a {
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .site-main {
+        min-height: calc(100vh - 4rem);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <a href="{{ routes.root_url }}">{{ shop.name | escape }}</a>
+    </header>
+    <main id="MainContent" class="site-main" role="main">
+      {{ content_for_layout }}
+    </main>
+  </body>
+</html>

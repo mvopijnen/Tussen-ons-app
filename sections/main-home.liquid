@@ -1,0 +1,96 @@
+<section class="home-hero">
+  <div class="home-hero__content">
+    <h1>{{ section.settings.heading | escape }}</h1>
+    <div class="home-hero__body">{{ section.settings.body }}</div>
+    {% if section.settings.button_label != blank %}
+      <a class="home-hero__button" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">
+        {{ section.settings.button_label | escape }}
+      </a>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  .home-hero {
+    display: grid;
+    min-height: min(72vh, 48rem);
+    place-items: center;
+    padding: 4rem 1.5rem;
+    text-align: center;
+  }
+
+  .home-hero__content {
+    width: min(100%, 44rem);
+  }
+
+  .home-hero h1 {
+    margin: 0;
+    font-family: Georgia, serif;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 400;
+    line-height: 1.05;
+  }
+
+  .home-hero__body {
+    margin: 1.5rem auto 0;
+    max-width: 36rem;
+    color: #635d55;
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    line-height: 1.7;
+  }
+
+  .home-hero__body p {
+    margin: 0;
+  }
+
+  .home-hero__button {
+    display: inline-block;
+    margin-top: 2rem;
+    border-radius: 999px;
+    padding: 0.9rem 1.5rem;
+    background: #b83a4b;
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .home-hero__button:hover {
+    background: #922e3c;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Homepage",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Tussen Ons"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Text",
+      "default": "<p>Maak ruimte voor mooie gesprekken en bijzondere momenten samen.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Ontdek de collectie"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Homepage"
+    }
+  ]
+}
+{% endschema %}
