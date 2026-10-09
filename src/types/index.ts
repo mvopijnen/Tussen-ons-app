@@ -21,6 +21,7 @@ export type RelationshipType =
   | 'partner'
   | 'friends'
   | 'family'
+  | 'creative'
   | 'surprise'
   | 'work'
   | 'group';
@@ -107,6 +108,15 @@ export interface PromptItem {
     hint: string;
   };
   rapidFirePairs?: RapidFirePair[];
+  repeat_group?: string;
+  topic?: string;
+  primary_sphere?: string;
+  compatible_spheres?: string[];
+  content_type?: string;
+  follow_up?: string;
+  energy?: string;
+  psychological_goal?: string;
+  secondary_goal?: string;
 }
 
 export interface SessionConfig {

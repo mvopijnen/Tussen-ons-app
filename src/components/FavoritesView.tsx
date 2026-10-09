@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { PromptItem, RelationshipType } from '../types';
 import { PROMPTS_DATABASE } from '../data/prompts';
+import { APPROVED_EERSTE_ONTMOETING_PROMPTS } from '../data/firstMeetingEngine';
 import { InteractionCard } from './InteractionCard';
 
 interface FavoritesViewProps {
@@ -42,7 +43,7 @@ export const FavoritesView: React.FC<FavoritesViewProps> = ({
 
   // Retrieve full prompt objects for favorited IDs
   const favoritedPrompts = useMemo(() => {
-    return PROMPTS_DATABASE.filter((p) => favoriteIds.includes(p.id));
+    return [...PROMPTS_DATABASE, ...APPROVED_EERSTE_ONTMOETING_PROMPTS].filter((p) => favoriteIds.includes(p.id));
   }, [favoriteIds]);
 
   // Available categories within favorited items

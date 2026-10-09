@@ -6,30 +6,29 @@ import {
   Users, 
   Home, 
   Layers, 
-  Dices, 
   Briefcase, 
-  Clock, 
   ArrowRight, 
   ArrowLeft,
   Smile,
   Compass,
   Flame,
+  Dices,
   Palette,
   ShieldCheck,
-  SlidersHorizontal,
-  Edit2
+  Check,
+  Edit2,
+  Lightbulb
 } from 'lucide-react';
 import { 
   RelationshipType, 
   RelationshipStage, 
   VibeType, 
   DurationType, 
-  IntensitySetting, 
   SessionConfig, 
   UserProfile 
 } from '../types';
 
-interface SetupFlowProps {
+export interface SetupFlowProps {
   onStartSession: (config: SessionConfig) => void;
   onOpenPaywall: () => void;
   onOpenProfile: () => void;
@@ -41,11 +40,10 @@ interface SetupFlowProps {
   isPremiumUnlocked: boolean;
 }
 
-type SetupStep = 1 | 2 | 3 | 4 | 5;
+export type SetupStep = 1 | 2 | 3 | 4;
 
 export const SetupFlow: React.FC<SetupFlowProps> = ({
   onStartSession,
-  onOpenPaywall,
   onOpenProfile,
   onOpenSurprise,
   onOpenTheme,
@@ -61,7 +59,6 @@ export const SetupFlow: React.FC<SetupFlowProps> = ({
   const [relationshipStage, setRelationshipStage] = useState<RelationshipStage>('date_first');
   const [vibe, setVibe] = useState<VibeType>('leren_kennen');
   const [duration, setDuration] = useState<DurationType>('15min');
-  const [intensity, setIntensity] = useState<IntensitySetting>('personal');
 
   // Automatically update stage default when relationship changes
   const handleSelectRelationship = (rel: RelationshipType) => {
@@ -70,20 +67,21 @@ export const SetupFlow: React.FC<SetupFlowProps> = ({
     else if (rel === 'partner') setRelationshipStage('partner_datenight');
     else if (rel === 'friends') setRelationshipStage('friends_good');
     else if (rel === 'family') setRelationshipStage('family_general');
+    else if (rel === 'creative') setRelationshipStage('any');
     else setRelationshipStage('any');
   };
 
   // Next and Back handlers
   const handleNext = () => {
-    if (step < 5) {
-      setStep((prev) => Math.min(5, prev + 1) as SetupStep);
+    if (step < 4) {
+      setStep((prev) => Math.min(4, prev + 1) as SetupStep);
     } else {
       onStartSession({
         relationship,
         relationshipStage,
         vibe,
         duration,
-        intensity,
+        intensity: 'personal',
         isPremiumUnlocked
       });
     }
@@ -96,20 +94,20 @@ export const SetupFlow: React.FC<SetupFlowProps> = ({
   };
 
   return (
-    <div className="flex flex-col justify-between min-h-screen max-w-md mx-auto px-5 py-5 sm:py-7">
+    <div className="flex flex-col justify-between min-h-[calc(100vh-28px-16px)] max-w-md mx-auto px-5 py-4 sm:py-6">
       {/* Top Bar with Brand, Favorites, Theme Button & Profile Pill */}
-      <div className="sticky top-0 z-30 flex items-center justify-between py-2 bg-[var(--bg-app)]/80 backdrop-blur-md">
+      <div className="sticky top-0 z-30 flex items-center justify-between pb-3 bg-[var(--bg-app)]/85 backdrop-blur-md">
         <div className="flex items-center gap-2">
           {step > 1 ? (
             <button
               onClick={handleBack}
-              className="w-10 h-10 flex items-center justify-center -ml-2 text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
+              className="w-9 h-9 flex items-center justify-center -ml-2 rounded-full text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-subtle)] transition-colors cursor-pointer"
               aria-label="Vorige stap"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-4.5 h-4.5" />
             </button>
           ) : (
-            <span className="font-editorial text-lg tracking-tight text-[var(--text-primary)] font-semibold px-1">
+            <span className="font-editorial text-lg tracking-tight text-[var(--text-primary)] font-semibold px-0.5">
               Tussen Ons
             </span>
           )}
@@ -121,7 +119,7 @@ export const SetupFlow: React.FC<SetupFlowProps> = ({
           <button
             onClick={onOpenFavorites}
             style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)' }}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] shadow-xs transition-all cursor-pointer relative"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] shadow-2xs transition-all cursor-pointer relative"
             title="Bekijk bewaarde favoriete vragen"
           >
             <Heart 
@@ -146,7 +144,7 @@ export const SetupFlow: React.FC<SetupFlowProps> = ({
           <button
             onClick={onOpenTheme}
             style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)' }}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] shadow-xs transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] shadow-2xs transition-all cursor-pointer"
             title="Kies een andere lay-out / stijl"
           >
             <Palette className="w-3.5 h-3.5" style={{ color: 'var(--color-accent)' }} />
@@ -157,7 +155,7 @@ export const SetupFlow: React.FC<SetupFlowProps> = ({
           <button
             onClick={onOpenProfile}
             style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-subtle)' }}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border text-xs text-[var(--text-primary)] shadow-xs transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border text-xs text-[var(--text-primary)] shadow-2xs transition-all cursor-pointer"
             title="Profiel aanpassen"
           >
             <span className="text-sm leading-none">{userProfile.avatar || '✨'}</span>
@@ -166,7 +164,7 @@ export const SetupFlow: React.FC<SetupFlowProps> = ({
         </div>
       </div>
 
-      {/* Main Content Area */}
+      {/* Main Content Area: Spacious single-column editorial step */}
       <div className="my-auto py-1">
         <AnimatePresence mode="wait">
           {step === 1 && (
@@ -177,8 +175,6 @@ export const SetupFlow: React.FC<SetupFlowProps> = ({
               userProfile={userProfile}
               onOpenProfile={onOpenProfile}
               onOpenSurprise={onOpenSurprise}
-              onOpenFavorites={onOpenFavorites}
-              favoritesCount={favoritesCount}
             />
           )}
 
@@ -206,39 +202,29 @@ export const SetupFlow: React.FC<SetupFlowProps> = ({
               onSelect={setDuration}
             />
           )}
-
-          {step === 5 && (
-            <StepFiveIntensity
-              key="step5"
-              selected={intensity}
-              onSelect={setIntensity}
-              onOpenPaywall={onOpenPaywall}
-              isPremiumUnlocked={isPremiumUnlocked}
-            />
-          )}
         </AnimatePresence>
       </div>
 
-      {/* Sticky Bottom Actions */}
-      <div className="pt-3 space-y-2">
+      {/* Sticky Bottom Actions with generous negative space */}
+      <div className="pt-5 space-y-3">
         <button
           onClick={handleNext}
           style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-accent-text)' }}
-          className="w-full h-12.5 rounded-2xl active:scale-[0.98] font-medium text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer"
+          className="w-full h-12.5 rounded-2xl active:scale-[0.98] font-medium text-sm sm:text-base flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
         >
-          <span>{step === 5 ? 'Begin gesprek' : 'Verder'}</span>
-          {step < 5 && <ArrowRight className="w-4 h-4 ml-0.5" />}
+          <span>{step === 4 ? 'Begin gesprek' : 'Verder'}</span>
+          {step < 4 && <ArrowRight className="w-4 h-4 ml-0.5" />}
         </button>
 
         {/* Step indicator dots & Privacy badge */}
         <div className="flex items-center justify-between pt-1 px-1 text-[11px] text-[var(--text-muted)]">
           <div className="flex items-center gap-1.5">
-            {[1, 2, 3, 4, 5].map((i) => (
+            {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
                 style={{
                   backgroundColor: i === step ? 'var(--color-accent)' : i < step ? 'var(--border-focus)' : 'var(--border-subtle)',
-                  width: i === step ? '18px' : '6px'
+                  width: i === step ? '20px' : '6px'
                 }}
                 className="h-1.5 rounded-full transition-all duration-300"
               />
@@ -264,8 +250,6 @@ interface StepOneProps {
   userProfile: UserProfile;
   onOpenProfile: () => void;
   onOpenSurprise: () => void;
-  onOpenFavorites: () => void;
-  favoritesCount: number;
 }
 
 const StepOneRelationship: React.FC<StepOneProps> = ({ 
@@ -273,9 +257,7 @@ const StepOneRelationship: React.FC<StepOneProps> = ({
   onSelect,
   userProfile,
   onOpenProfile,
-  onOpenSurprise,
-  onOpenFavorites,
-  favoritesCount
+  onOpenSurprise
 }) => {
   const options = [
     {
@@ -307,9 +289,16 @@ const StepOneRelationship: React.FC<StepOneProps> = ({
       available: true
     },
     {
+      id: 'creative',
+      title: 'Creatieve Vonk',
+      subtitle: 'Ideeën laten vonken, out-of-the-box dromen & verbeelding',
+      icon: Lightbulb,
+      available: true
+    },
+    {
       id: 'group',
       title: 'Groepsijsbrekers',
-      subtitle: 'Tafelgesprekken, snelle dilemma’s & speelse aanwijzingen',
+      subtitle: 'Tafelgesprekken, snelle dilemma’s & speelse dynamiek',
       icon: Layers,
       available: true
     },
@@ -324,17 +313,17 @@ const StepOneRelationship: React.FC<StepOneProps> = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      transition={{ duration: 0.25 }}
-      className="space-y-3.5"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.22 }}
+      className="space-y-4"
     >
-      {/* Light Player Badge Header (Refined, no 'Ingelogd als') */}
-      <div className="flex items-center justify-between text-xs text-[var(--text-secondary)] px-1">
-        <div className="flex items-center gap-2">
-          <span className="text-base">{userProfile.avatar || '✨'}</span>
-          <span className="font-semibold text-[var(--text-primary)]">{userProfile.name || 'Jij'}</span>
+      {/* Light Player Badge Header */}
+      <div className="flex items-center justify-between text-xs text-[var(--text-secondary)] px-0.5">
+        <div className="flex items-center gap-1.5">
+          <span className="text-sm">{userProfile.avatar || '✨'}</span>
+          <span className="font-medium text-[var(--text-primary)] text-xs">{userProfile.name || 'Jij'}</span>
         </div>
         <button
           onClick={onOpenProfile}
@@ -346,80 +335,24 @@ const StepOneRelationship: React.FC<StepOneProps> = ({
         </button>
       </div>
 
-      {/* Prominent Two-Route Choice: Zelf samenstellen vs Verras ons */}
-      <div className="grid grid-cols-2 gap-2.5">
-        <div
-          style={{ 
-            backgroundColor: 'var(--color-accent-subtle)', 
-            borderColor: 'var(--color-accent)' 
-          }}
-          className="p-3 rounded-2xl border text-center font-medium text-xs flex flex-col items-center justify-center gap-1 shadow-2xs"
-        >
-          <SlidersHorizontal className="w-4 h-4 text-[var(--color-accent)]" />
-          <span className="font-semibold text-[var(--color-accent)]">Zelf samenstellen</span>
-        </div>
-
-        <button
-          onClick={onOpenSurprise}
-          style={{ 
-            backgroundColor: 'var(--bg-card)', 
-            borderColor: 'var(--border-subtle)', 
-            color: 'var(--text-primary)' 
-          }}
-          className="p-3 rounded-2xl border text-center font-medium text-xs flex flex-col items-center justify-center gap-1 shadow-2xs cursor-pointer hover:border-[var(--color-accent)] transition-all active:scale-[0.98]"
-        >
-          <Dices className="w-4 h-4 text-[var(--color-accent)]" />
-          <span className="font-semibold">🎲 Verras ons direct</span>
-        </button>
-      </div>
-
-      <div className="space-y-0.5">
+      {/* Spacious Editorial Heading */}
+      <div className="space-y-1 pt-1 pb-1">
         <span className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: 'var(--color-accent)' }}>
           Gezelschap
         </span>
-        <h1 className="font-editorial text-2xl sm:text-3xl text-[var(--text-primary)] font-medium leading-tight">
+        <h1 className="font-editorial text-2xl sm:text-3xl text-[var(--text-primary)] font-normal leading-tight">
           Met wie praat {userProfile.name || 'jij'} vandaag?
         </h1>
-        <p className="text-xs text-[var(--text-secondary)] font-light">
-          We stemmen de toon, intensiteit en interacties nauwkeurig af.
+        <p className="text-xs text-[var(--text-secondary)] font-light leading-relaxed">
+          Kies het gezelschap voor een afgestemde dynamiek en veilige intensiteit.
         </p>
       </div>
 
-      {/* Quick link to Favorites if user has any saved */}
-      {favoritesCount > 0 && (
-        <button
-          onClick={onOpenFavorites}
-          style={{ backgroundColor: 'var(--color-accent-subtle)', borderColor: 'var(--border-subtle)' }}
-          className="w-full p-2.5 rounded-2xl border flex items-center justify-between text-left cursor-pointer hover:scale-[1.01] active:scale-[0.99] transition-all shadow-xs group"
-        >
-          <div className="flex items-center gap-2.5">
-            <div 
-              style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-accent-text)' }}
-              className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 shadow-xs"
-            >
-              <Heart className="w-4 h-4 fill-current" />
-            </div>
-            <div>
-              <div className="text-xs font-semibold text-[var(--text-primary)] flex items-center gap-1.5">
-                <span>Opgeslagen Favorieten</span>
-                <span 
-                  style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-accent-text)' }}
-                  className="text-[10px] px-1.5 py-0.2 rounded-full font-mono font-bold"
-                >
-                  {favoritesCount}
-                </span>
-              </div>
-              <div className="text-[10px] text-[var(--text-secondary)] font-light">
-                Herbeleef of speel direct jullie bewaarde vragen
-              </div>
-            </div>
-          </div>
-          <ArrowRight className="w-3.5 h-3.5 text-[var(--color-accent)] shrink-0 group-hover:translate-x-0.5 transition-transform" />
-        </button>
-      )}
-
-      {/* Options List */}
-      <div className="space-y-2 max-h-[46vh] overflow-y-auto pr-1">
+      {/* Vertical single-column list with thin dividers */}
+      <div 
+        style={{ borderColor: 'var(--border-subtle)', backgroundColor: 'var(--bg-card)' }}
+        className="border rounded-2xl divide-y divide-[var(--border-subtle)] shadow-2xs overflow-hidden max-h-[48vh] overflow-y-auto"
+      >
         {options.map((opt) => {
           const Icon = opt.icon;
           const isSelected = selected === opt.id;
@@ -428,26 +361,20 @@ const StepOneRelationship: React.FC<StepOneProps> = ({
             return (
               <div
                 key={opt.id}
-                style={{ backgroundColor: 'var(--bg-card-subtle)', borderColor: 'var(--border-subtle)' }}
-                className="w-full text-left p-3 rounded-2xl border opacity-50 flex items-center justify-between cursor-not-allowed"
+                className="w-full text-left py-3.5 px-4.5 flex items-center justify-between opacity-40 bg-[var(--bg-card-subtle)]/40 cursor-not-allowed"
               >
-                <div className="flex items-center gap-3">
-                  <div 
-                    style={{ backgroundColor: 'var(--border-subtle)', color: 'var(--text-muted)' }}
-                    className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                  >
-                    <Icon className="w-4 h-4" />
-                  </div>
-                  <div>
+                <div className="flex items-center gap-3 min-w-0 pr-3">
+                  <Icon className="w-4 h-4 shrink-0 text-[var(--text-muted)]" />
+                  <div className="space-y-0.5 min-w-0">
                     <div className="text-xs sm:text-sm font-medium text-[var(--text-muted)]">
                       {opt.title}
                     </div>
-                    <div className="text-[10px] sm:text-[11px] text-[var(--text-muted)] font-light">
+                    <div className="text-[11px] text-[var(--text-muted)] font-light truncate">
                       {opt.subtitle}
                     </div>
                   </div>
                 </div>
-                <span className="text-[10px] text-[var(--text-muted)] font-mono px-2 py-0.5 rounded-full border border-[var(--border-subtle)]">
+                <span className="text-[10px] text-[var(--text-muted)] font-mono shrink-0 pl-2">
                   Binnenkort
                 </span>
               </div>
@@ -457,48 +384,59 @@ const StepOneRelationship: React.FC<StepOneProps> = ({
           return (
             <motion.button
               key={opt.id}
-              whileTap={{ scale: 0.98 }}
+              whileTap={{ scale: 0.995 }}
               onClick={() => onSelect(opt.id as RelationshipType)}
               style={{
-                backgroundColor: isSelected ? 'var(--color-accent-subtle)' : 'var(--bg-card)',
-                borderColor: isSelected ? 'var(--color-accent)' : 'var(--border-subtle)'
+                backgroundColor: isSelected ? 'var(--color-accent-subtle)' : 'transparent'
               }}
-              className={`w-full text-left p-3.5 rounded-2xl border transition-all flex items-center justify-between cursor-pointer ${
-                isSelected ? 'shadow-sm ring-1 ring-[var(--color-accent)]' : 'hover:border-[var(--border-focus)]'
+              className={`w-full text-left py-3.5 px-4.5 flex items-center justify-between transition-colors cursor-pointer group ${
+                isSelected ? '' : 'hover:bg-[var(--bg-card-subtle)]/50'
               }`}
             >
-              <div className="flex items-center gap-3">
-                <div
-                  style={{
-                    backgroundColor: isSelected ? 'var(--color-accent)' : 'var(--bg-card-subtle)',
-                    color: isSelected ? 'var(--color-accent-text)' : 'var(--color-accent)'
-                  }}
-                  className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors shadow-xs"
-                >
-                  <Icon className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-xs sm:text-sm font-medium text-[var(--text-primary)]">
+              <div className="flex items-center gap-3.5 min-w-0 pr-3">
+                <Icon 
+                  className={`w-4 h-4 shrink-0 transition-colors ${
+                    isSelected ? 'text-[var(--color-accent)]' : 'text-[var(--text-muted)] group-hover:text-[var(--text-primary)]'
+                  }`} 
+                />
+                <div className="space-y-0.5 min-w-0">
+                  <div className={`text-xs sm:text-sm tracking-tight transition-colors ${
+                    isSelected ? 'font-semibold text-[var(--text-primary)]' : 'font-medium text-[var(--text-primary)]'
+                  }`}>
                     {opt.title}
                   </div>
-                  <div className="text-[10px] sm:text-[11px] text-[var(--text-secondary)] font-light">
+                  <div className="text-[11px] text-[var(--text-secondary)] font-light leading-relaxed line-clamp-1">
                     {opt.subtitle}
                   </div>
                 </div>
               </div>
 
-              <div
-                style={{
-                  backgroundColor: isSelected ? 'var(--color-accent)' : 'transparent',
-                  borderColor: isSelected ? 'var(--color-accent)' : 'var(--border-subtle)'
-                }}
-                className="w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ml-2"
-              >
-                {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+              <div className="shrink-0 flex items-center justify-center pl-2">
+                {isSelected ? (
+                  <div 
+                    style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-accent-text)' }}
+                    className="w-5 h-5 rounded-full flex items-center justify-center shadow-xs"
+                  >
+                    <Check className="w-3 h-3 stroke-[2.5]" />
+                  </div>
+                ) : (
+                  <div className="w-5 h-5 rounded-full border border-[var(--border-subtle)] group-hover:border-[var(--border-focus)] transition-colors" />
+                )}
               </div>
             </motion.button>
           );
         })}
+      </div>
+
+      {/* Quiet, minimalist surprise trigger replacing the bulky grid */}
+      <div className="flex items-center justify-between pt-1 px-1">
+        <button
+          onClick={onOpenSurprise}
+          className="text-xs text-[var(--text-secondary)] hover:text-[var(--color-accent)] transition-colors flex items-center gap-1.5 cursor-pointer font-medium py-0.5"
+        >
+          <Dices className="w-3.5 h-3.5 text-[var(--color-accent)]" />
+          <span>Liever meteen verrast worden? <strong>Kies spontaan</strong></span>
+        </button>
       </div>
     </motion.div>
   );
@@ -514,7 +452,6 @@ interface StepTwoStageProps {
 }
 
 const StepTwoStage: React.FC<StepTwoStageProps> = ({ relationship, selected, onSelect }) => {
-  // Dynamically configure stages based on relationship
   let stages: { id: RelationshipStage; title: string; subtitle: string }[] = [];
 
   if (relationship === 'date') {
@@ -546,6 +483,12 @@ const StepTwoStage: React.FC<StepTwoStageProps> = ({ relationship, selected, onS
       { id: 'family_siblings', title: 'Broer / zus', subtitle: 'Jeugdherinneringen, binnenpretjes en herkenning' },
       { id: 'family_general', title: 'Familie algemeen', subtitle: 'Warmte, gezelligheid en familietradities' }
     ];
+  } else if (relationship === 'creative') {
+    stages = [
+      { id: 'any', title: 'Vrije Verbeelding', subtitle: 'Wat-als scenario\'s, filosofische gedachten en innovatie' },
+      { id: 'friends_good', title: 'Creatieve Sparringpartners', subtitle: 'Elkaars ideeën versterken, wilde plannen en dromen testen' },
+      { id: 'partner_deep', title: 'Diepe Verwondering', subtitle: 'Intrigerende existentiële vragen over kosmos en bewustzijn' }
+    ];
   } else {
     stages = [
       { id: 'any', title: 'Alle niveaus', subtitle: 'Geschikt voor elk type gezelschap' }
@@ -554,58 +497,66 @@ const StepTwoStage: React.FC<StepTwoStageProps> = ({ relationship, selected, onS
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      transition={{ duration: 0.25 }}
-      className="space-y-3.5"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.22 }}
+      className="space-y-4"
     >
-      <div className="space-y-0.5">
+      <div className="space-y-1 pt-1 pb-1">
         <span className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: 'var(--color-accent)' }}>
           Relatiefase
         </span>
-        <h1 className="font-editorial text-2xl sm:text-3xl text-[var(--text-primary)] font-medium leading-tight">
+        <h1 className="font-editorial text-2xl sm:text-3xl text-[var(--text-primary)] font-normal leading-tight">
           Hoe goed kennen jullie elkaar?
         </h1>
-        <p className="text-xs text-[var(--text-secondary)] font-light">
-          Hiermee voorkomen we vragen die te vroeg of juist te algemeen aanvoelen.
+        <p className="text-xs text-[var(--text-secondary)] font-light leading-relaxed">
+          Zo sluiten de vragen naadloos aan op jullie vertrouwensband en comfortzone.
         </p>
       </div>
 
-      <div className="space-y-2.5">
+      {/* Vertical single-column list with thin dividers */}
+      <div 
+        style={{ borderColor: 'var(--border-subtle)', backgroundColor: 'var(--bg-card)' }}
+        className="border rounded-2xl divide-y divide-[var(--border-subtle)] shadow-2xs overflow-hidden max-h-[48vh] overflow-y-auto"
+      >
         {stages.map((stg) => {
           const isSelected = selected === stg.id;
 
           return (
             <motion.button
               key={stg.id}
-              whileTap={{ scale: 0.98 }}
+              whileTap={{ scale: 0.995 }}
               onClick={() => onSelect(stg.id)}
               style={{
-                backgroundColor: isSelected ? 'var(--color-accent-subtle)' : 'var(--bg-card)',
-                borderColor: isSelected ? 'var(--color-accent)' : 'var(--border-subtle)'
+                backgroundColor: isSelected ? 'var(--color-accent-subtle)' : 'transparent'
               }}
-              className={`w-full text-left p-3.5 rounded-2xl border transition-all flex items-center justify-between cursor-pointer ${
-                isSelected ? 'shadow-sm ring-1 ring-[var(--color-accent)]' : 'hover:border-[var(--border-focus)]'
+              className={`w-full text-left py-3.5 px-4.5 flex items-center justify-between transition-colors cursor-pointer group ${
+                isSelected ? '' : 'hover:bg-[var(--bg-card-subtle)]/50'
               }`}
             >
-              <div className="space-y-0.5">
-                <div className="text-xs sm:text-sm font-semibold text-[var(--text-primary)]">
+              <div className="space-y-0.5 min-w-0 pr-3">
+                <div className={`text-xs sm:text-sm tracking-tight transition-colors ${
+                  isSelected ? 'font-semibold text-[var(--text-primary)]' : 'font-medium text-[var(--text-primary)]'
+                }`}>
                   {stg.title}
                 </div>
-                <div className="text-[11px] text-[var(--text-secondary)] font-light">
+                <div className="text-[11px] text-[var(--text-secondary)] font-light leading-relaxed line-clamp-1">
                   {stg.subtitle}
                 </div>
               </div>
 
-              <div
-                style={{
-                  backgroundColor: isSelected ? 'var(--color-accent)' : 'transparent',
-                  borderColor: isSelected ? 'var(--color-accent)' : 'var(--border-subtle)'
-                }}
-                className="w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ml-2"
-              >
-                {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+              <div className="shrink-0 flex items-center justify-center pl-2">
+                {isSelected ? (
+                  <div 
+                    style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-accent-text)' }}
+                    className="w-5 h-5 rounded-full flex items-center justify-center shadow-xs"
+                  >
+                    <Check className="w-3 h-3 stroke-[2.5]" />
+                  </div>
+                ) : (
+                  <div className="w-5 h-5 rounded-full border border-[var(--border-subtle)] group-hover:border-[var(--border-focus)] transition-colors" />
+                )}
               </div>
             </motion.button>
           );
@@ -652,32 +603,36 @@ const StepThreeVibe: React.FC<StepThreeProps> = ({ selected, onSelect }) => {
     {
       id: 'verrassend',
       title: 'Onverwacht & Verrassend',
-      description: 'Secret picks, sociale challenges en snelle dilemma’s',
+      description: 'Secret picks, speelse challenges en snelle dilemma’s',
       icon: Dices
     }
   ];
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      transition={{ duration: 0.25 }}
-      className="space-y-3.5"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.22 }}
+      className="space-y-4"
     >
-      <div className="space-y-0.5">
+      <div className="space-y-1 pt-1 pb-1">
         <span className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: 'var(--color-accent)' }}>
           Sfeer
         </span>
-        <h1 className="font-editorial text-2xl sm:text-3xl text-[var(--text-primary)] font-medium leading-tight">
+        <h1 className="font-editorial text-2xl sm:text-3xl text-[var(--text-primary)] font-normal leading-tight">
           Waar hebben jullie zin in?
         </h1>
-        <p className="text-xs text-[var(--text-secondary)] font-light">
+        <p className="text-xs text-[var(--text-secondary)] font-light leading-relaxed">
           Kies de energie die past bij dit moment en jullie drankje.
         </p>
       </div>
 
-      <div className="space-y-2.5">
+      {/* Vertical single-column list with thin dividers */}
+      <div 
+        style={{ borderColor: 'var(--border-subtle)', backgroundColor: 'var(--bg-card)' }}
+        className="border rounded-2xl divide-y divide-[var(--border-subtle)] shadow-2xs overflow-hidden max-h-[48vh] overflow-y-auto"
+      >
         {vibes.map((item) => {
           const Icon = item.icon;
           const isSelected = selected === item.id;
@@ -685,32 +640,44 @@ const StepThreeVibe: React.FC<StepThreeProps> = ({ selected, onSelect }) => {
           return (
             <motion.button
               key={item.id}
-              whileTap={{ scale: 0.98 }}
+              whileTap={{ scale: 0.995 }}
               onClick={() => onSelect(item.id as VibeType)}
               style={{
-                backgroundColor: isSelected ? 'var(--color-accent-subtle)' : 'var(--bg-card)',
-                borderColor: isSelected ? 'var(--color-accent)' : 'var(--border-subtle)'
+                backgroundColor: isSelected ? 'var(--color-accent-subtle)' : 'transparent'
               }}
-              className={`w-full text-left p-3.5 rounded-2xl border transition-all flex items-center gap-3.5 cursor-pointer ${
-                isSelected ? 'shadow-sm ring-1 ring-[var(--color-accent)]' : 'hover:border-[var(--border-focus)]'
+              className={`w-full text-left py-3.5 px-4.5 flex items-center justify-between transition-colors cursor-pointer group ${
+                isSelected ? '' : 'hover:bg-[var(--bg-card-subtle)]/50'
               }`}
             >
-              <div
-                style={{
-                  backgroundColor: isSelected ? 'var(--color-accent)' : 'var(--bg-card-subtle)',
-                  color: isSelected ? 'var(--color-accent-text)' : 'var(--color-accent)'
-                }}
-                className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-colors shadow-xs"
-              >
-                <Icon className="w-4 h-4" />
+              <div className="flex items-center gap-3.5 min-w-0 pr-3">
+                <Icon 
+                  className={`w-4 h-4 shrink-0 transition-colors ${
+                    isSelected ? 'text-[var(--color-accent)]' : 'text-[var(--text-muted)] group-hover:text-[var(--text-primary)]'
+                  }`} 
+                />
+                <div className="space-y-0.5 min-w-0">
+                  <div className={`text-xs sm:text-sm tracking-tight transition-colors ${
+                    isSelected ? 'font-semibold text-[var(--text-primary)]' : 'font-medium text-[var(--text-primary)]'
+                  }`}>
+                    {item.title}
+                  </div>
+                  <div className="text-[11px] text-[var(--text-secondary)] font-light leading-relaxed line-clamp-1">
+                    {item.description}
+                  </div>
+                </div>
               </div>
-              <div>
-                <div className="text-xs sm:text-sm font-medium text-[var(--text-primary)]">
-                  {item.title}
-                </div>
-                <div className="text-[10px] sm:text-[11px] text-[var(--text-secondary)] font-light">
-                  {item.description}
-                </div>
+
+              <div className="shrink-0 flex items-center justify-center pl-2">
+                {isSelected ? (
+                  <div 
+                    style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-accent-text)' }}
+                    className="w-5 h-5 rounded-full flex items-center justify-center shadow-xs"
+                  >
+                    <Check className="w-3 h-3 stroke-[2.5]" />
+                  </div>
+                ) : (
+                  <div className="w-5 h-5 rounded-full border border-[var(--border-subtle)] group-hover:border-[var(--border-focus)] transition-colors" />
+                )}
               </div>
             </motion.button>
           );
@@ -733,88 +700,87 @@ const StepFourDuration: React.FC<StepFourProps> = ({ selected, onSelect }) => {
     {
       id: '5min',
       label: '5 Minuten',
-      subtitle: 'Snelle ijsbreker bij het eerste drankje (± 5 kaarten)',
-      badge: 'Snel'
+      subtitle: 'Snelle ijsbreker bij het eerste drankje (± 5 kaarten)'
     },
     {
       id: '15min',
       label: '15 Minuten',
-      subtitle: 'De perfecte balans voor een fijne dynamiek (± 9 kaarten)',
-      badge: 'Populair'
+      subtitle: 'De perfecte balans voor een fijne dynamiek (± 9 kaarten)'
     },
     {
       id: '30min',
       label: '30 Minuten',
-      subtitle: 'Uitgebreid natafelen en rustig doorpraten (± 14 kaarten)',
-      badge: 'Verdiepend'
+      subtitle: 'Uitgebreid natafelen en rustig doorpraten (± 14 kaarten)'
     },
     {
       id: 'unlimited',
       label: 'Geen Tijdslimiet',
-      subtitle: 'Speel door zolang het gesprek vanzelf blijft stromen',
-      badge: 'Eindeloos'
+      subtitle: 'Speel door zolang het gesprek vanzelf blijft stromen (rondes van 5)'
     }
   ];
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      transition={{ duration: 0.25 }}
-      className="space-y-3.5"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.22 }}
+      className="space-y-4"
     >
-      <div className="space-y-0.5">
+      <div className="space-y-1 pt-1 pb-1">
         <span className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: 'var(--color-accent)' }}>
           Tijdsduur
         </span>
-        <h1 className="font-editorial text-2xl sm:text-3xl text-[var(--text-primary)] font-medium leading-tight">
+        <h1 className="font-editorial text-2xl sm:text-3xl text-[var(--text-primary)] font-normal leading-tight">
           Hoe lang hebben jullie?
         </h1>
-        <p className="text-xs text-[var(--text-secondary)] font-light">
-          Geen zorgen, jullie kunnen op elk gewenst moment stoppen of pauzeren.
+        <p className="text-xs text-[var(--text-secondary)] font-light leading-relaxed">
+          Een richtlijn voor de sessie — jullie kunnen op elk moment pauzeren of afronden.
         </p>
       </div>
 
-      <div className="space-y-2.5">
+      {/* Vertical single-column list with thin dividers */}
+      <div 
+        style={{ borderColor: 'var(--border-subtle)', backgroundColor: 'var(--bg-card)' }}
+        className="border rounded-2xl divide-y divide-[var(--border-subtle)] shadow-2xs overflow-hidden max-h-[48vh] overflow-y-auto"
+      >
         {durations.map((item) => {
           const isSelected = selected === item.id;
 
           return (
             <motion.button
               key={item.id}
-              whileTap={{ scale: 0.98 }}
+              whileTap={{ scale: 0.995 }}
               onClick={() => onSelect(item.id as DurationType)}
               style={{
-                backgroundColor: isSelected ? 'var(--color-accent-subtle)' : 'var(--bg-card)',
-                borderColor: isSelected ? 'var(--color-accent)' : 'var(--border-subtle)'
+                backgroundColor: isSelected ? 'var(--color-accent-subtle)' : 'transparent'
               }}
-              className={`w-full text-left p-3.5 rounded-2xl border transition-all flex items-center justify-between cursor-pointer ${
-                isSelected ? 'shadow-sm ring-1 ring-[var(--color-accent)]' : 'hover:border-[var(--border-focus)]'
+              className={`w-full text-left py-3.5 px-4.5 flex items-center justify-between transition-colors cursor-pointer group ${
+                isSelected ? '' : 'hover:bg-[var(--bg-card-subtle)]/50'
               }`}
             >
-              <div className="space-y-0.5">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs sm:text-sm font-medium text-[var(--text-primary)]">
-                    {item.label}
-                  </span>
-                  <span className="text-[10px] text-[var(--text-muted)] font-mono">
-                    · {item.badge}
-                  </span>
+              <div className="space-y-0.5 min-w-0 pr-3">
+                <div className={`text-xs sm:text-sm tracking-tight transition-colors ${
+                  isSelected ? 'font-semibold text-[var(--text-primary)]' : 'font-medium text-[var(--text-primary)]'
+                }`}>
+                  {item.label}
                 </div>
-                <div className="text-[11px] text-[var(--text-secondary)] font-light">
+                <div className="text-[11px] text-[var(--text-secondary)] font-light leading-relaxed line-clamp-1">
                   {item.subtitle}
                 </div>
               </div>
 
-              <div
-                style={{
-                  backgroundColor: isSelected ? 'var(--color-accent)' : 'transparent',
-                  borderColor: isSelected ? 'var(--color-accent)' : 'var(--border-subtle)'
-                }}
-                className="w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ml-2"
-              >
-                {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+              <div className="shrink-0 flex items-center justify-center pl-2">
+                {isSelected ? (
+                  <div 
+                    style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-accent-text)' }}
+                    className="w-5 h-5 rounded-full flex items-center justify-center shadow-xs"
+                  >
+                    <Check className="w-3 h-3 stroke-[2.5]" />
+                  </div>
+                ) : (
+                  <div className="w-5 h-5 rounded-full border border-[var(--border-subtle)] group-hover:border-[var(--border-focus)] transition-colors" />
+                )}
               </div>
             </motion.button>
           );
@@ -824,120 +790,5 @@ const StepFourDuration: React.FC<StepFourProps> = ({ selected, onSelect }) => {
   );
 };
 
-/* ----------------------------------------------------
-   STEP 5: HOE VER GAAN WE? (INTENSITY & PERSOONLIJK)
----------------------------------------------------- */
-interface StepFiveProps {
-  selected: IntensitySetting;
-  onSelect: (val: IntensitySetting) => void;
-  onOpenPaywall: () => void;
-  isPremiumUnlocked: boolean;
-}
-
-const StepFiveIntensity: React.FC<StepFiveProps> = ({
-  selected,
-  onSelect,
-  onOpenPaywall,
-  isPremiumUnlocked
-}) => {
-  const levels = [
-    {
-      id: 'easy',
-      title: 'Luchtig & Speels',
-      subtitle: 'IJsbrekers, observaties en humor. Niemand voelt zich bezwaard of in verlegenheid gebracht.',
-      isLocked: false
-    },
-    {
-      id: 'personal',
-      title: 'Persoonlijk & Oprecht',
-      subtitle: 'Echte gewoontes, dromen, waarden en leuke kleine bekentenissen.',
-      isLocked: false
-    },
-    {
-      id: 'deep',
-      title: 'Diep & Kwetsbaar',
-      subtitle: 'Ongefilterde openheid, levenslessen en betekenisvolle connectie.',
-      isLocked: !isPremiumUnlocked
-    }
-  ];
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      transition={{ duration: 0.25 }}
-      className="space-y-3.5"
-    >
-      <div className="space-y-0.5">
-        <span className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: 'var(--color-accent)' }}>
-          Diepgang
-        </span>
-        <h1 className="font-editorial text-2xl sm:text-3xl text-[var(--text-primary)] font-medium leading-tight">
-          Hoe persoonlijk mag het worden?
-        </h1>
-        <p className="text-xs text-[var(--text-secondary)] font-light">
-          De engine bouwt de intensiteit altijd natuurlijk op en sluit positief af.
-        </p>
-      </div>
-
-      <div className="space-y-3">
-        {levels.map((item) => {
-          const isSelected = selected === item.id;
-
-          const handleClick = () => {
-            if (item.isLocked) {
-              onOpenPaywall();
-            } else {
-              onSelect(item.id as IntensitySetting);
-            }
-          };
-
-          return (
-            <motion.button
-              key={item.id}
-              whileTap={{ scale: 0.98 }}
-              onClick={handleClick}
-              style={{
-                backgroundColor: isSelected ? 'var(--color-accent-subtle)' : 'var(--bg-card)',
-                borderColor: isSelected ? 'var(--color-accent)' : 'var(--border-subtle)'
-              }}
-              className={`w-full text-left p-3.5 rounded-2xl border transition-all flex items-center justify-between cursor-pointer ${
-                isSelected ? 'shadow-sm ring-1 ring-[var(--color-accent)]' : 'hover:border-[var(--border-focus)]'
-              }`}
-            >
-              <div className="space-y-0.5">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs sm:text-sm font-semibold text-[var(--text-primary)]">
-                    {item.title}
-                  </span>
-                  {item.isLocked && (
-                    <span 
-                      style={{ backgroundColor: 'var(--color-accent)', color: 'var(--color-accent-text)' }}
-                      className="text-[9px] px-1.5 py-0.2 rounded-full font-mono uppercase font-bold tracking-wider"
-                    >
-                      Plus
-                    </span>
-                  )}
-                </div>
-                <div className="text-[11px] text-[var(--text-secondary)] font-light leading-relaxed">
-                  {item.subtitle}
-                </div>
-              </div>
-
-              <div
-                style={{
-                  backgroundColor: isSelected ? 'var(--color-accent)' : 'transparent',
-                  borderColor: isSelected ? 'var(--color-accent)' : 'var(--border-subtle)'
-                }}
-                className="w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ml-2"
-              >
-                {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
-              </div>
-            </motion.button>
-          );
-        })}
-      </div>
-    </motion.div>
-  );
-};
+export { SetupFlow as ScreenConfig };
+export default SetupFlow;

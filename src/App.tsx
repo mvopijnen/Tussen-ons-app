@@ -132,7 +132,7 @@ export default function App() {
   // Handlers
   const handleStartSession = (newConfig: SessionConfig) => {
     setSessionConfig(newConfig);
-    restartSession();
+    restartSession(newConfig);
     setView('session');
   };
 

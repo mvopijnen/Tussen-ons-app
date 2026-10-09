@@ -7,6 +7,7 @@ import {
   buildCuratedSession, 
   getTargetIntensityAndType, 
   selectAdaptivePrompt,
+  getTargetStepCount,
   isPromptOnCooldown,
   COOLDOWN_COMPLETED_MS,
   COOLDOWN_SKIPPED_MS,
@@ -411,4 +412,87 @@ console.log('\n--- STARTING TUSSEN ONS ENGINE TESTS ---\n');
   assert(safeTheme === "linnen", `Storage validator protects against invalid theme injection`);
 }
 
-console.log('\n🎉 ALL 18 ENGINE, ADAPTATION, SAFETY & STABILITY TESTS PASSED!\n');
+// Test 19: New Categories verification ('Vriendschap', 'Familie', 'Creatieve Vonk')
+{
+  const targetCategories = ['Vriendschap', 'Familie', 'Creatieve Vonk'];
+  for (const cat of targetCategories) {
+    const items = PROMPTS_DATABASE.filter(p => p.category === cat);
+    assert(
+      items.length >= 15,
+      `Categorie '${cat}' heeft minimaal 15 unieke prompts (gevonden: ${items.length})`
+    );
+
+    // Verify interaction types diversity
+    const interactionTypes = new Set(items.map(p => p.interactionType));
+    assert(
+      interactionTypes.size >= 5,
+      `Categorie '${cat}' heeft diverse interactietypes (gevonden: ${interactionTypes.size})`
+    );
+
+    // Verify intensity categorization
+    const intensities = new Set(items.map(p => p.intensity));
+    assert(
+      intensities.size >= 3,
+      `Categorie '${cat}' is gecategoriseerd over meerdere intensiteitsniveaus (gevonden: ${intensities.size})`
+    );
+  }
+}
+
+// Test 20: Surprise Me flow produces tailored sessions matching configuration
+{
+  const surpriseConfigs: SessionConfig[] = [
+    {
+      relationship: 'creative',
+      relationshipStage: 'any',
+      vibe: 'verrassend',
+      duration: '15min',
+      intensity: 'personal',
+      isPremiumUnlocked: true
+    },
+    {
+      relationship: 'friends',
+      relationshipStage: 'friends_good',
+      vibe: 'lachen',
+      duration: '5min',
+      intensity: 'easy',
+      isPremiumUnlocked: false
+    },
+    {
+      relationship: 'family',
+      relationshipStage: 'family_general',
+      vibe: 'dieper',
+      duration: '15min',
+      intensity: 'deep',
+      isPremiumUnlocked: true
+    }
+  ];
+
+  for (const cfg of surpriseConfigs) {
+    const session = buildCuratedSession(cfg);
+    const targetCount = getTargetStepCount(cfg.duration);
+    assert(
+      session.length === targetCount,
+      `Surprise Me sessie levert exact ${targetCount} prompts op voor ${cfg.relationship} / ${cfg.vibe}`
+    );
+
+    // Verify no forbidden premium prompts for free users
+    if (!cfg.isPremiumUnlocked) {
+      const leakedPremium = session.filter(p => p.premium);
+      assert(
+        leakedPremium.length === 0,
+        `Surprise Me sessie voor gratis gebruiker bevat geen premium prompts`
+      );
+    }
+
+    // Verify easy intensity guard
+    if (cfg.intensity === 'easy') {
+      const tooIntense = session.filter(p => p.intensity >= 4);
+      assert(
+        tooIntense.length === 0,
+        `Surprise Me sessie met 'easy' intensiteit bevat geen prompts met intensiteit 4 of 5`
+      );
+    }
+  }
+}
+
+console.log('\n🎉 ALL 20 ENGINE, ADAPTATION, SAFETY & STABILITY TESTS PASSED!\n');

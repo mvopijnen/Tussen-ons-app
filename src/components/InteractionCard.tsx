@@ -1146,7 +1146,7 @@ const SecretPickView: React.FC<{
                 </h3>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-3 text-center pt-2">
                 <div 
                   style={{ backgroundColor: 'var(--bg-card-subtle)', borderColor: 'var(--border-subtle)' }}
                   className="p-3.5 rounded-xl border text-center space-y-1"

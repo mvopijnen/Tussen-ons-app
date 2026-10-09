@@ -4,39 +4,27 @@ import {
   SessionConfig, 
   SessionStats, 
   InteractionType, 
-  PlayHistoryMap,
+  PlayHistoryMap, 
   PlayHistoryRecord,
   HistoryOutcome
 } from '../types';
 import { PROMPTS_DATABASE } from '../data/prompts';
 import { safeGetPlayHistory, safeSavePlayHistory } from '../utils/storage';
+import { 
+  COOLDOWN_COMPLETED_MS, 
+  COOLDOWN_SKIPPED_MS, 
+  COOLDOWN_SHOWN_MS, 
+  isPromptOnCooldown 
+} from '../utils/cooldown';
+import { buildFirstMeetingSession } from '../data/firstMeetingEngine';
 
-export const COOLDOWN_COMPLETED_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
-export const COOLDOWN_SKIPPED_MS = 7 * 24 * 60 * 60 * 1000;    // 7 days
-export const COOLDOWN_SHOWN_MS = 24 * 60 * 60 * 1000;          // 1 day
+export { COOLDOWN_COMPLETED_MS, COOLDOWN_SKIPPED_MS, COOLDOWN_SHOWN_MS, isPromptOnCooldown };
 
 /**
  * Load local play history map with validated schema
  */
 export function getPlayHistory(): PlayHistoryMap {
   return safeGetPlayHistory();
-}
-
-/**
- * Check if a prompt record is still within its outcome-specific cooldown window
- */
-export function isPromptOnCooldown(record?: PlayHistoryRecord, now: number = Date.now()): boolean {
-  if (!record || !record.lastPlayedAt) return false;
-  const elapsed = now - record.lastPlayedAt;
-  const outcome = record.outcome || 'shown';
-
-  if (outcome === 'completed') {
-    return elapsed < COOLDOWN_COMPLETED_MS;
-  } else if (outcome === 'skipped') {
-    return elapsed < COOLDOWN_SKIPPED_MS;
-  } else {
-    return elapsed < COOLDOWN_SHOWN_MS;
-  }
 }
 
 /**
@@ -473,6 +461,11 @@ export function selectAdaptivePrompt(
  * Guarantees zero premium leakage, strict safety in easy mode, and full targetCount.
  */
 export function buildCuratedSession(config: SessionConfig): PromptItem[] {
+  if (config.relationship === 'date' && config.relationshipStage === 'date_first') {
+    const history = getPlayHistory();
+    return buildFirstMeetingSession(config, history);
+  }
+
   const targetCount = getTargetStepCount(config.duration);
   const history = getPlayHistory();
   const selectedPrompts: PromptItem[] = [];
@@ -520,9 +513,42 @@ export function useSessionEngine(
     onToggleGlobalFavorite?: (id: string) => void;
   }
 ) {
+  const roundIndexRef = useRef(0);
+  const seenSessionIdsRef = useRef<Set<string>>(new Set());
+  const seenSessionRepeatGroupsRef = useRef<Set<string>>(new Set());
+
   const [state, setState] = useState<SessionEngineState>(() => {
-    const target = getTargetStepCount(config.duration);
+    const isFirstMeeting = config.relationship === 'date' && config.relationshipStage === 'date_first';
     const history = getPlayHistory();
+
+    if (isFirstMeeting) {
+      const firstMeetingPrompts = buildFirstMeetingSession(config, history, 0);
+      firstMeetingPrompts.forEach((p) => {
+        seenSessionIdsRef.current.add(p.id);
+        if (p.repeat_group) seenSessionRepeatGroupsRef.current.add(p.repeat_group);
+      });
+
+      return {
+        currentPromptIndex: 0,
+        targetCount: firstMeetingPrompts.length,
+        prompts: firstMeetingPrompts,
+        globalFavorites: new Set<string>(options?.initialFavorites || []),
+        sessionFavorites: new Set<string>(),
+        laughedCount: 0,
+        skippedCount: 0,
+        completedPromptIds: [],
+        elapsedSeconds: 0,
+        isPaused: false,
+        isCompleted: false,
+        interactionData: {},
+        adaptiveIntensityBias: 0,
+        consecutiveSkips: 0,
+        isAfterDeepSkip: false,
+        playfulBias: 0
+      };
+    }
+
+    const target = getTargetStepCount(config.duration);
     const firstPrompt = selectAdaptivePrompt(0, target, config, history, {
       usedPromptIds: new Set<string>()
     });
@@ -549,26 +575,54 @@ export function useSessionEngine(
 
   // Reset engine when config changes (e.g. user restarts with new duration or settings)
   useEffect(() => {
-    const target = getTargetStepCount(config.duration);
+    const isFirstMeeting = config.relationship === 'date' && config.relationshipStage === 'date_first';
     const history = getPlayHistory();
-    const firstPrompt = selectAdaptivePrompt(0, target, config, history, {
-      usedPromptIds: new Set<string>()
-    });
+    roundIndexRef.current = 0;
+    seenSessionIdsRef.current.clear();
+    seenSessionRepeatGroupsRef.current.clear();
 
-    setState((prev) => ({
-      ...prev,
-      targetCount: target,
-      prompts: [firstPrompt],
-      currentPromptIndex: 0,
-      sessionFavorites: new Set<string>(),
-      completedPromptIds: [],
-      isCompleted: false,
-      isPaused: false,
-      adaptiveIntensityBias: 0,
-      consecutiveSkips: 0,
-      isAfterDeepSkip: false,
-      playfulBias: 0
-    }));
+    if (isFirstMeeting) {
+      const firstMeetingPrompts = buildFirstMeetingSession(config, history, 0);
+      firstMeetingPrompts.forEach((p) => {
+        seenSessionIdsRef.current.add(p.id);
+        if (p.repeat_group) seenSessionRepeatGroupsRef.current.add(p.repeat_group);
+      });
+
+      setState((prev) => ({
+        ...prev,
+        targetCount: firstMeetingPrompts.length,
+        prompts: firstMeetingPrompts,
+        currentPromptIndex: 0,
+        sessionFavorites: new Set<string>(),
+        completedPromptIds: [],
+        isCompleted: false,
+        isPaused: false,
+        adaptiveIntensityBias: 0,
+        consecutiveSkips: 0,
+        isAfterDeepSkip: false,
+        playfulBias: 0
+      }));
+    } else {
+      const target = getTargetStepCount(config.duration);
+      const firstPrompt = selectAdaptivePrompt(0, target, config, history, {
+        usedPromptIds: new Set<string>()
+      });
+
+      setState((prev) => ({
+        ...prev,
+        targetCount: target,
+        prompts: [firstPrompt],
+        currentPromptIndex: 0,
+        sessionFavorites: new Set<string>(),
+        completedPromptIds: [],
+        isCompleted: false,
+        isPaused: false,
+        adaptiveIntensityBias: 0,
+        consecutiveSkips: 0,
+        isAfterDeepSkip: false,
+        playfulBias: 0
+      }));
+    }
     
     // Clear session-specific exposure ref when config changes (new session)
     recordedPromptIdsRef.current.clear();
@@ -839,15 +893,60 @@ export function useSessionEngine(
     });
   }, [options?.initialFavorites]);
 
-  const restartSession = useCallback(() => {
-    const target = getTargetStepCount(config.duration);
+  const restartSession = useCallback((overrideConfig?: SessionConfig) => {
+    const activeConfig = overrideConfig || config;
+    const isFirstMeeting = activeConfig.relationship === 'date' && activeConfig.relationshipStage === 'date_first';
     const history = getPlayHistory();
-    const firstPrompt = selectAdaptivePrompt(0, target, config, history, {
-      usedPromptIds: new Set<string>()
-    });
 
     // Reset exposure tracking for the new session
     recordedPromptIdsRef.current.clear();
+
+    if (isFirstMeeting) {
+      if (overrideConfig) {
+        roundIndexRef.current = 0;
+        seenSessionIdsRef.current.clear();
+        seenSessionRepeatGroupsRef.current.clear();
+      } else {
+        roundIndexRef.current += 1;
+      }
+
+      const nextPrompts = buildFirstMeetingSession(
+        activeConfig,
+        history,
+        roundIndexRef.current,
+        seenSessionRepeatGroupsRef.current,
+        seenSessionIdsRef.current
+      );
+      nextPrompts.forEach((p) => {
+        seenSessionIdsRef.current.add(p.id);
+        if (p.repeat_group) seenSessionRepeatGroupsRef.current.add(p.repeat_group);
+      });
+
+      setState({
+        currentPromptIndex: 0,
+        targetCount: nextPrompts.length,
+        prompts: nextPrompts,
+        globalFavorites: new Set<string>(options?.initialFavorites || []),
+        sessionFavorites: new Set<string>(),
+        laughedCount: 0,
+        skippedCount: 0,
+        completedPromptIds: [],
+        elapsedSeconds: 0,
+        isPaused: false,
+        isCompleted: false,
+        interactionData: {},
+        adaptiveIntensityBias: 0,
+        consecutiveSkips: 0,
+        isAfterDeepSkip: false,
+        playfulBias: 0
+      });
+      return;
+    }
+
+    const target = getTargetStepCount(activeConfig.duration);
+    const firstPrompt = selectAdaptivePrompt(0, target, activeConfig, history, {
+      usedPromptIds: new Set<string>()
+    });
 
     setState({
       currentPromptIndex: 0,

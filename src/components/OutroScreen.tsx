@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { SessionStats } from '../types';
 import { PROMPTS_DATABASE } from '../data/prompts';
+import { APPROVED_EERSTE_ONTMOETING_PROMPTS } from '../data/firstMeetingEngine';
 
 interface OutroScreenProps {
   stats: SessionStats;
@@ -38,7 +39,7 @@ export const OutroScreen: React.FC<OutroScreenProps> = ({
   const timeFormatted = minutes > 0 ? `${minutes} min` : `${seconds} sec`;
 
   // Look up favorited prompts
-  const favoritedPrompts = PROMPTS_DATABASE.filter((p) =>
+  const favoritedPrompts = [...PROMPTS_DATABASE, ...APPROVED_EERSTE_ONTMOETING_PROMPTS].filter((p) =>
     stats.favoritePromptIds.includes(p.id)
   );
 
